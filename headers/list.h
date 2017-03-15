@@ -1,4 +1,4 @@
-#include "../headers/structs.h"
+#include "structs.h"
 #include <iostream>
 using namespace std;
 
