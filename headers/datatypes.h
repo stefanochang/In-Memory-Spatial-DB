@@ -36,7 +36,7 @@ typedef union geometry{
 
 typedef struct record{
 	int id;
-	geometry geom;
+	geometry *geom;
 	struct record *next;
 	struct record *prev;
 }record;
