@@ -1,5 +1,6 @@
-#include "structs.h"
+#include "datatypes.h"
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 
 class list
