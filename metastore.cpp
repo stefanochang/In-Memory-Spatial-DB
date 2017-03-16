@@ -22,6 +22,18 @@ class MetaData {
     void put_metadata(std::string key, std::string value) {
       type_of_data = value;
     }
+
+    std::string get_metadata(std::string key) {
+      if(key == METADATA_NUMBER_OF_ROWS) {
+        return std::to_string(number_of_rows);
+      } else if(key == METADATA_DATATYPE) {
+        return type_of_data;
+      }
+    }
+
+    list * get_table_head() {
+      return table_head;
+    }
 };
 
 class MetaStore {
@@ -42,5 +54,21 @@ class MetaStore {
       }
 
       metastore[table_name].put_metadata(key, value);
+    }
+
+    std::string get_metadata(std::string table_name, std::string key) {
+      if(metastore[table_name] == NULL) {
+        throw;
+      }
+
+      return metastore[table_name].get_metadata(std::string key);
+    }
+
+    list * get_table_head(std::string table_name) {
+      if(metastore[table_name] == NULL) {
+        throw;
+      }
+
+      return metastore[table_name].get_table_head()
     }
 };
