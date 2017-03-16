@@ -8,6 +8,7 @@ class list
 {
   int curr_id;
   record* head;
+  public:
   list():head(NULL)
   {
     curr_id = 0;
