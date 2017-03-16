@@ -1,5 +1,7 @@
-#include "structs.h"
+#include "datatypes.h"
 #include <iostream>
+#include <stdlib.h>
+
 using namespace std;
 
 class list
@@ -41,9 +43,9 @@ class list
       tmp->geom = geom;
     }
   }
-	
+
 	void appendFirst(geometry *geom)
-  	{
+  {
 		if(head == NULL)
 		{
 			head = (record *)malloc(sizeof(record));
@@ -56,11 +58,86 @@ class list
 		{
 			record *tmp_head = (record *)malloc(sizeof(record));
 			tmp_head->prev = head->prev;
+      head->prev = tmp_head;
 			tmp_head->next = head;
 			tmp_head->id = curr_id++;
 			tmp_head->geom = geom;
 			head = tmp_head;
 		}
 	}
-	
+
+  void appendSortedX(geometry *geom)
+  {
+    if(head == NULL)
+		{
+			head = (record *)malloc(sizeof(record));
+			head->next = head;
+			head->prev = head;
+			head->id = curr_id++;
+			head->geom = geom;
+		}
+    else
+    {
+      record* newNode = (record *)malloc(sizeof(record));
+      newNode->geom = geom;
+      record* current = head;
+      record* previous = head->prev;
+      while(current->next != head)
+      {
+         if(current->geom->pnt->x > newNode->geom->pnt->x)
+         {
+           newNode->next = current;
+           previous->next = newNode;
+           newNode->prev = previous;
+           current->prev = newNode;
+           break;
+         }
+         previous = current;
+         current = current->next;
+      }
+      if(current->next == head)
+      {
+        appendLast(geom);
+        free(newNode);
+      }
+    }
+  }
+
+  void appendSortedY(geometry *geom)
+  {
+    if(head == NULL)
+		{
+			head = (record *)malloc(sizeof(record));
+			head->next = head;
+			head->prev = head;
+			head->id = curr_id++;
+			head->geom = geom;
+		}
+    else
+    {
+      record* newNode = (record *)malloc(sizeof(record));
+      newNode->geom = geom;
+      record* current = head;
+      record* previous = head->prev;
+      while(current->next != head)
+      {
+         if(current->geom->pnt->y > newNode->geom->pnt->y)
+         {
+           newNode->next = current;
+           previous->next = newNode;
+           newNode->prev = previous;
+           current->prev = newNode;
+           break;
+         }
+         previous = current;
+         current = current->next;
+      }
+      if(current->next == head)
+      {
+        appendLast(geom);
+        free(newNode);
+      }
+    }
+  }
+
 };
