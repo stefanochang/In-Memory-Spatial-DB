@@ -1,4 +1,5 @@
 #include "datatypes.h"
+#include <stdlib.h>
 
 using namespace std;
 
@@ -178,4 +179,29 @@ class list
       }
     }
   }
+
+	void* getPointByUUID(char table_name[], int objectId)
+	{
+		//place-holder for call to metadata table to get head
+		//place-holder for assigning received head to the head variable
+		if(head == NULL)
+		{
+			return NULL;
+		}
+		else
+		{
+			while(head != NULL)
+			{
+				if(head->id == objectId)
+				{
+					point* pt = (point *)malloc(sizeof(point));
+					pt->x = head->geom->pnt->x;
+					pt->y = head->geom->pnt->y;
+					return pt;
+				}
+				head = head->next;
+			}
+			return NULL;
+		}
+	}
 };
