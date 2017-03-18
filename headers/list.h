@@ -141,4 +141,36 @@ class list
     }
   }
 
+  void deletePoint(int id)
+  {
+    if(head == NULL)
+		{
+			return;
+		}
+    else
+    {
+      record* current = head;
+      record* previous = head->prev;
+      while(current->next != head)
+      {
+         if(current->id == id)
+         {
+           previous->next = current->next;
+           current = current->next;
+           current->prev = previous;
+           break;
+         }
+         previous = current;
+         current = current->next;
+      }
+      if(current->next == head)
+      {
+        if(current->id == id)
+        {
+          previous->next = head;
+          head->prev = previous;
+        }
+      }
+    }
+  }
 };
