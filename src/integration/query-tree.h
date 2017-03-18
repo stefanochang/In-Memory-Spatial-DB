@@ -1,5 +1,5 @@
 #include <string>
-#include "Geometry.h"
+#include "geometry.h"
 
 class QueryTree {
     string* root;

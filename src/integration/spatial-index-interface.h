@@ -1,4 +1,4 @@
-#include "Geometry.h"
+#include "geometry.h"
 
 class SpatialIndexInterface
 {

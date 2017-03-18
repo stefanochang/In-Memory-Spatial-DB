@@ -1,4 +1,4 @@
-#include "QueryTree.h"
+#include "query-tree.h"
 
 class QueryResult {
     int resultType;

@@ -1,5 +1,5 @@
 #include<iostream>
-#include "Geometry.h"
+#include "geometry.h"
 #include<string>
 
 int loadData(string, string, string, string, int);
