@@ -2,13 +2,13 @@
 #include "geometry.h"
 #include<string>
 
-int loadData(string, string, string, string, int);
-int insertData(PointCollection, Point);
-int insertData(RectangleCollection, Rectangle);
-int insertDataBulk(PointCollection, PointCollection);
-int insertDataBulk(RectangleCollection, RectangleCollection);
-int deletePoint(PointCollection, Point);
-int deleteRectangle(RectangleCollection, Rectangle);
+bool loadData(string, string, string, string, int);
+bool insertData(PointCollection, Point);
+bool insertData(RectangleCollection, Rectangle);
+bool insertDataBulk(PointCollection, PointCollection);
+bool insertDataBulk(RectangleCollection, RectangleCollection);
+bool deletePoint(PointCollection, Point);
+bool deleteRectangle(RectangleCollection, Rectangle);
 Point getPointByUUID(string, int);
 Rectangle getRaectangleByUUID(string, int);
 PointPoint getPointPointByUUID(string, int);

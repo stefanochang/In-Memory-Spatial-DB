@@ -7,12 +7,14 @@ class QueryResult {
     PointPointCollection pointPointCollection;
     RectangleRectangleCollection rectangleRectangleCollection;
     PointRectangleCollection pointRectangleCollection;
-    public:
+    bool status;    
+public:
         QueryResult(int, PointCollection);
         QueryResult(int, RectangleCollection);
         QueryResult(int, PointPointCollection);
         QueryResult(int, RectangleRectangleCollection);
-        QueryResult(int, PointRectangleCollection); 
+        QueryResult(int, PointRectangleCollection);
+	QueryResult(int, bool); 
 };
 
 QueryResult processQuery(QueryTree);

@@ -7,6 +7,6 @@ class SpatialIndexInterface
 	Rectangle* search(Rectangle, RectangleCollection);
 	void createIndex(PointCollection);
 	void createIndex(RectangleCollection);
-	int update();
-	int deleteIndex();
+	bool update();
+	bool deleteIndex();
 };
