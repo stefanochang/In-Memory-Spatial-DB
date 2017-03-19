@@ -7,8 +7,10 @@ class list
 {
 	int curr_id;
 	record* head;
+	short type;
+
  	public:
-	list():head(NULL)
+	list():head(NULL), type(type)
   	{
     		curr_id = 0;
   	}
@@ -203,5 +205,9 @@ class list
 			}
 			return NULL;
 		}
+	}
+
+	record * getHead() {
+		return head;
 	}
 };
