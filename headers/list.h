@@ -1,4 +1,5 @@
 #include "datatypes.h"
+#include <stdlib.h>
 
 using namespace std;
 
@@ -6,8 +7,10 @@ class list
 {
 	int curr_id;
 	record* head;
+	short type;
+
  	public:
-	list():head(NULL)
+	list():head(NULL), type(type)
   	{
     		curr_id = 0;
   	}
@@ -146,4 +149,65 @@ class list
     		}
   	}
 
+  void deletePoint(int id)
+  {
+    if(head == NULL)
+		{
+			return;
+		}
+    else
+    {
+      record* current = head;
+      record* previous = head->prev;
+      while(current->next != head)
+      {
+         if(current->id == id)
+         {
+           previous->next = current->next;
+           current = current->next;
+           current->prev = previous;
+           break;
+         }
+         previous = current;
+         current = current->next;
+      }
+      if(current->next == head)
+      {
+        if(current->id == id)
+        {
+          previous->next = head;
+          head->prev = previous;
+        }
+      }
+    }
+  }
+
+	void* getPointByUUID(char table_name[], int objectId)
+	{
+		//place-holder for call to metadata table to get head
+		//place-holder for assigning received head to the head variable
+		if(head == NULL)
+		{
+			return NULL;
+		}
+		else
+		{
+			while(head != NULL)
+			{
+				if(head->id == objectId)
+				{
+					point* pt = (point *)malloc(sizeof(point));
+					pt->x = head->geom->pnt->x;
+					pt->y = head->geom->pnt->y;
+					return pt;
+				}
+				head = head->next;
+			}
+			return NULL;
+		}
+	}
+
+	record * getHead() {
+		return head;
+	}
 };
