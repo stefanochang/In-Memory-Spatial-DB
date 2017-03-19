@@ -210,4 +210,8 @@ class list
 	record * getHead() {
 		return head;
 	}
+
+	short getType() {
+		return type;
+	}
 };
