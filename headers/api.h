@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "list.h"
+#include "constants.h"
+
 using namespace std;
 int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct)
 {
@@ -76,7 +78,7 @@ bool insertDataBulk(list repo, list geometryToInsert) {
 	record * geometryToInsertPointer = geometryToInsert.getHead();
 
 	while(geometryToInsertPointer != NULL) {
-		switch(repo->type) {
+		switch(repo.getType()) {
 			case TYPE_POINT: insertData(repo, *(geometryToInsertPointer->geom->pnt)); break;
 			case TYPE_RECTANGLE: insertData(repo, *(geometryToInsertPointer->geom->rec)); break;
 		}
