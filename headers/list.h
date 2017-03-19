@@ -149,11 +149,11 @@ class list
     		}
   	}
 
-  void deletePoint(int id)
+  int deleteByUUID(int id)
   {
     if(head == NULL)
 		{
-			return;
+			return -1;
 		}
     else
     {
@@ -166,7 +166,7 @@ class list
            previous->next = current->next;
            current = current->next;
            current->prev = previous;
-           break;
+           return 1;
          }
          previous = current;
          current = current->next;
@@ -177,9 +177,11 @@ class list
         {
           previous->next = head;
           head->prev = previous;
+          return 1;
         }
       }
     }
+    return -1;
   }
 
 	void* getPointByUUID(char table_name[], int objectId)

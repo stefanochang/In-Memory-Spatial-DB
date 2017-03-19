@@ -55,7 +55,9 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 
 	return 1;
 }
-bool insertData(list pointsRepo, point pointToInsert){
+
+bool insertData(list pointsRepo, point pointToInsert)
+{
 	geometry *g;
 	point *pnt;
 	g = (geometry *)malloc(sizeof(geometry));
@@ -64,7 +66,9 @@ bool insertData(list pointsRepo, point pointToInsert){
 	pointsRepo.appendLast(g);
 	return true;
 }
-bool insertData(list rectanglesRepo, rectangle rectangleToInsert){
+
+bool insertData(list rectanglesRepo, rectangle rectangleToInsert)
+{
 	geometry *g;
 	rectangle *rec;
 	g = (geometry *)malloc(sizeof(geometry));
@@ -74,7 +78,8 @@ bool insertData(list rectanglesRepo, rectangle rectangleToInsert){
 	return true;
 }
 
-bool insertDataBulk(list repo, list geometryToInsert) {
+bool insertDataBulk(list repo, list geometryToInsert)
+{
 	record * geometryToInsertPointer = geometryToInsert.getHead();
 
 	while(geometryToInsertPointer != NULL) {
@@ -85,6 +90,9 @@ bool insertDataBulk(list repo, list geometryToInsert) {
 
 		geometryToInsertPointer = geometryToInsertPointer->next;
 	}
-
 	return true;
+}
+
+bool deleteData(list repo, int geomId){
+	return repo.deleteByUUID(geomId);
 }
