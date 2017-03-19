@@ -76,7 +76,11 @@ bool insertDataBulk(list repo, list geometryToInsert) {
 	record * geometryToInsertPointer = geometryToInsert.getHead();
 
 	while(geometryToInsertPointer != NULL) {
-		insertData(repo, *(geometryToInsertPointer->geom->pnt));
+		switch(repo->type) {
+			case TYPE_POINT: insertData(repo, *(geometryToInsertPointer->geom->pnt)); break;
+			case TYPE_RECTANGLE: insertData(repo, *(geometryToInsertPointer->geom->rec)); break;
+		}
+
 		geometryToInsertPointer = geometryToInsertPointer->next;
 	}
 
