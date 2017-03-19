@@ -46,12 +46,12 @@ bool insertData(list rectanglesRepo, rectangle rectangleToInsert){
 	return true;
 }
 
-bool insertDataBulk(list pointsRepo, list pointsToInsert) {
-	record * pointsToInsertPointer = pointsToInsert.head;
-// need type of geometry if we continue to use lists
-	while(pointsToInsertPointer != null) {
-		insertData(pointsRepo, pointsToInsertPointer->geom->pnt);
-		pointsToInsertPointer = pointsToInsertPointer->next;
+bool insertDataBulk(list repo, list geometryToInsert) {
+	record * geometryToInsertPointer = geometryToInsert.getHead();
+
+	while(geometryToInsertPointer != NULL) {
+		insertData(repo, *(geometryToInsertPointer->geom->pnt));
+		geometryToInsertPointer = geometryToInsertPointer->next;
 	}
 
 	return true;
