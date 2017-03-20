@@ -1,5 +1,7 @@
 	#include "datatypes.h"
 	#include <stdlib.h>
+	#include "Geometry.h"
+	#include <string.h>
 
 	using namespace std;
 
@@ -182,12 +184,19 @@
 			    {
 			       if(current->id == id)
 			       {
-			         temp = current;
-			         previous->next = current->next;
-			         current = current->next;
-			         current->prev = previous;
-			         free(temp);
-			         return 1;
+			         if(current->inDegree <= 0)
+							 {
+								 temp = current;
+				         previous->next = current->next;
+				         current = current->next;
+				         current->prev = previous;
+				         free(temp);
+				         return 1;
+							 }
+							 else
+							 {
+								 current->isDeleted = true;
+							 }
 			       }
 			       previous = current;
 			       current = current->next;
@@ -196,11 +205,19 @@
 			    {
 			      if(current->id == id)
 			      {
-			        temp = current;
-			        previous->next = head;
-			        head->prev = previous;
-			        free(temp);
-			        return 1;
+							if(current->inDegree <= 0)
+							{
+								temp = current;
+								previous->next = current->next;
+								current = current->next;
+								current->prev = previous;
+								free(temp);
+								return 1;
+							}
+							else
+							{
+								current->isDeleted = true;
+							}
 			      }
 			    }
 			  }
@@ -273,10 +290,10 @@
 			    {
 			      if(head->id == objectId && head->isDeleted == false)
 			      {
-			        float x1 = head->geom->pntpnt->point1->x;
-			        float y1 = head->geom->pntpnt->point1->y;
-			        float x2 = head->geom->pntpnt->point2->x;
-			        float y2 = head->geom->pntpnt->point2->y;
+			        float x1 = head->geom->pntpnt->point1.x;
+			        float y1 = head->geom->pntpnt->point1.y;
+			        float x2 = head->geom->pntpnt->point2.x;
+			        float y2 = head->geom->pntpnt->point2.y;
 			        PointPoint* pt = new PointPoint(x1, y1, x2, y2);
 			        return pt;
 			      }
@@ -300,13 +317,13 @@
 			    {
 			      if(head->id == objectId && head->isDeleted == false)
 			      {
-			        float x1 = head->geom->pntrec->point1->x;
-			        float y1 = head->geom->pntrec->point1->y;
-			        float x2 = head->geom->pntrec->rec->top_x;
-			        float y2 = head->geom->pntrec->rec->top_y;
-			        float x3 = head->geom->pntrec->rec->bottom_x;
-			        float y3 = head->geom->pntrec->rec->bottom_y;
-			        PointRectangle* ptrec = new Point(x1, y1, x2, y2, x3, y3);
+			        float x1 = head->geom->pntrec->point1.x;
+			        float y1 = head->geom->pntrec->point1.y;
+			        float x2 = head->geom->pntrec->rec.top_x;
+			        float y2 = head->geom->pntrec->rec.top_y;
+			        float x3 = head->geom->pntrec->rec.bottom_x;
+			        float y3 = head->geom->pntrec->rec.bottom_y;
+			        PointRectangle* ptrec = new PointRectangle(x1, y1, x2, y2, x3, y3);
 			        return ptrec;
 			      }
 			      head = head->next;
@@ -329,14 +346,14 @@
 			    {
 			      if(head->id == objectId && head->isDeleted == false)
 			      {
-			        float x1 = head->geom->pntrec->rec1->top_x;
-			        float y1 = head->geom->pntrec->rec1->top_y;
-			        float x2 = head->geom->pntrec->rec1->bottom_x;
-			        float y2 = head->geom->pntrec->rec1->bottom_y;
-			        float x3 = head->geom->pntrec->rec2->top_x;
-			        float y3 = head->geom->pntrec->rec2->top_y;
-			        float x4 = head->geom->pntrec->rec2->bottom_x;
-			        float y4 = head->geom->pntrec->rec2->bottom_y;
+			        float x1 = head->geom->recrec->rec1.top_x;
+			        float y1 = head->geom->recrec->rec1.top_y;
+			        float x2 = head->geom->recrec->rec1.bottom_x;
+			        float y2 = head->geom->recrec->rec1.bottom_y;
+			        float x3 = head->geom->recrec->rec2.top_x;
+			        float y3 = head->geom->recrec->rec2.top_y;
+			        float x4 = head->geom->recrec->rec2.bottom_x;
+			        float y4 = head->geom->recrec->rec2.bottom_y;
 			        RectangleRectangle* recrec = new RectangleRectangle(x1, y1, x2, y2, x3, y3, x4, y4);
 			        return recrec;
 			      }
