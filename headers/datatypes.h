@@ -34,7 +34,8 @@ typedef struct rectanglerectangle rectanglerectangle;
 union geometry{
 	point *pnt;
 	rectangle *rec;
-	pointrectangle *prec;
+	pointpoint *pntpnt;
+	pointrectangle *pntrec;
 	rectanglerectangle *recrec;
 };
 typedef union geometry geometry;
@@ -48,5 +49,3 @@ struct record{
 	struct record *prev;
 };
 typedef struct record record;
-
-
