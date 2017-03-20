@@ -1,42 +1,52 @@
 
 
-typedef struct point{
+struct point{
 	float x;
 	float y;
-}point;
-
-typedef struct rectangle{
+};
+typedef struct point point;
+struct rectangle{
 	float top_x;
 	float top_y;
 	float bottom_x;
 	float bottom_y;
-}rectangle;
+};
+typedef struct rectangle rectangle;
 
-typedef struct pointpoint{
+struct pointpoint{
 	point point1;
 	point point2;
-}pointpoint;
+};
+typedef struct pointpoint pointpoint;
 
-typedef struct pointrectangle{
+struct pointrectangle{
 	point point1;
 	rectangle rec;
-}pointrectangle;
+};
+typedef struct pointrectangle pointrectangle;
 
-typedef struct recrec{
+struct rectanglerectangle{
 	rectangle rec1;
 	rectangle rec2;
-}rectanglerectangle;
+};
+typedef struct rectanglerectangle rectanglerectangle;
 
-typedef union geometry{
+union geometry{
 	point *pnt;
 	rectangle *rec;
 	pointrectangle *prec;
 	rectanglerectangle *recrec;
-}geometry;
+};
+typedef union geometry geometry;
 
-typedef struct record{
+struct record{
 	int id;
+	bool isDeleted;
+	int inDegree;
 	geometry *geom;
 	struct record *next;
 	struct record *prev;
-}record;
+};
+typedef struct record record;
+
+

@@ -7,8 +7,10 @@ class list
 {
 	int curr_id;
 	record* head;
+	short type;
+
  	public:
-	list():head(NULL)
+	list():head(NULL), type(type)
   	{
     		curr_id = 0;
   	}
@@ -36,6 +38,8 @@ class list
       			head = (record *)malloc(sizeof(record));
       			head->geom = geom;
       			head->id = curr_id++;
+			head->isDeleted = false;
+			head->inDegree = 0;
       			head->next = head;
       			head->prev = head;
     		}
@@ -47,6 +51,8 @@ class list
 		      tmp->next = head;
 		      tmp->prev = tmp_head;
 		      tmp->id = curr_id++;
+		      tmp->isDeleted = false;
+		      tmp->inDegree = 0;
 		      tmp->geom = geom;
 		}
   	}
@@ -59,6 +65,8 @@ class list
 			head->next = head;
 			head->prev = head;
 			head->id = curr_id++;
+			head->isDeleted = false;
+			head->inDegree = 0;
 			head->geom = geom;
 		}
 		else
@@ -68,6 +76,8 @@ class list
       			head->prev = tmp_head;
 			tmp_head->next = head;
 			tmp_head->id = curr_id++;
+			tmp_head->isDeleted = false;
+			tmp_head->inDegree = 0;
 			tmp_head->geom = geom;
 			head = tmp_head;
 		}
@@ -82,11 +92,16 @@ class list
 			head->prev = head;
 			head->id = curr_id++;
 			head->geom = geom;
+			head->isDeleted = false;
+			head->inDegree = 0;
 		}
     		else
     		{
 		      record* newNode = (record *)malloc(sizeof(record));
 		      newNode->geom = geom;
+		      newNode->id = curr_id++;
+		      newNode->isDeleted = false;
+		      newNode->inDegree = 0;
 		      record* current = head;
 		      record* previous = head->prev;
 			while(current->next != head)
@@ -119,11 +134,16 @@ class list
 			head->prev = head;
 			head->id = curr_id++;
 			head->geom = geom;
+			head->isDeleted = false;
+			head->inDegree = 0;
 		}
     		else
     		{
 		      record* newNode = (record *)malloc(sizeof(record));
 		      newNode->geom = geom;
+		      newNode->id = curr_id++;
+		      newNode->isDeleted = false;
+		      newNode->inDegree = 0;
 		      record* current = head;
 		      record* previous = head->prev;
 		      while(current->next != head)
@@ -147,11 +167,11 @@ class list
     		}
   	}
 
-  void deletePoint(int id)
+  int deleteByUUID(int id)
   {
     if(head == NULL)
 		{
-			return;
+			return -1;
 		}
     else
     {
@@ -164,7 +184,7 @@ class list
            previous->next = current->next;
            current = current->next;
            current->prev = previous;
-           break;
+           return 1;
          }
          previous = current;
          current = current->next;
@@ -175,9 +195,11 @@ class list
         {
           previous->next = head;
           head->prev = previous;
+          return 1;
         }
       }
     }
+    return -1;
   }
 
 	void* getPointByUUID(char table_name[], int objectId)
@@ -203,5 +225,13 @@ class list
 			}
 			return NULL;
 		}
+	}
+
+	record * getHead() {
+		return head;
+	}
+
+	short getType() {
+		return type;
 	}
 };
