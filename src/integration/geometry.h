@@ -60,6 +60,7 @@ class PointCollection {
     int collectionStructure;
   public:
     PointCollection(string, string, int, Point*);
+    PointCollection(int, Point*);
     Point getById(int id);
     Point* getNext(int n=1);
     int insert(Point point);
@@ -72,6 +73,7 @@ class RectangleCollection {
     int collectionStructure;
   public:
     RectangleCollection(string, string, int, Rectangle*);
+    RectangleCollection(int, Rectangle*);
     Rectangle getById(int id);
     Rectangle* getNext(int n=1);
     int insert(Rectangle rectangle);
@@ -84,6 +86,7 @@ class PointPointCollection {
     int collectionStructure;
   public:
     PointPointCollection(string, string, int, PointPoint*);
+    PointPointCollection(int, PointPoint*);
     PointPoint getById(int id);
     PointPoint* getNext(int n=1);
 };
@@ -94,6 +97,7 @@ class PointRectangleCollection {
     int collectionStructure;
   public:
     PointRectangleCollection(string, string, int, PointRectangle*);
+    PointRectangleCollection(int, PointRectangle*);
     PointRectangle getById(int id);
     PointRectangle* getNext(int n=1);
 };
@@ -104,6 +108,7 @@ class RectangleRectangleCollection {
     int collectionStructure;
   public:
     RectangleRectangleCollection(string, string, int, RectangleRectangle*);
+    RectangleRectangleCollection(int, RectangleRectangle*);
     RectangleRectangle getById(int id);
     RectangleRectangle* getNext(int n=1);
 };
