@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "list.h"
 #include "constants.h"
+#include "Geometry.h"
 
 using namespace std;
 int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct)
@@ -74,10 +75,10 @@ bool insertData(list rectanglesRepo, Rectangle rectangleToInsert)
 	rectangle *rec;
 	g = (geometry *)malloc(sizeof(geometry));
 	rec = (rectangle *)malloc(sizeof(rectangle));
-	g->rec->x1 = rectangleToInsert.getCoordinates()[0];
-	g->rec->y1 = rectangleToInsert.getCoordinates()[1];
-	g->rec->x2 = rectangleToInsert.getCoordinates()[2];
-	g->rec->y2 = rectangleToInsert.getCoordinates()[3];
+	g->rec->top_x = rectangleToInsert.getCoordinates()[0];
+	g->rec->top_y = rectangleToInsert.getCoordinates()[1];
+	g->rec->bottom_x = rectangleToInsert.getCoordinates()[2];
+	g->rec->bottom_y = rectangleToInsert.getCoordinates()[3];
 	rectanglesRepo.appendLast(g);
 	return true;
 }
