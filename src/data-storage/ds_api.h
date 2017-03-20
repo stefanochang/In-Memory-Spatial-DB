@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include "list.h"
 #include "constants.h"
-#include "../integration/Geometry.h"
 
 using namespace std;
 
@@ -94,8 +93,8 @@ bool insertDataBulk(list repo, list geometryToInsert)
 
 	while(geometryToInsertPointer != NULL) {
 		switch(repo.getType()) {
-			case TYPE_POINT: insertData(repo, *(geometryToInsertPointer->geom->pnt)); break;
-			case TYPE_RECTANGLE: insertData(repo, *(geometryToInsertPointer->geom->rec)); break;
+			case TYPE_POINT: insertData(repo, *(new Point(geometryToInsertPointer->geom->pnt->x, geometryToInsertPointer->geom->pnt->y))); break;
+			case TYPE_RECTANGLE: insertData(repo, *(new Rectangle(geometryToInsertPointer->geom->rec->top_x, geometryToInsertPointer->geom->rec->top_y,geometryToInsertPointer->geom->rec->bottom_x, geometryToInsertPointer->geom->rec->bottom_y))); break;
 		}
 
 		geometryToInsertPointer = geometryToInsertPointer->next;
