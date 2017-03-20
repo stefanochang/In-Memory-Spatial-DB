@@ -3,8 +3,8 @@
 class SpatialIndexInterface
 {
 	public:
-	vector<Point> search(Rectangle);
-	vector<Rectangle> searchRectangle(Rectangle);
+	PointCollection search(Rectangle);
+    RectangleCollection searchRectangle(Rectangle);
 	void createIndex(PointCollection,float, float);
 	void createIndex(RectangleCollection, float, float);
 	bool update(PointCollection,float, float);

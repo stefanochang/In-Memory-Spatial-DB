@@ -20,8 +20,8 @@ private:
     }
 public:
     PointSpatialIndex() {}
-    vector<Point> search(Rectangle bounds){
-        vector<Point>result;
+    PointCollection search(Rectangle bounds){
+        PointCollection *result;
         float x1 = bounds.getCoordinates()[0];
         float y1 = bounds.getCoordinates()[1];
         float x2 = bounds.getCoordinates()[2];
@@ -33,12 +33,17 @@ public:
         float width = fabs(x2-x1);
         float height = fabs(y2-y1);
         vector<QPoint>iPoints = prTree->queryRange(minx,miny,width,height);
+        Point points[iPoints.size()];
+        int i=0;
         for(QPoint point : iPoints) {
-            result.push_back(getPointByUUID("Point",point.getId()));
+            points[i++] = getPointByUUID("Point",point.getId());
         }
-        return result;
+        result = new PointCollection(iPoints.size(),points);
+        delete points;
+        delete iPoints;
+        return *result;
     }
-    vector<Rectangle> searchRectangle(Rectangle){
+    RectangleCollection searchRectangle(Rectangle){
         throw "Method Not Supported";
     }
     void createIndex(PointCollection points,float width, float height){
@@ -54,7 +59,7 @@ public:
     bool update(PointCollection points,float width, float height){
         bool result = true;
         try {
-            //Call PR Tree delete here
+            prTree->deleteRoot();
             createIndex(points,width,height);
         } catch( const char *msg) {
             result = false;
@@ -65,7 +70,15 @@ public:
         throw "Method Not Supported";
     }
     bool deleteIndex(){
-        //Call PR Tree delete here
+        bool result = true;
+        try {
+
+            prTree->deleteRoot();
+
+        } catch(const char *msg){
+            result = false;
+        }
+        return result;
     }
 };
 #endif //ADVDBTEST_POINTSPATIALINDEX_H
