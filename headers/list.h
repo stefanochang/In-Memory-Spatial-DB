@@ -159,13 +159,16 @@ class list
     {
       record* current = head;
       record* previous = head->prev;
+      record* temp = head;
       while(current->next != head)
       {
          if(current->id == id)
          {
+           temp = current;
            previous->next = current->next;
            current = current->next;
            current->prev = previous;
+           free(temp);
            return 1;
          }
          previous = current;
@@ -175,8 +178,10 @@ class list
       {
         if(current->id == id)
         {
+          temp = current;
           previous->next = head;
           head->prev = previous;
+          free(temp);
           return 1;
         }
       }
