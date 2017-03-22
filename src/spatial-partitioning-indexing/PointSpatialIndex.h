@@ -46,21 +46,21 @@ public:
     RectangleCollection searchRectangle(Rectangle){
         throw "Method Not Supported";
     }
-    void createIndex(PointCollection points,float width, float height){
-        prTree = new prQuadTree(width, height);
+    void createIndex(PointCollection points){
+        prTree = new prQuadTree(5000, 5000);
         Point *p;
         while((p=points.getNext()) != NULL){
             prTree->insert(convertPoint(p));
         }
     }
-    void createIndex(RectangleCollection, float, float){
+    void createIndex(RectangleCollection){
         throw "Method Not Supported";
     }
-    bool update(PointCollection points,float width, float height){
+    bool update(PointCollection points){
         bool result = true;
         try {
             prTree->deleteRoot();
-            createIndex(points,width,height);
+            createIndex(points);
         } catch( const char *msg) {
             result = false;
         }

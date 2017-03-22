@@ -3,11 +3,11 @@
 class SpatialIndexInterface
 {
 	public:
-	PointCollection search(Rectangle);
-    RectangleCollection searchRectangle(Rectangle);
-	void createIndex(PointCollection,float, float);
-	void createIndex(RectangleCollection, float, float);
-	bool update(PointCollection,float, float);
-	bool update(RectangleCollection,float, float);
+	PointCollection searchPoint(Rectangle);
+	RectangleCollection searchRectangle(Rectangle);
+	void createIndex(PointCollection);
+	void createIndex(RectangleCollection);
+	bool update(PointCollection);
+	bool update(RectangleCollection);
 	bool deleteIndex();
 };

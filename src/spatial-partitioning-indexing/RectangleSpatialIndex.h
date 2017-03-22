@@ -48,25 +48,26 @@ public:
         delete rectangles;
         return *result;
     }
-    void createIndex(PointCollection, float, float){
+    void createIndex(PointCollection){
         throw "Method Not Supported";
     }
-    void createIndex(RectangleCollection rectangles, float width, float height){
-        mxCifTree = new mxcifQuadTree(width, height);
+    void createIndex(RectangleCollection rectangles){
+        //Needs to change after solution is ready
+        mxCifTree = new mxcifQuadTree(5000, 5000);
         Rectangle *rect;
         while((rect = rectangles.getNext())!= NULL){
             float *bounds = computeBounds(rect);
             mxCifTree->insert(bounds[0],bounds[1],bounds[2],bounds[3],rect->getId());
         }
     }
-    bool update(PointCollection,float, float){
+    bool update(PointCollection){
         throw "Method Not Supported";
     }
-    bool update(RectangleCollection rectangles,float width, float height){
+    bool update(RectangleCollection rectangles){
         bool result = true;
         try {
             mxCifTree->deleteRoot();
-            createIndex(rectangles,width,height);
+            createIndex(rectangles);
         } catch( const char *msg) {
             result = false;
         }
