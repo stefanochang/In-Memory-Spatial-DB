@@ -1,6 +1,7 @@
-#include "geometry.h"
+#include "geometry-collection.h"
+//#include "spatial-index-interface.h"
 #include <map>
-class CatlogItem {
+class CatalogItem {
   string dbName, tableName;
   PointCollection points;
   RectangleCollection rectangles;
@@ -14,11 +15,11 @@ class CatlogItem {
 protected:
   void setStatistic(string, float);
 public:
-  CatlogItem(string, string, PointCollection);
-  CatlogItem(string, string, RectangleCollection);
-  CatlogItem(string, string, PointPointCollection);
-  CatlogItem(string, string, RectangleRectangleCollection);
-  CatlogItem(string, string, PointRectangleCollection);
+  CatalogItem(string, string, PointCollection);
+  CatalogItem(string, string, RectangleCollection);
+  CatalogItem(string, string, PointPointCollection);
+  CatalogItem(string, string, RectangleRectangleCollection);
+  CatalogItem(string, string, PointRectangleCollection);
   float getStatistic(string);
   bool hasSpatialIndex();
   bool hasDataIndex();
@@ -31,11 +32,11 @@ public:
 };
 
 //To be defined as a Singleton Class.
-class Catlog {
-  CatlogItem* catlogList;
+class Catalog {
+  CatalogItem* catalogList;
 protected:
-  int remove(CatlogItem);
-  int insert(CatlogItem);
+  int remove(CatalogItem);
+  int insert(CatalogItem);
   //storeIndex()
 public:
   /*
