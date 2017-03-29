@@ -1,5 +1,4 @@
-#include "geometry-collection.h"
-//#include "spatial-index-interface.h"
+#include "spatial-index-interface.h"
 #include <map>
 class CatalogItem {
   string dbName, tableName;
@@ -8,13 +7,13 @@ class CatalogItem {
   PointPointCollection pointsPoints;
   RectangleRectangleCollection rectanglesRectangles;
   PointRectangleCollection pointsRectangles;
-  /** TO DO: tackle redundancy **/
-  //SpatialIndex spatialIndexObject //Handle for spatial partitioned indexed object
-  //SpatialIndex dataIndexObject  //Handle for data Indexed object
+  SpatialIndexInterface spatialIndexObject; //Handle for spatial partitioned indexed object
+  SpatialIndexInterface dataIndexObject;  //Handle for data Indexed object
   map<string, float> statistics;
 protected:
   void setStatistic(string, float);
 public:
+  CatalogItem(string, string);
   CatalogItem(string, string, PointCollection);
   CatalogItem(string, string, RectangleCollection);
   CatalogItem(string, string, PointPointCollection);
@@ -23,12 +22,14 @@ public:
   float getStatistic(string);
   bool hasSpatialIndex();
   bool hasDataIndex();
+  void addSpatialIndex(SpatialIndexInterface);
+  void addDataIndex(SpatialIndexInterface);
   PointCollection getPointCollection();
   RectangleCollection getRectangleCollection();
   PointPointCollection getPointPointCollection();
   PointRectangleCollection getPointRectangleCollection();
   RectangleRectangleCollection getRectangleRectangleCollection();
-  //getIndexedObjects();
+  vector<SpatialIndexInterface> getIndexedObjects();  
 };
 
 //To be defined as a Singleton Class.
@@ -37,15 +38,13 @@ class Catalog {
 protected:
   int remove(CatalogItem);
   int insert(CatalogItem);
-  //storeIndex()
 public:
-  /*
-  getSpatialIndexedPointCollections();
-  getDataIndexedPointCollections();
-  getSpatialIndexedRectangleCollections();
-  getDataIndexedRectangleCollections();
-  getPointCollectionsWithoutIndex();
-  getRectangleCollectionsWithoutIndex();
-  getCollectionByName();
-  */
+  vector<SpatialIndexInterface> getSpatialIndexedPointCollections();
+  vector<SpatialIndexInterface> getDataIndexedPointCollections();
+  vector<SpatialIndexInterface> getSpatialIndexedRectangleCollections();
+  vector<SpatialIndexInterface> getDataIndexedRectangleCollections();
+  PointCollection getPointCollectionsWithoutIndex();
+  RectangleCollection getRectangleCollectionsWithoutIndex();
+  PointCollection getPointCollectionByName(string);
+  RectangleCollection getRectangleCollectionByName(string);
 };
