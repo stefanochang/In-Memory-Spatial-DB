@@ -22,14 +22,10 @@ vector<Point> PointCollection::getNext(int n=1) {
   return getnext(n, 1); // change name if wrapper function name changes
 }
 
-
-// insertData wrapper required to pass string table name and geometry
 int PointCollection::insert(Point point) {
   return appendLast(point);
 }
 
-
-// deleteData wrapper required to pass string table name and geometry
 int PointCollection::remove(Point point) {
   return deleteByUUID(point->id)
 }
