@@ -22,7 +22,7 @@ private:
 	OperatorDictionary opDict;
 
 	QueryResult processQuery (QueryTree qTree) {
-		QueryResult queryResult = new QueryResult();
+		QueryResult queryResult;
 		vector<string> root = qTree.root;
 		vector<vector<string>> leftFilter = qTree.leftFilter;
 		vector<vector<string>> rightFilter = qTree.rightFilter;
