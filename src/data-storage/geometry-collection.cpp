@@ -1,8 +1,10 @@
 #include "geometry-collection.h"
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// POINT COLLECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PointCollection::PointCollection()
 : list() {}
-
 
 // constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 PointCollection::PointCollection(string name, string databaseName, int collectionStructure, vector<Point> points)
@@ -17,21 +19,21 @@ Point PointCollection::getById(int id) {
 }
 
 vector<Point> PointCollection::getNext(int n=1) {
-  return getNextPoint(n); // change name if wrapper function name changes
+  return getNextPoint(n, 1); // change name if wrapper function name changes
 }
 
 
 // insertData wrapper required to pass string table name and geometry
 int PointCollection::insert(Point point) {
-  return insertData(this.name, point);
+  return appendLast(point);
 }
 
 
 // deleteData wrapper required to pass string table name and geometry
 int PointCollection::remove(Point point) {
-  return deleteData(this.name, point->id)
+  return deleteByUUID(point->id)
 }
 
 int PointCollection::removeById(int id) {
-  return deleteData(this.name, id);
+  return deleteByUUID(id);
 }
