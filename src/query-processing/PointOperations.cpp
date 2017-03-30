@@ -4,6 +4,7 @@
 #include <boost/geometry/geometries/box.hpp>
 #include <boost/foreach.hpp>
 #include "geometry.h"
+#include <vector>
 
 using namespace std;
 namespace bg = boost::geometry;
@@ -15,7 +16,7 @@ class PointOperations{
 public:
 	static bool isIntersecting (Point p, Rectangle rec){
 
-		return boost::geometry::intersects(point(p.x, p.y), box(point(rec.x1,rec.y1), point(rec.x2,rec.y2)));
+		return boost::geometry::intersects(point(p.getCoordinates().at(0), p.getCoordinates().at(1)), box(point(rec.getCoordinates().at(0),rec.getCoordinates().at(1)), point(rec.getCoordinates().at(2),rec.getCoordinates().at(3))));
 	}
 
 	static bool isEqual (Point point1, Point point2){
@@ -23,26 +24,26 @@ public:
 	}
 
 	static bool isDisjoint (Point point1, Point point2){
-		return boost::geometry::disjoint(point(point1.x, point1.y), point(point2.x, point2.y));
+		return boost::geometry::disjoint(point(point1.getCoordinates().at(0), point1.getCoordinates().at(1)), point(point2.getCoordinates().at(0), point2.getCoordinates().at(1)));
 	}
 
 	static bool isWithin (Point point, Rectangle rec){
-		return boost::geometry::within(point(point.x, point.y), box(point(rec.x1,rec.y1), point(rec.x2,rec.y2)));
+		return boost::geometry::within(point(point.getCoordinates().at(0), point.getCoordinates().at(1)), box(point(rec.getCoordinates().at(0),rec.getCoordinates().at(1)), point(rec.getCoordinates().at(2),rec.getCoordinates().at(3))));
 	}
 
 	static bool isOverlapping (Point point1, Point point2){
-		return boost::geometry::overlaps(point(point1.x, point1.y), point(point2.x, point2.y));
+		return boost::geometry::overlaps(point(point1.getCoordinates().at(0), point1.getCoordinates().at(1)), point(point2.getCoordinates().at(2), point2.getCoordinates().at(3)));
 	}
 
 	static bool isOverlapping (Point point, Rectangle rec){
-		return boost::geometry::overlaps(point(point.x, point.y),box(point(rec.x1,rec.y1), point(rec.x2,rec.y2)));
+		return boost::geometry::overlaps(point(point.getCoordinates().at(0), point.getCoordinates().at(1)),box(point(rec.getCoordinates().at(0),rec.getCoordinates().at(1)), point(rec.getCoordinates().at(2),rec.getCoordinates().at(3))));
 	}
 
 	static double getDistance (Point point1, Point point2){
-		return boost::geometry::distance(point(point1.x, point1.y), point(point2.x, point2.y));
+		return boost::geometry::distance(point(point1.getCoordinates().at(0), point1.getCoordinates().at(1)), point(point2.getCoordinates().at(2), point2.getCoordinates().at(3)));
 	}
 	static double getDistance (Point point, Rectangle rec){
-		return boost::geometry::distance(point(point.x, point.y), box(point(rec.x1,rec.y1), point(rec.x2,rec.y2)));
+		return boost::geometry::distance(point(point.getCoordinates().at(0), point.getCoordinates().at(1)), box(point(rec.getCoordinates().at(0),rec.getCoordinates().at(1)), point(rec.getCoordinates().at(2),rec.getCoordinates().at(3))));
 	}
 
 };
