@@ -1,6 +1,4 @@
-#include<iostream>
-#include "geometry.h"
-#include<string>
+#include "geometry-collection.h"
 
 bool loadData(string, string, string, string, int);
 bool insertData(PointCollection, Point);
@@ -14,5 +12,3 @@ Rectangle getRaectangleByUUID(string, int);
 PointPoint getPointPointByUUID(string, int);
 PointRectangle getPointRectangleByUUID(string, int);
 RectangleRectangle getRectangleRectangleByUUID(string, int);
-
-

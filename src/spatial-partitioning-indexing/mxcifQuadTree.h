@@ -65,6 +65,14 @@ public:
         return (*root).insert(QBB);
     }
 
+    void deleteRoot()
+    {
+        if(root == NULL) return;
+
+        root->deleteNode();
+
+    }
+
     vector<QBoundingBox> queryRange(float x, float y, float width, float height)
     {
         vector<QBoundingBox> vQPoint;

@@ -1,12 +1,11 @@
-#include <string>
-#include "geometry.h"
+#include "geometry-collection.h"
 
 class QueryTree {
-    string* root;
-    string* leftFilter;
+    vector<string> root;
+    vector<string> leftFilter;
     PointCollection leftDataPoint;
     RectangleCollection leftDataRect;
-    string* rightFilter;
+    vector<string> rightFilter;
     PointCollection rightDataPoint;
     RectangleCollection rightDataRect;
 };
