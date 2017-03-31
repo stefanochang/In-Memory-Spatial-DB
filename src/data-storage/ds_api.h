@@ -57,6 +57,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 	{
 		return 0;
 	}
+	Catalog.insert(catItem);
 
 	return 1;
 }
