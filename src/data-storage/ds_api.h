@@ -2,6 +2,7 @@
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
+#include "../integration/catalog.h"
 
 using namespace std;
 
@@ -14,7 +15,9 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 	geometry *g;
 	point *pnt;
 	rectangle *rct;
-	list l;
+	PointCollection *pntcollection;
+	RectangleCollection *rectanglecollection;
+	CatalogItem *catItem;
 	fp = fopen(filepath.c_str(), "r");
 	if(fp == NULL)
 	{
@@ -22,7 +25,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 	}
 	if(geomtype == TYPE_POINT)
 	{
-
+		pntcollection = new PointCollection();
 		while(fscanf(fp, "%f,%f\n", &x, &y) == 2)
 		{
 			g = (geometry *)malloc(sizeof(geometry));
@@ -30,11 +33,13 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 			pnt->x = x;
 			pnt->y = y;
 			g->pnt = pnt;
-			l.appendLast(g);
+			pntcollection->appendLast(g);
 		}
+		catItem = new CatalogItem(dbName, tableName, *pntcollection);
 	}
 	else if(geomtype == TYPE_RECTANGLE)
 	{
+		rectanglecollection = new RectangleCollection();
 		while(fscanf(fp, "%f,%f,%f,%f\n", &x, &y, &x1, &y1) == 4)
 		{
 			g = (geometry *)malloc(sizeof(geometry));
@@ -44,14 +49,14 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 			rct->bottom_x = x1;
 			rct->bottom_y = y1;
 			g->rec = rct;
-			l.appendLast(g);
+			rectanglecollection->appendLast(g);
 		}
+		catItem = new CatalogItem(dbName, tableName, *rectanglecollection);
 	}
 	else
 	{
 		return 0;
 	}
-	// TODO: Call catalog functions to store table details
 
 	return 1;
 }
