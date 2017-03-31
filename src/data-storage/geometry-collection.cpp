@@ -1,34 +1,37 @@
-#include "geometry-collection.h"
+#include "../integration/geometry-collection.h"
+#include "ds_api.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINT COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PointCollection::PointCollection()
-: list() {}
+: list(TYPE_POINT) {}
 
 // constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 PointCollection::PointCollection(string name, string databaseName, int collectionStructure, vector<Point> points)
-: list(points, collectionStructure) {
-  this.name = name;
-  this.databaseName = databaseName;
-  this.collectionStructure = collectionStructure;
+: list(TYPE_POINT) {
+  this->name = name;
+  this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
 }
 
 Point PointCollection::getById(int id) {
-  return getPointByUUID(this.name, id)
+  Point *pnt;
+  pnt = getPointByUUID(this->name, id);
+  return *pnt;
 }
 
-vector<Point> PointCollection::getNext(int n=1) {
+/*vector<Point> PointCollection::getNext(int n=1) {
   return getnext(n, 1); // change name if wrapper function name changes
-}
+}*/
 
 int PointCollection::insert(Point point) {
-  return appendLast(point);
+  return insertData(*this,point);
 }
 
-int PointCollection::remove(Point point) {
+/*int PointCollection::remove(Point point) {
   return deleteByUUID(point->id)
-}
+}*/
 
 int PointCollection::removeById(int id) {
   return deleteByUUID(id);
@@ -40,34 +43,35 @@ int PointCollection::removeById(int id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RectangleCollection::RectangleCollection()
-: list() {}
+: list(TYPE_RECTANGLE) {}
 
 // constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 RectangleCollection::RectangleCollection(string name, string databaseName, int collectionStructure, vector<Rectangle> rectangles)
-: list(rectangles, collectionStructure) {
-  this.name = name;
-  this.databaseName = databaseName;
-  this.collectionStructure = collectionStructure;
+: list(TYPE_RECTANGLE) {
+  this->name = name;
+  this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
 }
 
 Rectangle RectangleCollection::getById(int id) {
-  return getPointByUUID(this.name, id)
+  Rectangle *rec = getRectangleByUUID(this->name, id);
+  return *rec;
 }
 
-vector<Rectangle> RectangleCollection::getNext(int n=1) {
+/*vector<Rectangle> RectangleCollection::getNext(int n=1) {
   return getnext(n, 1); // change name if wrapper function name changes
-}
+}*/
 
 // insertData wrapper required to pass string table name and geometry
 int RectangleCollection::insert(Rectangle rectangle) {
-  return appendLast(rectangle);
+  return insertData(*this,rectangle);
 }
 
 
 // deleteData wrapper required to pass string table name and geometry
-int RectangleCollection::remove(Rectangle rectangle) {
+/*int RectangleCollection::remove(Rectangle rectangle) {
   return deleteByUUID(id);
-}
+}*/
 
 int RectangleCollection::removeById(int id) {
   return deleteByUUID(id);
@@ -78,66 +82,69 @@ int RectangleCollection::removeById(int id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 PointPointCollection::PointPointCollection()
-: list() {}
+: list(TYPE_POINTPOINT) {}
 
 // constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 PointPointCollection::PointPointCollection(string name, string databaseName, int collectionStructure, vector<PointPoint> pointpoints)
-: list(pointpoints, collectionStructure) {
-  this.name = name;
-  this.databaseName = databaseName;
-  this.collectionStructure = collectionStructure;
+: list(TYPE_POINTPOINT) {
+  this->name = name;
+  this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
 }
 
 PointPoint PointPointCollection::getById(int id) {
-  return getPointByUUID(this.name, id)
+  PointPoint *pntpnt = getPointPointByUUID(this->name, id);
+  return *pntpnt;
 }
 
-vector<PointPoint> PointPointCollection::getNext(int n=1) {
+/*vector<PointPoint> PointPointCollection::getNext(int n=1) {
   return getnext(n, 1); // change name if wrapper function name changes
-}
+}*/
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RECTANGLERECTANGLE COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RectangleRectangleCollection::RectangleRectangleCollection()
-: list() {}
+: list(TYPE_RECTANGLERECTANGLE) {}
 
 // constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
-RectangleRectangleCollection::RectangleRectangleCollection(string name, string databaseName, int collectionStructure, vector<PointPoint> pointpoints)
-: list(pointpoints, collectionStructure) {
-  this.name = name;
-  this.databaseName = databaseName;
-  this.collectionStructure = collectionStructure;
+RectangleRectangleCollection::RectangleRectangleCollection(string name, string databaseName, int collectionStructure, vector<RectangleRectangle> rectanglerectangle)
+: list(TYPE_RECTANGLERECTANGLE) {
+  this->name = name;
+  this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
 }
 
 RectangleRectangle RectangleRectangleCollection::getById(int id) {
-  return getPointByUUID(this.name, id)
+  RectangleRectangle *recrec = getRectangleRectangleByUUID(this->name, id);
+  return *recrec;
 }
 
-vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n=1) {
+/*vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n=1) {
   return getnext(n, 1); // change name if wrapper function name changes
-}
+}*/
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINTRECTANGLE COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 PointRectangleCollection::PointRectangleCollection()
-: list() {}
+: list(TYPE_POINTRECTANGLE) {}
 
 // constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 PointRectangleCollection::PointRectangleCollection(string name, string databaseName, int collectionStructure, vector<PointRectangle> pointrectangles)
-: list(pointrectangles, collectionStructure) {
-  this.name = name;
-  this.databaseName = databaseName;
-  this.collectionStructure = collectionStructure;
+: list(TYPE_POINTRECTANGLE) {
+  this->name = name;
+  this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
 }
 
 PointRectangle PointRectangleCollection::getById(int id) {
-  return getPointByUUID(this.name, id)
+  PointRectangle *pntrec = getPointRectangleByUUID(this->name, id);
+  return *pntrec;
 }
 
-vector<PointRectangle> PointRectangleCollection::getNext(int n=1) {
+/*vector<PointRectangle> PointRectangleCollection::getNext(int n=1) {
   return getnext(n, 1); // change name if wrapper function name changes
-}
+}*/

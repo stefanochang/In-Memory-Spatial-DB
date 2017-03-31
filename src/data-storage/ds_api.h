@@ -2,8 +2,6 @@
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
-#include "list.h"
-#include "constants.h"
 
 using namespace std;
 

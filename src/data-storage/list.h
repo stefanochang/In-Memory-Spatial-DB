@@ -1,7 +1,6 @@
-	#include "datatypes.h"
+	#include "ds_datatypes.h"
 	#include <stdlib.h>
-	#include "../integration/Geometry.h"
-	#include "constants.h"
+	#include "ds_constants.h"
 	#include <string.h>
 	#include <map>
 
@@ -14,25 +13,31 @@
 		short type;
 
 	 	public:
-		list():head(NULL), type(type)
+			list():head(NULL), type(type)
 	  	{
 	    		curr_id = 0;
 	  	}
+			list(int type)
+			{
+					head = NULL;
+					this->type = type;
+					curr_id = 0;
+			}
 	  	~list()
 	  	{
 	    		record *tmp1,*tmp;
-			if(head != NULL)
-			{
-				tmp1 = head;
-				head = head->next;
-		    		while(head != tmp1)
-		    		{
-		      			tmp = head->next;
-					free(head);
-					head = tmp;
-		    		}
-				free(head);
-			}
+					if(head != NULL)
+					{
+						tmp1 = head;
+						head = head->next;
+				    		while(head != tmp1)
+				    		{
+				      			tmp = head->next;
+										free(head);
+										head = tmp;
+				    		}
+								free(head);
+					}
 	  	}
 
 	  	void appendLast(geometry *geom)
@@ -42,8 +47,8 @@
 	      			head = (record *)malloc(sizeof(record));
 	      			head->geom = geom;
 	      			head->id = curr_id++;
-				head->isDeleted = false;
-				head->inDegree = 0;
+							head->isDeleted = false;
+							head->inDegree = 0;
 	      			head->next = head;
 	      			head->prev = head;
 	    		}
