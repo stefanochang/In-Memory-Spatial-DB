@@ -7,6 +7,7 @@ class PointCollection {
     string name, databaseName; 
     int collectionStructure;
   public:
+    PointCollection();
     PointCollection(string, string, int, vector<Point>);
     Point getById(int);
     vector<Point> getNext(int n=1);
@@ -20,6 +21,7 @@ class RectangleCollection {
     string name, databaseName; 
     int collectionStructure;
   public:
+    RectangleCollection();
     RectangleCollection(string, string, int, vector<Rectangle>);
     Rectangle getById(int);
     vector<Rectangle> getNext(int n=1);
@@ -33,6 +35,7 @@ class PointPointCollection {
     string name, databaseName; 
     int collectionStructure;
   public:
+    PointPointCollection();
     PointPointCollection(string, string, int, vector<PointPoint>);
     PointPoint getById(int);
     vector<PointPoint> getNext(int n=1);
@@ -43,6 +46,7 @@ class PointRectangleCollection {
     string name, databaseName; 
     int collectionStructure;
   public:
+    PointRectangleCollection();
     PointRectangleCollection(string, string, int, vector<PointRectangle>);
     PointRectangle getById(int);
     vector<PointRectangle> getNext(int n=1);
@@ -53,6 +57,7 @@ class RectangleRectangleCollection {
     string name, databaseName; 
     int collectionStructure;
   public:
+    RectangleRectangleCollection();
     RectangleRectangleCollection(string, string, int, vector<RectangleRectangle>);
     RectangleRectangle getById(int);
     vector<RectangleRectangle> getNext(int n=1);
