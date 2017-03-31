@@ -32,7 +32,7 @@ class PointPoint {
     int getId();
     void setId(int);
     vector<float> getCoordinates();
-    Point* getPoints();
+    vector<Point> getPoints();
 };
 
 class PointRectangle {
