@@ -64,6 +64,21 @@ void prQuadTreeTestCase1()
      */
 }
 
+void prQuadTreeTestCase1Delete()
+{
+    cout<<"\n\nDelete prQuadTree Test Case 1"<<endl;
+    prQuadTree *prQT = new prQuadTree(0,0,200,200);
+    vector<QPoint*> testQPoints=pointsTestCase1();
+    for(int i=0;i<testQPoints.size();i++) {
+        prQT->insert(testQPoints[i]);
+    }
+//    prQT->print();
+    prQT->deleteRoot();
+    cout<<"Root Deleted"<<endl;
+    cout<<"\n\n\n\n\n"<<endl;
+
+}
+
 //testcase 2:
 vector<QPoint*> pointsTestCase2(){
     vector<QPoint*> vQPoint;
@@ -197,6 +212,7 @@ void testprQuadTree()
     cout<<"\n\n prQuadTree Testing - Started"<<endl;
 
     prQuadTreeTestCase1();
+//    prQuadTreeTestCase1Delete();
     prQuadTreeTestCase2();
     prQuadTreeTestCase3();
     prQuadTreeTestCase4();

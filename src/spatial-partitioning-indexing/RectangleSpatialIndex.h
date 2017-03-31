@@ -31,44 +31,58 @@ private:
     }
 public:
     RectangleSpatialIndex() {}
-    vector<Point> search(Rectangle){
+    PointCollection search(Rectangle){
         throw "Method Not Supported";
     }
-    vector<Rectangle> searchRectangle(Rectangle bounds){
-        vector<Rectangle>result;
+    RectangleCollection searchRectangle(Rectangle bounds){
+        RectangleCollection *result;
         float *queryBounds = computeBounds(&bounds);
         vector<QBoundingBox> iBoxes = mxCifTree->queryRange(queryBounds[0],queryBounds[1],queryBounds[2],queryBounds[3]);
+        Rectangle rectangles[iBoxes.size()];
+        int i=0;
         for(QBoundingBox box : iBoxes) {
-            result.push_back(getRaectangleByUUID("Rectangle",box.getId()));
+            rectangles[i++] = getRaectangleByUUID("Rectangle",box.getId());
         }
-        return result;
+        result = new RectangleCollection(iBoxes.size(),rectangles);
+        delete iBoxes;
+        delete rectangles;
+        return *result;
     }
-    void createIndex(PointCollection, float, float){
+    void createIndex(PointCollection){
         throw "Method Not Supported";
     }
-    void createIndex(RectangleCollection rectangles, float width, float height){
-        mxCifTree = new mxcifQuadTree(width, height);
+    void createIndex(RectangleCollection rectangles){
+        //Needs to change after solution is ready
+        mxCifTree = new mxcifQuadTree(5000, 5000);
         Rectangle *rect;
         while((rect = rectangles.getNext())!= NULL){
             float *bounds = computeBounds(rect);
             mxCifTree->insert(bounds[0],bounds[1],bounds[2],bounds[3],rect->getId());
         }
     }
-    bool update(PointCollection,float, float){
+    bool update(PointCollection){
         throw "Method Not Supported";
     }
-    bool update(RectangleCollection rectangles,float width, float height){
+    bool update(RectangleCollection rectangles){
         bool result = true;
         try {
-            //Call MX CIF Tree delete here
-            createIndex(rectangles,width,height);
+            mxCifTree->deleteRoot();
+            createIndex(rectangles);
         } catch( const char *msg) {
             result = false;
         }
         return result;
     }
     bool deleteIndex(){
-        //Call MX CIF delete here
+        bool result = true;
+        try {
+
+            mxCifTree->deleteRoot();
+
+        } catch(const char *msg){
+            result = false;
+        }
+        return result;
     }
 };
 #endif //ADVDBTEST_RECTANGLESPATIALINDEX_H

@@ -20,8 +20,8 @@ private:
     }
 public:
     PointSpatialIndex() {}
-    vector<Point> search(Rectangle bounds){
-        vector<Point>result;
+    PointCollection search(Rectangle bounds){
+        PointCollection *result;
         float x1 = bounds.getCoordinates()[0];
         float y1 = bounds.getCoordinates()[1];
         float x2 = bounds.getCoordinates()[2];
@@ -33,29 +33,34 @@ public:
         float width = fabs(x2-x1);
         float height = fabs(y2-y1);
         vector<QPoint>iPoints = prTree->queryRange(minx,miny,width,height);
+        Point points[iPoints.size()];
+        int i=0;
         for(QPoint point : iPoints) {
-            result.push_back(getPointByUUID("Point",point.getId()));
+            points[i++] = getPointByUUID("Point",point.getId());
         }
-        return result;
+        result = new PointCollection(iPoints.size(),points);
+        delete points;
+        delete iPoints;
+        return *result;
     }
-    vector<Rectangle> searchRectangle(Rectangle){
+    RectangleCollection searchRectangle(Rectangle){
         throw "Method Not Supported";
     }
-    void createIndex(PointCollection points,float width, float height){
-        prTree = new prQuadTree(width, height);
+    void createIndex(PointCollection points){
+        prTree = new prQuadTree(5000, 5000);
         Point *p;
         while((p=points.getNext()) != NULL){
             prTree->insert(convertPoint(p));
         }
     }
-    void createIndex(RectangleCollection, float, float){
+    void createIndex(RectangleCollection){
         throw "Method Not Supported";
     }
-    bool update(PointCollection points,float width, float height){
+    bool update(PointCollection points){
         bool result = true;
         try {
-            //Call PR Tree delete here
-            createIndex(points,width,height);
+            prTree->deleteRoot();
+            createIndex(points);
         } catch( const char *msg) {
             result = false;
         }
@@ -65,7 +70,15 @@ public:
         throw "Method Not Supported";
     }
     bool deleteIndex(){
-        //Call PR Tree delete here
+        bool result = true;
+        try {
+
+            prTree->deleteRoot();
+
+        } catch(const char *msg){
+            result = false;
+        }
+        return result;
     }
 };
 #endif //ADVDBTEST_POINTSPATIALINDEX_H

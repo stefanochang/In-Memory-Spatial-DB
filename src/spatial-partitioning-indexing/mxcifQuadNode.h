@@ -62,6 +62,7 @@ public:
         // Ignore objects which do not belong in this quad tree
         if (!qbb.intersectsBox(*box))
             return false; // object cannot be added
+//        TODO - Spatail Indexing Team - Rectangles contains logic,check if a bounding box is contained within given rctangles vector of mxcifquadnode
 //        if (rectangles.contains(box))
 //            return true; // already exists
 
@@ -78,7 +79,7 @@ public:
         }
 
         if (!inserted) {
-            // Couldn't insert into children (it could strattle the bounds of the box)
+            // Couldn't insert into children
             rectangles.push_back(*box);
             return true;
         }
@@ -129,24 +130,33 @@ public:
     }
 
     void queryRange(QBoundingBox range, vector<QBoundingBox> &rectsInRange) {
-        // Automatically abort if the range does not collide with this quad
+
         if (!(*this).qbb.intersectsBox(range))
             return;
 
-        // Check objects at this level
+
         for (int i=0; i<rectangles.size(); i++)
         {
             if (range.intersectsBox(rectangles[i]))
                 rectsInRange.push_back(rectangles[i]);
         }
 
-        // Otherwise, add the objects from the children
+
         if (!isLeaf()) {
             this->mxqnNW->queryRange(range,rectsInRange);
             this->mxqnNE->queryRange(range,rectsInRange);
             this->mxqnSW->queryRange(range,rectsInRange);
             this->mxqnSE->queryRange(range,rectsInRange);
         }
+    }
+
+    void deleteNode()
+    {
+        if(this->mxqnNW != NULL)this->mxqnNW->deleteNode();
+        if(this->mxqnNE != NULL)this->mxqnNE->deleteNode();
+        if(this->mxqnSW != NULL)this->mxqnSW->deleteNode();
+        if(this->mxqnSE != NULL)this->mxqnSE->deleteNode();
+
     }
 
     void rectanglesPrint()

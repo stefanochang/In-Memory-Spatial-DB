@@ -57,6 +57,15 @@ public:
         return (*root).insert(xyPoint);
     }
 
+    void deleteRoot()
+    {
+        if(root == NULL) return;
+
+        root->deleteNode();
+
+    }
+
+
     void print(string prefix = "", bool emptyLine = false)
     {
         if(emptyLine) cout<<endl;
