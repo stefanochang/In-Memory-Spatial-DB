@@ -1,37 +1,37 @@
 #include "query-tree.h"
 
-QueryTree::setLeftPoints(PointCollection leftPoints) {
+void QueryTree::setLeftPoints(PointCollection leftPoints) {
 	this->leftDataPoint = leftPoints;
 }
 
-QueryTree::setLeftRectangles(RectangleCollection leftRects) {
+void QueryTree::setLeftRectangles(RectangleCollection leftRects) {
 	this->leftDataRect = leftRects;
 }
 
-QueryTree::setLeftIndexedObject(SpatialIndexInterface leftIndexedObject) {
+void QueryTree::setLeftIndexedObject(SpatialIndexInterface leftIndexedObject) {
 	this->leftIndexedObject = leftIndexedObject;
 }
 
-QueryTree::setLeftFilter(vector<string> leftFilter) {
+void QueryTree::setLeftFilter(vector<string> leftFilter) {
 	this->leftFilter = leftFilter;
 }
 
-QueryTree::setRoot(vector<string> root) {
+void QueryTree::setRoot(vector<string> root) {
 	this->root = root;
 }
 
-QueryTree::setRightPoints(PointCollection rightPoints) {
+void QueryTree::setRightPoints(PointCollection rightPoints) {
 	this->rightDataPoint = rightPoints;
 }
 
-QueryTree::setRightRectangles(RectangleCollection rightRects) {
+void QueryTree::setRightRectangles(RectangleCollection rightRects) {
 	this->rightDataRect = rightRects;
 }
 
-QueryTree::setRightIndexedObject(SpatialIndexInterface rightIndexedObject) {
+void QueryTree::setRightIndexedObject(SpatialIndexInterface rightIndexedObject) {
 	this->rightIndexedObject = rightIndexedObject;
 }
 
-QueryTree::setRightFilter(vector<string> rightFilter) {
+void QueryTree::setRightFilter(vector<string> rightFilter) {
 	this->rightFilter = rightFilter;
 }
