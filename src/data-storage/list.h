@@ -135,11 +135,12 @@ void appendSortedX(geometry *geom)
 	}
 	else
 	{
-		record* newNode = (record *)malloc(sizeof(record));
-		newNode->geom = geom;
-		newNode->id = curr_id++;
-		newNode->isDeleted = false;
-		newNode->inDegree = 0;
+		// record* newNode = (record *)malloc(sizeof(record));
+		// newNode->geom = geom;
+		// newNode->id = curr_id++;
+		// newNode->isDeleted = false;
+		// newNode->inDegree = 0;
+		record* newNode = initRecord(curr_id++, geom, NULL, NULL);
 		record* current = head;
 		record* previous = head->prev;
 		while(current->next != head)
@@ -179,11 +180,12 @@ void appendSortedY(geometry *geom)
 	}
 	else
 	{
-		record* newNode = (record *)malloc(sizeof(record));
-		newNode->geom = geom;
-		newNode->id = curr_id++;
-		newNode->isDeleted = false;
-		newNode->inDegree = 0;
+		// record* newNode = (record *)malloc(sizeof(record));
+		// newNode->geom = geom;
+		// newNode->id = curr_id++;
+		// newNode->isDeleted = false;
+		// newNode->inDegree = 0;
+		record* newNode = initRecord(curr_id++, geom, NULL, NULL);
 		record* current = head;
 		record* previous = head->prev;
 		while(current->next != head)
