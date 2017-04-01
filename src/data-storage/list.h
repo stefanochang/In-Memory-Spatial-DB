@@ -1,7 +1,6 @@
-	#include "datatypes.h"
+	#include "ds_datatypes.h"
 	#include <stdlib.h>
-	#include "Geometry.h"
-	#include "constants.h"
+	#include "ds_constants.h"
 	#include <string.h>
 	#include <map>
 
@@ -15,51 +14,68 @@
 		int count;
 
 	 	public:
-		list():head(NULL), type(type)
-	  	{
+			list():head(NULL)/*, type(type)*/ {
 	    		curr_id = 0;
 			count = 0;
 	  	}
-	  	~list()
-	  	{
-	    		record *tmp1,*tmp;
-			if(head != NULL)
-			{
-				tmp1 = head;
-				head = head->next;
-		    		while(head != tmp1)
-		    		{
-		      			tmp = head->next;
-					free(head);
-					head = tmp;
-		    		}
-				free(head);
+			list(int type):list() {
+					//head = NULL;
+					this->type = type;
+					//curr_id = 0;
 			}
+	  	~list()	{
+	    		record *tmp1,*tmp;
+					if(head != NULL)
+					{
+						tmp1 = head;
+						head = head->next;
+				    		while(head != tmp1)
+				    		{
+				      			tmp = head->next;
+										free(head);
+										head = tmp;
+				    		}
+								free(head);
+					}
 	  	}
+
+			record initRecord(int id, geometry geom, record next, record previous) {
+				record newRecord = (record *)malloc(sizeof(record));
+				newRecord->id = id;
+				newRecord->geom = geom;
+				newRecord->next = next;
+				newRecord->prev = prev;
+
+				newRecord->isDeleted = false;
+				newRecord->inDegree = 0;
+
+				return newRecord;
+			}
 
 	  	void appendLast(geometry *geom)
 	  	{
 	    		if(head == NULL)
 	    		{
-	      			head = (record *)malloc(sizeof(record));
+	      			head = initRecord(curr_id++, geom, head, head); /*(record *)malloc(sizeof(record));
 	      			head->geom = geom;
 	      			head->id = curr_id++;
-				head->isDeleted = false;
-				head->inDegree = 0;
+							head->isDeleted = false;
+							head->inDegree = 0;
 	      			head->next = head;
-	      			head->prev = head;
+	      			head->prev = head;*/
 	    		}
 	    		else
 	    		{
 			      record* tmp_head = head->prev;
-			      tmp_head->next = (record *)malloc(sizeof(record));
+			      tmp_head->next = initRecord(curr_id++, geom, head, head); /*(record *)malloc(sizeof(record));
 			      record* tmp = tmp_head->next;
 			      tmp->next = head;
 			      tmp->prev = tmp_head;
 			      tmp->id = curr_id++;
 			      tmp->isDeleted = false;
 			      tmp->inDegree = 0;
-			      tmp->geom = geom;
+			      tmp->geom = geom;*/
+					}
 			}
 			count++;
 	  	}
@@ -80,7 +96,7 @@
 			{
 				record *tmp_head = (record *)malloc(sizeof(record));
 				tmp_head->prev = head->prev;
-	      			head->prev = tmp_head;
+	      head->prev = tmp_head;
 				tmp_head->next = head;
 				tmp_head->id = curr_id++;
 				tmp_head->isDeleted = false;
@@ -112,16 +128,16 @@
 			      newNode->inDegree = 0;
 			      record* current = head;
 			      record* previous = head->prev;
-				while(current->next != head)
+						while(current->next != head)
 	      			{
 	         			if(current->geom->pnt->x > newNode->geom->pnt->x)
-					 {
-					   newNode->next = current;
-					   previous->next = newNode;
-					   newNode->prev = previous;
-					   current->prev = newNode;
-					   break;
-					 }
+								 {
+								   newNode->next = current;
+								   previous->next = newNode;
+								   newNode->prev = previous;
+								   current->prev = newNode;
+								   break;
+								 }
 					 previous = current;
 					 current = current->next;
 	      			}
@@ -382,7 +398,7 @@
 		short getType() {
 			return type;
 		}
-		
+
 		int getCount()	{
 			return count;
 		}
@@ -450,5 +466,9 @@
 				return *pntrec;
 			}
 			return *recrec;
+		}
+
+		bool isEmpty() {
+			return  head == NULL;
 		}
 	};

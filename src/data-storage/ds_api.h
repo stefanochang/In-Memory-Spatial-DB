@@ -2,11 +2,12 @@
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
-#include "list.h"
-#include "constants.h"
-#include "Geometry.h"
+#include "../integration/catalog.h"
 
 using namespace std;
+
+//Initial data load supported for Points and Rectangles
+
 int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct)
 {
 	FILE *fp;
@@ -14,7 +15,9 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 	geometry *g;
 	point *pnt;
 	rectangle *rct;
-	list l;
+	PointCollection *pntcollection;
+	RectangleCollection *rectanglecollection;
+	CatalogItem *catItem;
 	fp = fopen(filepath.c_str(), "r");
 	if(fp == NULL)
 	{
@@ -22,23 +25,23 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 	}
 	if(geomtype == TYPE_POINT)
 	{
-
+		pntcollection = new PointCollection();
 		while(fscanf(fp, "%f,%f\n", &x, &y) == 2)
 		{
-			//printf("x:%f    y:%f\n",x,y);
 			g = (geometry *)malloc(sizeof(geometry));
 			pnt = (point *)malloc(sizeof(point));
 			pnt->x = x;
 			pnt->y = y;
 			g->pnt = pnt;
-			l.appendLast(g);
+			pntcollection->appendLast(g);
 		}
+		catItem = new CatalogItem(dbName, tableName, *pntcollection);
 	}
 	else if(geomtype == TYPE_RECTANGLE)
 	{
+		rectanglecollection = new RectangleCollection();
 		while(fscanf(fp, "%f,%f,%f,%f\n", &x, &y, &x1, &y1) == 4)
 		{
-			//printf("x:%f    y:%f\n",x,y);
 			g = (geometry *)malloc(sizeof(geometry));
 			rct = (rectangle *)malloc(sizeof(rectangle));
 			rct->top_x = x;
@@ -46,17 +49,20 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 			rct->bottom_x = x1;
 			rct->bottom_y = y1;
 			g->rec = rct;
-			l.appendLast(g);
+			rectanglecollection->appendLast(g);
 		}
+		catItem = new CatalogItem(dbName, tableName, *rectanglecollection);
 	}
 	else
 	{
 		return 0;
 	}
+	Catalog.insert(catItem);
 
 	return 1;
 }
 
+// Insert a single point
 bool insertData(list pointsRepo, Point pointToInsert)
 {
 	geometry *g;
@@ -69,6 +75,7 @@ bool insertData(list pointsRepo, Point pointToInsert)
 	return true;
 }
 
+//insert a single rectangle
 bool insertData(list rectanglesRepo, Rectangle rectangleToInsert)
 {
 	geometry *g;
@@ -83,14 +90,15 @@ bool insertData(list rectanglesRepo, Rectangle rectangleToInsert)
 	return true;
 }
 
+//insert a list of items
 bool insertDataBulk(list repo, list geometryToInsert)
 {
 	record * geometryToInsertPointer = geometryToInsert.getHead();
 
 	while(geometryToInsertPointer != NULL) {
 		switch(repo.getType()) {
-			case TYPE_POINT: insertData(repo, *(geometryToInsertPointer->geom->pnt)); break;
-			case TYPE_RECTANGLE: insertData(repo, *(geometryToInsertPointer->geom->rec)); break;
+			case TYPE_POINT: insertData(repo, *(new Point(geometryToInsertPointer->geom->pnt->x, geometryToInsertPointer->geom->pnt->y))); break;
+			case TYPE_RECTANGLE: insertData(repo, *(new Rectangle(geometryToInsertPointer->geom->rec->top_x, geometryToInsertPointer->geom->rec->top_y,geometryToInsertPointer->geom->rec->bottom_x, geometryToInsertPointer->geom->rec->bottom_y))); break;
 		}
 
 		geometryToInsertPointer = geometryToInsertPointer->next;
@@ -98,6 +106,7 @@ bool insertDataBulk(list repo, list geometryToInsert)
 	return true;
 }
 
+//delete item with id equals geomid
 bool deleteData(list repo, int geomId){
 	return repo.deleteByUUID(geomId);
 }
