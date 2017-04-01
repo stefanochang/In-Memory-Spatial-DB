@@ -11,10 +11,12 @@
 		int curr_id;
 		record* head;
 		short type;
+		int count;
 
 	 	public:
 			list():head(NULL)/*, type(type)*/ {
 	    		curr_id = 0;
+			count = 0;
 	  	}
 			list(int type):list() {
 					//head = NULL;
@@ -74,6 +76,8 @@
 			      tmp->inDegree = 0;
 			      tmp->geom = geom;*/
 					}
+			}
+			count++;
 	  	}
 
 		void appendFirst(geometry *geom)
@@ -100,6 +104,7 @@
 				tmp_head->geom = geom;
 				head = tmp_head;
 			}
+			count++;
 		}
 
 	  	void appendSortedX(geometry *geom)
@@ -142,6 +147,7 @@
 				free(newNode);
 			      }
 	   		}
+			count++;
 	  	}
 
 	  	void appendSortedY(geometry *geom)
@@ -184,6 +190,7 @@
 				free(newNode);
 			      }
 	    		}
+			count++;
 	  	}
 
 			int deleteByUUID(int id)
@@ -208,11 +215,13 @@
 				         current = current->next;
 				         current->prev = previous;
 				         free(temp);
+					 count--;
 				         return 1;
 							 }
 							 else
 							 {
 								 current->isDeleted = true;
+								 count--;
 							 }
 			       }
 			       previous = current;
@@ -229,11 +238,13 @@
 								current = current->next;
 								current->prev = previous;
 								free(temp);
+								count--;
 								return 1;
 							}
 							else
 							{
 								current->isDeleted = true;
+								count--;
 							}
 			      }
 			    }
@@ -387,7 +398,11 @@
 		short getType() {
 			return type;
 		}
-		void *getnext(int n, int transactionId)
+
+		int getCount()	{
+			return count;
+		}
+		void *getnext_base(int n, int transactionId)
 		{
 			record *from;
 			Point **pnts;
