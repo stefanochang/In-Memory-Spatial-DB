@@ -13,12 +13,19 @@
 		short type;
 		int count;
 
+		void initList() {
+			head == NULL;
+			curr_id = 0;
+		}
+
 	 	public:
-			list():head(NULL)/*, type(type)*/ {
-	    		curr_id = 0;
-			count = 0;
+			list()/*:head(NULL), type(type)*/ {
+	    		//curr_id = 0;
+					initList();
+					count = 0;
 	  	}
-			list(int type):list() {
+			list(int type)/*:list() */ {
+					initList();
 					//head = NULL;
 					this->type = type;
 					//curr_id = 0;
@@ -39,12 +46,12 @@
 					}
 	  	}
 
-			record initRecord(int id, geometry geom, record next, record previous) {
-				record newRecord = (record *)malloc(sizeof(record));
+			record * initRecord(int id, geometry * geom, record * next, record * previous) {
+				record * newRecord = (record *)malloc(sizeof(record));
 				newRecord->id = id;
 				newRecord->geom = geom;
 				newRecord->next = next;
-				newRecord->prev = prev;
+				newRecord->prev = previous;
 
 				newRecord->isDeleted = false;
 				newRecord->inDegree = 0;
@@ -76,9 +83,9 @@
 			      tmp->inDegree = 0;
 			      tmp->geom = geom;*/
 					}
+
+					count++;
 			}
-			count++;
-	  	}
 
 		void appendFirst(geometry *geom)
 	  	{
