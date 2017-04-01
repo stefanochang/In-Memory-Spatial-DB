@@ -64,7 +64,7 @@ vector<float> PointPoint::getCoordinates() {
 vector<Point> PointPoint::getPoints() {
 	Point p1 = Point(x1,y1);
 	Point p2 = Point(x2,y2);
-	vector<Point> points {p1, p2};
+	vector<Point> points = {p1, p2};
 	return points;
 }
 
