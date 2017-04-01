@@ -1,5 +1,6 @@
-#include "../integration/geometry-collection.h"
 #include "ds_api.h"
+#include <map>
+std::map<int, record *>getmap;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINT COLLECTION
@@ -21,9 +22,30 @@ Point PointCollection::getById(int id) {
   return *pnt;
 }
 
-/*vector<Point> PointCollection::getNext(int n=1) {
-  return getnext(n, 1); // change name if wrapper function name changes
-}*/
+vector<Point> PointCollection::getNext(int n, int transactionId) {
+  vector<Point> points;
+  Point *newPoint;
+  record *from;
+  int rdcnt=0;
+  if(getmap.find(transactionId) != getmap.end())
+  {
+    from = 	getmap.find(transactionId)->second;
+    from->inDegree--;
+  }
+  else
+  {
+    from = head;
+  }
+  while(rdcnt < n and from != head->prev)
+  {
+    if(from->isDeleted)
+      continue;
+    newPoint = new Point(from->geom->pnt->x, from->geom->pnt->y);
+    points.push_back(*newPoint);
+    free(newPoint);
+  }
+  return points; // change name if wrapper function name changes
+}
 
 int PointCollection::insert(Point point) {
   return insertData(*this,point);
@@ -58,9 +80,30 @@ Rectangle RectangleCollection::getById(int id) {
   return *rec;
 }
 
-/*vector<Rectangle> RectangleCollection::getNext(int n=1) {
-  return getnext(n, 1); // change name if wrapper function name changes
-}*/
+vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
+  vector<Rectangle> rectangles;
+  Rectangle *newRectangle;
+  record *from;
+  int rdcnt=0;
+  if(getmap.find(transactionId) != getmap.end())
+  {
+    from = 	getmap.find(transactionId)->second;
+    from->inDegree--;
+  }
+  else
+  {
+    from = head;
+  }
+  while(rdcnt < n and from != head->prev)
+  {
+    if(from->isDeleted)
+      continue;
+    newRectangle = new Rectangle(from->geom->rec->top_x, from->geom->rec->top_y,from->geom->rec->bottom_x, from->geom->rec->bottom_y);
+    rectangles.push_back(*newRectangle);
+    free(newRectangle);
+  }
+  return rectangles; // change name if wrapper function name changes
+}
 
 // insertData wrapper required to pass string table name and geometry
 int RectangleCollection::insert(Rectangle rectangle) {
@@ -97,9 +140,30 @@ PointPoint PointPointCollection::getById(int id) {
   return *pntpnt;
 }
 
-/*vector<PointPoint> PointPointCollection::getNext(int n=1) {
-  return getnext(n, 1); // change name if wrapper function name changes
-}*/
+vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
+  vector<PointPoint> points;
+  PointPoint *newPoint;
+  record *from;
+  int rdcnt=0;
+  if(getmap.find(transactionId) != getmap.end())
+  {
+    from = 	getmap.find(transactionId)->second;
+    from->inDegree--;
+  }
+  else
+  {
+    from = head;
+  }
+  while(rdcnt < n and from != head->prev)
+  {
+    if(from->isDeleted)
+      continue;
+    newPoint = new PointPoint(from->geom->pntpnt->point1.x, from->geom->pntpnt->point1.y, from->geom->pntpnt->point2.x, from->geom->pntpnt->point2.y);
+    points.push_back(*newPoint);
+    free(newPoint);
+  }
+  return points; // change name if wrapper function name changes
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RECTANGLERECTANGLE COLLECTION
@@ -121,9 +185,30 @@ RectangleRectangle RectangleRectangleCollection::getById(int id) {
   return *recrec;
 }
 
-/*vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n=1) {
-  return getnext(n, 1); // change name if wrapper function name changes
-}*/
+vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int transactionId) {
+  vector<RectangleRectangle> recrecs;
+  RectangleRectangle *newRectangle;
+  record *from;
+  int rdcnt=0;
+  if(getmap.find(transactionId) != getmap.end())
+  {
+    from = 	getmap.find(transactionId)->second;
+    from->inDegree--;
+  }
+  else
+  {
+    from = head;
+  }
+  while(rdcnt < n and from != head->prev)
+  {
+    if(from->isDeleted)
+      continue;
+    newRectangle = new RectangleRectangle(from->geom->recrec->rec1.top_x, from->geom->recrec->rec1.top_y,from->geom->recrec->rec1.bottom_x, from->geom->recrec->rec1.bottom_y, from->geom->recrec->rec2.top_x, from->geom->recrec->rec2.top_y,from->geom->recrec->rec2.bottom_x, from->geom->recrec->rec2.bottom_y);
+    recrecs.push_back(*newRectangle);
+    free(newRectangle);
+  }
+  return recrecs;// change name if wrapper function name changes
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINTRECTANGLE COLLECTION
@@ -145,6 +230,27 @@ PointRectangle PointRectangleCollection::getById(int id) {
   return *pntrec;
 }
 
-/*vector<PointRectangle> PointRectangleCollection::getNext(int n=1) {
-  return getnext(n, 1); // change name if wrapper function name changes
-}*/
+vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionId) {
+  vector<PointRectangle> pointrecs;
+  PointRectangle *newRectangle;
+  record *from;
+  int rdcnt=0;
+  if(getmap.find(transactionId) != getmap.end())
+  {
+    from = 	getmap.find(transactionId)->second;
+    from->inDegree--;
+  }
+  else
+  {
+    from = head;
+  }
+  while(rdcnt < n and from != head->prev)
+  {
+    if(from->isDeleted)
+      continue;
+    newRectangle = new PointRectangle(from->geom->pntrec->point1.x, from->geom->pntrec->point1.y, from->geom->pntrec->rec.top_x, from->geom->pntrec->rec.top_y,from->geom->pntrec->rec.bottom_x, from->geom->pntrec->rec.bottom_y);
+    pointrecs.push_back(*newRectangle);
+    free(newRectangle);
+  }
+  return pointrecs; // change name if wrapper function name changes
+}
