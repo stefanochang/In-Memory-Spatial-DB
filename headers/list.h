@@ -386,7 +386,7 @@
 		int getCount()	{
 			return count;
 		}
-		void *getnext(int n, int transactionId)
+		void *getnext_base(int n, int transactionId)
 		{
 			record *from;
 			Point **pnts;
