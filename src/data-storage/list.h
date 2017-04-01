@@ -442,4 +442,8 @@
 			}
 			return *recrec;
 		}
+
+		bool isEmpty() {
+			return  head == NULL;
+		}
 	};
