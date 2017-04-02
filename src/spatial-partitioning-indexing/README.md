@@ -9,6 +9,8 @@ There are two indexes constructed that extend SpatialIndexInterface. -
 	* Uses Point Region Quadtree to index data from the Point table
 * RectangleSpatialIndex 
 	* Uses MX-CIF Quadtree to index data from the Rectangle table.
+* SpatialIndexImpl
+    * A wrapper class for Point, Rectangle Index that user would interact with
 
 ## Notes:
 
@@ -38,8 +40,7 @@ Figure 4: Rectangles Visualization in Quadtree
 
 ## Function Definition
 
-### PointSpatialIndex contains the following functions:
-
+### SpatialIndexImpl contains the following functions:
 `PointCollection search(Rectangle bounds)`
 
 >Search the query rectangle provided and return all points satisfying the query
@@ -54,7 +55,13 @@ Figure 4: Rectangles Visualization in Quadtree
 ---		
 
 `RectangleCollection searchRectangle(Rectangle)`
->This method is not implemented for the class. Throws an exception containing String message if invoked.
+>Search the query rectangle provided and return all rectangles satisfying the query
+
+>>Input Paramters
+>>>bounds - Diagonal Coordinates of the query rectangle. Assumes that the getCoordinates function returns (x1,y1) and (x2,y2) in order
+
+>>Returns
+>>>RectangleCollection - Collection of rectangles satisfying the query
 
 ---	
 
@@ -72,9 +79,17 @@ Figure 4: Rectangles Visualization in Quadtree
 ---	
 
 `void createIndex(RectangleCollection, float, float)`
->This method is not implemented for the class. Throws an exception containing String message if invoked.
 
----	
+>Creates Rectangle Spatial Data Index for the given set of rectangles
+
+>>Input Paramters
+>>>rectangles - Collection of rectangles to be indexed
+>>>width, height - of the bounding box containing all the rectangles. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
+
+>>Returns
+>>>void
+
+---
 
 `bool update(PointCollection points,float width, float height)`
 
@@ -90,7 +105,14 @@ Figure 4: Rectangles Visualization in Quadtree
 ---	
 	
 `bool update(RectangleCollection,float, float)`
->This method is not implemented for the class. Throws an exception containing String message if invoked.
+>Updates the Rectangle Spatial Data index created. This method deletes existing index structure and constructs it for given set of rectangles
+
+>>Input Paramters
+>>>rectangles - Collection of rectangles to be indexed
+>>>width, height - of the bounding box containing all the rectangles. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
+
+>>Returns
+>>>bool - sucess status of the update operation
 
 ---	
 
@@ -102,65 +124,3 @@ Figure 4: Rectangles Visualization in Quadtree
 >>>bool - success status of the delete operation
 
 ---		
-### RectangleSpatialIndex contains the following functions:
-	
-`PointCollection search(Rectangle)`
->This method is not implemented for the class. Throws an exception containing String message if invoked.
-
----
-	
-`RectangleCollection searchRectangle(Rectangle bounds)`
-
->Search the query rectangle provided and return all rectangles satisfying the query
-
->>Input Paramters
->>>bounds - Diagonal Coordinates of the query rectangle. Assumes that the getCoordinates function returns (x1,y1) and (x2,y2) in order
-
->>Returns
->>>RectangleCollection - Collection of rectangles satisfying the query
-
----
-		
-`void createIndex(PointCollection, float, float)`
->This method is not implemented for the class. Throws an exception containing String message if invoked.
-
----
-
-`void createIndex(RectangleCollection rectangles, float width, float height)`
-
->Creates Rectangle Spatial Data Index for the given set of rectangles
-
->>Input Paramters
->>>rectangles - Collection of rectangles to be indexed
->>>width, height - of the bounding box containing all the rectangles. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
-
->>Returns
->>>void
-
----
-
-`bool update(PointCollection,float, float)`
->This method is not implemented for the class. Throws an exception containing String message if invoked.
-
----
-	
-`bool update(RectangleCollection rectangles,float width, float height)`
-
->Updates the Rectangle Spatial Data index created. This method deletes existing index structure and constructs it for given set of rectangles
-
->>Input Paramters
->>>rectangles - Collection of rectangles to be indexed
->>>width, height - of the bounding box containing all the rectangles. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
-
->>Returns
->>>bool - sucess status of the update operation
-
----
-		
-`bool deleteIndex()`
->Deletes index structure for Rectangle Spatial data
-
->>Returns
->>>bool - success status of the delete operation
-
----
