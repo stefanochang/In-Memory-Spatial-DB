@@ -13,11 +13,11 @@ void testprQuadNode()
 {
     cout<<"\n\n prQuadNode Testing - Started"<<endl;
 
-    cout<<"\n\n prQuadNode test Case 1"<<endl;
+    cout<<"\n\n prQuadNode spatialTests Case 1"<<endl;
     prQuadNode *prQuadNode1= new prQuadNode();
     prQuadNode1->print();
 
-    cout<<"\n\n prQuadNode test Case 2"<<endl;
+    cout<<"\n\n prQuadNode spatialTests Case 2"<<endl;
     qBoundingBox *tqbb1 = new qBoundingBox(0,0,100,100);
     prQuadNode *prQuadNode2= new prQuadNode(*tqbb1);
     prQuadNode2->print();
@@ -48,7 +48,7 @@ vector<qPoint*> pointsTestCase1(){
 
 void prQuadTreeTestCase1()
 {
-    cout<<"\n\nprQuadTree test Case 1"<<endl;
+    cout<<"\n\nprQuadTree spatialTests Case 1"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,200,200);
     vector<qPoint*> testQPoints=pointsTestCase1();
     for(int i=0;i<testQPoints.size();i++) {
@@ -66,7 +66,7 @@ void prQuadTreeTestCase1()
 
 void prQuadTreeTestCase1Delete()
 {
-    cout<<"\n\nDelete prQuadTree test Case 1"<<endl;
+    cout<<"\n\nDelete prQuadTree spatialTests Case 1"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,200,200);
     vector<qPoint*> testQPoints=pointsTestCase1();
     for(int i=0;i<testQPoints.size();i++) {
@@ -93,7 +93,7 @@ vector<qPoint*> pointsTestCase2(){
 
 void prQuadTreeTestCase2()
 {
-    cout<<"\n\nprQuadTree test Case 2"<<endl;
+    cout<<"\n\nprQuadTree spatialTests Case 2"<<endl;
     prQuadTree *prQT = new prQuadTree(25,25,50,50);
     vector<qPoint*> testQPoints=pointsTestCase2();
     for(int i=0;i<testQPoints.size();i++) {
@@ -160,7 +160,7 @@ vector<qPoint*> pointsTestCase3(){
 
 void prQuadTreeTestCase3()
 {
-    cout<<"\n\nprQuadTree test Case 3"<<endl;
+    cout<<"\n\nprQuadTree spatialTests Case 3"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,400,400);
     vector<qPoint*> testQPoints=pointsTestCase3();
     for(int i=0;i<testQPoints.size();i++) {

@@ -1,5 +1,5 @@
 
-#include "test/testCasesSpatialIndexing.h"
+#include "spatialTests/testCasesSpatialIndexing.h"
 
 using namespace std;
 

@@ -16,11 +16,11 @@ void testmxcifQuadNode()
 {
     cout<<"\n\n mxcifQuadNode Testing - Started"<<endl;
 
-    cout<<"\n\n mxcifQuadNode test Case 1"<<endl;
+    cout<<"\n\n mxcifQuadNode spatialTests Case 1"<<endl;
     mxcifQuadNode *mxcifQuadNode1= new mxcifQuadNode();
     mxcifQuadNode1->print();
 
-    cout<<"\n\n mxcifQuadNode test Case 2"<<endl;
+    cout<<"\n\n mxcifQuadNode spatialTests Case 2"<<endl;
     qBoundingBox *tqbb1 = new qBoundingBox(0,0,100,100);
     mxcifQuadNode *mxcifQuadNode2= new mxcifQuadNode(*tqbb1);
     mxcifQuadNode2->print();
@@ -58,7 +58,7 @@ vector<qBoundingBox*> rectanglesTestCase1(){
 
 void mxcifQuadTreeTestCase1()
 {
-    cout<<"\n\nmxcifQuadTree test Case 1"<<endl;
+    cout<<"\n\nmxcifQuadTree spatialTests Case 1"<<endl;
 
     vector<qBoundingBox*> testQBoundingBoxes = rectanglesTestCase1();
     qBoundingBox *QBB = qBoundingBox::getQBoundingBoxCooridinates(testQBoundingBoxes);

@@ -79,7 +79,7 @@ vector<qPoint*> pointsTestCaseQBoundingBox1(){
 
 void pointsGetQBoundingBoxTestCase1()
 {
-    cout<<"\nPoints test Case 1"<<endl;
+    cout<<"\nPoints spatialTests Case 1"<<endl;
     vector<qPoint*> testQPoints = pointsTestCaseQBoundingBox1();
     qBoundingBox *QBB = qBoundingBox::getQBoundingBoxCooridinates(testQPoints);
     QBB->print();
@@ -107,7 +107,7 @@ vector<qBoundingBox*> rectanglesTestCaseQBoundingBox1(){
 
 void rectanglesGetQBoundingBoxTestCase1()
 {
-    cout<<"\nRectangles test Case 1"<<endl;
+    cout<<"\nRectangles spatialTests Case 1"<<endl;
     vector<qBoundingBox*> testQBoundingBoxes = rectanglesTestCaseQBoundingBox1();
     qBoundingBox *QBB = qBoundingBox::getQBoundingBoxCooridinates(testQBoundingBoxes);
     QBB->print();

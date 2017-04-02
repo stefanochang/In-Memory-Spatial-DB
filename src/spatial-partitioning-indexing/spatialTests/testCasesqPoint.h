@@ -12,13 +12,13 @@ void testQPoints()
 {
     cout<<"\n\n QPoints Testing - Started"<<endl;
 
-    cout<<"\nQPoint test Case 1"<<endl;
+    cout<<"\nQPoint spatialTests Case 1"<<endl;
     qPoint *tPoint1 = new qPoint(0,0);
     tPoint1->print();
     tPoint1->set(2.5,2.8);
     tPoint1->print();
 
-    cout<<"\nQPoint test Case 2"<<endl;
+    cout<<"\nQPoint spatialTests Case 2"<<endl;
     qPoint *tPoint2 = new qPoint(1,0,12);
     tPoint2->print();
 
