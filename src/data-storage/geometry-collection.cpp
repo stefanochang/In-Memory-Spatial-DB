@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-//#include "../integration/geometry-collection.h"
->>>>>>> 887e894675d2ad42a01a567d033aa871bc1f4e49
 #include "ds_api.h"
 #include <map>
 std::map<int, record *>getmap;

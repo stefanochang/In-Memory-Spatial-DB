@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include "ds_constants.h"
 #include <string.h>
-#include <map>
 
 using namespace std;
-std::map<int, record *>getmap;
 class list
 {
+	protected:
 	int curr_id;
 	record* head;
 	short type;
@@ -418,71 +417,6 @@ short getType() {
 
 int getCount()	{
 	return count;
-}
-void *getnext_base(int n, int transactionId)
-{
-	record *from;
-	Point **pnts;
-	Rectangle **recs;
-	PointPoint **pntpnt;
-	PointRectangle **pntrec;
-	RectangleRectangle **recrec;
-	int rdcnt=0;
-	if(getmap.find(transactionId) != getmap.end())
-	{
-		from = 	getmap.find(transactionId)->second;
-		from->inDegree--;
-	}
-	else
-	{
-		from = head;
-	}
-	while(rdcnt < n and from != head->prev)
-	{
-		if(from->isDeleted)
-		continue;
-		switch(type)
-		{
-			case TYPE_POINT:
-			pnts[rdcnt++] = new Point(from->geom->pnt->x, from->geom->pnt->y);
-			break;
-			case TYPE_RECTANGLE:
-			recs[rdcnt++] = new Rectangle(from->geom->rec->top_x, from->geom->rec->top_y,from->geom->rec->bottom_x, from->geom->rec->bottom_y);
-			break;
-			case TYPE_POINTPOINT:
-			pntpnt[rdcnt++] = new PointPoint(from->geom->pntpnt->point1.x, from->geom->pntpnt->point1.y, from->geom->pntpnt->point2.x, from->geom->pntpnt->point2.y);
-			break;
-			case TYPE_POINTRECTANGLE:
-			pntrec[rdcnt++] = new PointRectangle(from->geom->pntrec->point1.x, from->geom->pntrec->point1.y, from->geom->pntrec->rec.top_x, from->geom->pntrec->rec.top_y,from->geom->pntrec->rec.bottom_x, from->geom->pntrec->rec.bottom_y);
-			break;
-			case TYPE_RECTANGLERECTANGLE:
-			recrec[rdcnt++] = new RectangleRectangle(from->geom->recrec->rec1.top_x, from->geom->recrec->rec1.top_y,from->geom->recrec->rec1.bottom_x, from->geom->recrec->rec1.bottom_y, from->geom->recrec->rec2.top_x, from->geom->recrec->rec2.top_y,from->geom->recrec->rec2.bottom_x, from->geom->recrec->rec2.bottom_y);
-			break;
-		}
-		from = from->next;
-	}
-	getmap.erase(transactionId);
-	if(from != head->prev)
-	{
-		getmap[transactionId] = from;
-	}
-	if(type == TYPE_POINT)
-	{
-		return *pnts;
-	}
-	if(type == TYPE_RECTANGLE)
-	{
-		return *recs;
-	}
-	if(type == TYPE_POINTPOINT)
-	{
-		return *pntpnt;
-	}
-	if(type == TYPE_POINTRECTANGLE)
-	{
-		return *pntrec;
-	}
-	return *recrec;
 }
 
 bool isEmpty() {
