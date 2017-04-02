@@ -7,9 +7,9 @@
 
 #include "quadTreeLib.h"
 #include "prQuadTree.h"
-#include "spatial-index-interface.h"
+#include "../integration/spatial-index-interface.h"
 #include "qPoint.h"
-#include "data-storage.h"
+#include "../integration/data-storage.h"
 
 class PointSpatialIndex: public  SpatialIndexInterface {
 private:

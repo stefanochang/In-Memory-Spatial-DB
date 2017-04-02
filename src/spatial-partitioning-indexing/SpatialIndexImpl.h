@@ -6,7 +6,7 @@
 #define IN_MEMORY_SPATIAL_DB_SPATIALINDEXIMPL_H
 
 //Change this to point to the one in Integration team codebase
-#include "spatial-index-interface.h"
+#include "../integration/spatial-index-interface.h"
 #include "PointSpatialIndex.h"
 #include "RectangleSpatialIndex.h"
 
