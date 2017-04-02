@@ -2,12 +2,11 @@
 	#include <stdlib.h>
 	#include "ds_constants.h"
 	#include <string.h>
-	#include <map>
 
 	using namespace std;
-	std::map<int, record *>getmap;
 	class list
 	{
+	protected:
 		int curr_id;
 		record* head;
 		short type;
@@ -39,8 +38,8 @@
 					}
 	  	}
 
-			record initRecord(int id, geometry geom, record next, record previous) {
-				record newRecord = (record *)malloc(sizeof(record));
+			/*record* initRecord(int id, geometry geom, record *next, record *previous) {
+				record *newRecord = (record *)malloc(sizeof(record));
 				newRecord->id = id;
 				newRecord->geom = geom;
 				newRecord->next = next;
@@ -50,38 +49,37 @@
 				newRecord->inDegree = 0;
 
 				return newRecord;
-			}
+			}*/
 
 	  	void appendLast(geometry *geom)
 	  	{
 	    		if(head == NULL)
 	    		{
-	      			head = initRecord(curr_id++, geom, head, head); /*(record *)malloc(sizeof(record));
+	      			head = (record *)malloc(sizeof(record));
 	      			head->geom = geom;
 	      			head->id = curr_id++;
 							head->isDeleted = false;
 							head->inDegree = 0;
 	      			head->next = head;
-	      			head->prev = head;*/
+	      			head->prev = head;
 	    		}
 	    		else
 	    		{
 			      record* tmp_head = head->prev;
-			      tmp_head->next = initRecord(curr_id++, geom, head, head); /*(record *)malloc(sizeof(record));
+			      tmp_head->next = (record *)malloc(sizeof(record));
 			      record* tmp = tmp_head->next;
 			      tmp->next = head;
 			      tmp->prev = tmp_head;
 			      tmp->id = curr_id++;
 			      tmp->isDeleted = false;
 			      tmp->inDegree = 0;
-			      tmp->geom = geom;*/
+			      tmp->geom = geom;
 					}
-			}
-			count++;
+					count++;
 	  	}
 
 		void appendFirst(geometry *geom)
-	  	{
+	  {
 			if(head == NULL)
 			{
 				head = (record *)malloc(sizeof(record));
@@ -110,15 +108,15 @@
 	  	void appendSortedX(geometry *geom)
 	  	{
 	    		if(head == NULL)
-			{
-				head = (record *)malloc(sizeof(record));
-				head->next = head;
-				head->prev = head;
-				head->id = curr_id++;
-				head->geom = geom;
-				head->isDeleted = false;
-				head->inDegree = 0;
-			}
+					{
+						head = (record *)malloc(sizeof(record));
+						head->next = head;
+						head->prev = head;
+						head->id = curr_id++;
+						head->geom = geom;
+						head->isDeleted = false;
+						head->inDegree = 0;
+					}
 	    		else
 	    		{
 			      record* newNode = (record *)malloc(sizeof(record));
@@ -143,8 +141,8 @@
 	      			}
 			      if(current->next == head)
 			      {
-				appendLast(geom);
-				free(newNode);
+							appendLast(geom);
+							free(newNode);
 			      }
 	   		}
 			count++;
@@ -186,11 +184,11 @@
 			      }
 			      if(current->next == head)
 			      {
-				appendLast(geom);
-				free(newNode);
+							appendLast(geom);
+							free(newNode);
 			      }
 	    		}
-			count++;
+					count++;
 	  	}
 
 			int deleteByUUID(int id)
@@ -402,7 +400,7 @@
 		int getCount()	{
 			return count;
 		}
-		void *getnext_base(int n, int transactionId)
+		/*void *getnext_base(int n, int transactionId)
 		{
 			record *from;
 			Point **pnts;
@@ -466,9 +464,9 @@
 				return *pntrec;
 			}
 			return *recrec;
-		}
+		}*/
 
 		bool isEmpty() {
 			return  head == NULL;
 		}
-	};
+};
