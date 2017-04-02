@@ -2,14 +2,13 @@
 // Created by Darshan Shetty on 19-03-2017.
 //
 
-#ifndef ADVDBTEST_POINTSPATIALINDEX_H
-#define ADVDBTEST_POINTSPATIALINDEX_H
+#ifndef IN_MEMORY_SPATIAL_DB_POINTSPATIALINDEX_H
+#define IN_MEMORY_SPATIAL_DB_POINTSPATIALINDEX_H
 
-#include <math.h>
-#include <limits>
+#include "quadTreeLib.h"
 #include "prQuadTree.h"
 #include "spatial-index-interface.h"
-#include "QPoint.h"
+#include "qPoint.h"
 #include "data-storage.h"
 
 class PointSpatialIndex: public  SpatialIndexInterface {
@@ -29,7 +28,7 @@ public:
         bool xResult = (x1 - x2) > ((fabs(x1) < fabs(x2) ? fabs(x2) : fabs(x1)) * numeric_limits<double>::epsilon());
         float minx = xResult ? x2 : x1;
         bool yResult = (y1 - y2) > ((fabs(y1) < fabs(y2) ? fabs(y2) : fabs(y1)) * numeric_limits<double>::epsilon());
-        float miny = xResult ? y2 : y1;
+        float miny = yResult ? y2 : y1;
         float width = fabs(x2-x1);
         float height = fabs(y2-y1);
         vector<QPoint>iPoints = prTree->queryRange(minx,miny,width,height);
@@ -81,4 +80,4 @@ public:
         return result;
     }
 };
-#endif //ADVDBTEST_POINTSPATIALINDEX_H
+#endif //IN_MEMORY_SPATIAL_DB_POINTSPATIALINDEX_H

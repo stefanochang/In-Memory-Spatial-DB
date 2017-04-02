@@ -2,13 +2,13 @@
 // Created by Darshan Shetty on 19-03-2017.
 //
 
-#ifndef ADVDBTEST_RECTANGLESPATIALINDEX_H
-#define ADVDBTEST_RECTANGLESPATIALINDEX_H
-#include <math.h>
-#include <limits>
+#ifndef IN_MEMORY_SPATIAL_DB_RECTANGLESPATIALINDEX_H
+#define IN_MEMORY_SPATIAL_DB_RECTANGLESPATIALINDEX_H
+
+#include "quadTreeLib.h"
 #include "mxcifQuadTree.h"
 #include "spatial-index-interface.h"
-#include "QPoint.h"
+#include "qPoint.h"
 #include "data-storage.h"
 
 class RectangleSpatialIndex: public  SpatialIndexInterface {
@@ -23,11 +23,18 @@ private:
         bool xResult = (x1 - x2) > ((fabs(x1) < fabs(x2) ? fabs(x2) : fabs(x1)) * numeric_limits<double>::epsilon());
         float minx = xResult ? x2 : x1;
         bool yResult = (y1 - y2) > ((fabs(y1) < fabs(y2) ? fabs(y2) : fabs(y1)) * numeric_limits<double>::epsilon());
-        float miny = xResult ? y2 : y1;
+        float miny = yResult ? y2 : y1;
         float width = fabs(x2-x1);
         float height = fabs(y2-y1);
         bounds[0]=minx; bounds[1]=miny; bounds[2]=width; bounds[3]=height;
         return bounds;
+    }
+    QBoundingBox* convertRectangle(Rectangle *r) {
+        float minX = r->getCoordinates()[0];
+        float minY = r->getCoordinates()[1];
+        float maxX = r->getCoordinates()[2];
+        float maxY = r->getCoordinates()[3];
+        return new QBoundingBox(minX,minY,maxX,maxY,r->getId());
     }
 public:
     RectangleSpatialIndex() {}
@@ -58,6 +65,7 @@ public:
         while((rect = rectangles.getNext())!= NULL){
             float *bounds = computeBounds(rect);
             mxCifTree->insert(bounds[0],bounds[1],bounds[2],bounds[3],rect->getId());
+//            mxCifTree->insert(convertRectangle(rect));
         }
     }
     bool update(PointCollection){
@@ -85,4 +93,4 @@ public:
         return result;
     }
 };
-#endif //ADVDBTEST_RECTANGLESPATIALINDEX_H
+#endif //IN_MEMORY_SPATIAL_DB_RECTANGLESPATIALINDEX_H

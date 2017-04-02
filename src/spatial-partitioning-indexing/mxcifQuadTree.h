@@ -2,18 +2,18 @@
 // Created by ravichandran on 19/03/17.
 //
 
-#ifndef ADVDBTEST_MXCIFQUADTREE_H
-#define ADVDBTEST_MXCIFQUADTREE_H
+#ifndef IN_MEMORY_SPATIAL_DB_MXCIFQUADTREE_H
+#define IN_MEMORY_SPATIAL_DB_MXCIFQUADTREE_H
 
-#include "QuadTreeLib.h"
+#include "quadTreeLib.h"
 #include "mxcifQuadNode.h"
 
 class mxcifQuadTree
 {
 
 private:
-    QPoint XY_POINT;
-    QBoundingBox RANGE;
+    qPoint XY_POINT;
+    qBoundingBox RANGE;
 
     mxcifQuadNode *root;
 
@@ -24,8 +24,8 @@ public:
     {
         float x = originX - width/2;
         float y = originY - height/2;
-        QPoint *xyPoint = new QPoint(x,y);
-        QBoundingBox *QBB = new QBoundingBox(xyPoint,width,height);
+        qPoint *xyPoint = new qPoint(x,y);
+        qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
         root = new mxcifQuadNode( *QBB );
     }
 
@@ -33,21 +33,26 @@ public:
     {
         float x = 0 - width/2;
         float y = 0 - height/2;
-        QPoint *xyPoint = new QPoint(x,y);
-        QBoundingBox *QBB = new QBoundingBox(xyPoint,width,height);
+        qPoint *xyPoint = new qPoint(x,y);
+        qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
         root = new mxcifQuadNode( *QBB );
+    }
+
+    mxcifQuadTree(qBoundingBox *qbb)
+    {
+        root = new mxcifQuadNode( *qbb );
     }
 
     mxcifQuadNode* getRoot() { return root; }
 
 
     bool insert(float x, float y, float width, float height) {
-        QBoundingBox *QBB = new QBoundingBox(x, y, width, height);
+        qBoundingBox *QBB = new qBoundingBox(x, y, width, height);
         return (*root).insert(QBB);
     }
 
     bool insert(float x, float y, float width, float height,int id) {
-        QBoundingBox *QBB = new QBoundingBox(x, y, width, height, id);
+        qBoundingBox *QBB = new qBoundingBox(x, y, width, height, id);
         return (*root).insert(QBB);
     }
 
@@ -55,12 +60,12 @@ public:
     {
         float x = 0;
         float y = 0;
-        QPoint *xyPoint = new QPoint(x,y);
-        QBoundingBox *QBB = new QBoundingBox(xyPoint,width,height);
+        qPoint *xyPoint = new qPoint(x,y);
+        qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
         return (*root).insert(QBB);
     }
 
-    bool insert(QBoundingBox *QBB)
+    bool insert(qBoundingBox *QBB)
     {
         return (*root).insert(QBB);
     }
@@ -73,16 +78,16 @@ public:
 
     }
 
-    vector<QBoundingBox> queryRange(float x, float y, float width, float height)
+    vector<qBoundingBox> queryRange(float x, float y, float width, float height)
     {
-        vector<QBoundingBox> vQPoint;
+        vector<qBoundingBox> vQPoint;
         if (root == NULL)
             return vQPoint;
 
         XY_POINT.set(x,y);
         RANGE.set(&XY_POINT,width,height);
 
-        vector<QBoundingBox> rectsInRange;
+        vector<qBoundingBox> rectsInRange;
         root->queryRange(RANGE,rectsInRange);
         return rectsInRange;
     }
@@ -125,4 +130,4 @@ public:
 
 };
 
-#endif //ADVDBTEST_MXCIFQUADTREE_H
+#endif //IN_MEMORY_SPATIAL_DB_MXCIFQUADTREE_H

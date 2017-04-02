@@ -58,36 +58,38 @@ Figure 4: Rectangles Visualization in Quadtree
 
 ---	
 
-`void createIndex(PointCollection points)`
+`void createIndex(PointCollection points,float width, float height)`
 
 >Creates Point Spatial Data Index for the given set of points
 
 >>Input Paramters
 >>>points - Collection of points to be indexed
+>>>width, height - of the bounding box containing all the points. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
 
 >>Returns
 >>>void
 
 ---	
 
-`void createIndex(RectangleCollection)`
+`void createIndex(RectangleCollection, float, float)`
 >This method is not implemented for the class. Throws an exception containing String message if invoked.
 
 ---	
 
-`bool update(PointCollection points)`
+`bool update(PointCollection points,float width, float height)`
 
 >Updates the Point Spatial Data index created. This method deletes existing index structure and constructs it for given set of points
 
 >>Input Paramters
 >>>points - Collection of points to be indexed
+>>>width, height - of the bounding box containing all the points. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
 
 >>Returns
 >>>bool - sucess status of the update operation
 
 ---	
 	
-`bool update(RectangleCollection)`
+`bool update(RectangleCollection,float, float)`
 >This method is not implemented for the class. Throws an exception containing String message if invoked.
 
 ---	
@@ -119,34 +121,36 @@ Figure 4: Rectangles Visualization in Quadtree
 
 ---
 		
-`void createIndex(PointCollection)`
+`void createIndex(PointCollection, float, float)`
 >This method is not implemented for the class. Throws an exception containing String message if invoked.
 
 ---
 
-`void createIndex(RectangleCollection rectangles)`
+`void createIndex(RectangleCollection rectangles, float width, float height)`
 
 >Creates Rectangle Spatial Data Index for the given set of rectangles
 
 >>Input Paramters
 >>>rectangles - Collection of rectangles to be indexed
+>>>width, height - of the bounding box containing all the rectangles. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
 
 >>Returns
 >>>void
 
 ---
 
-`bool update(PointCollection)`
+`bool update(PointCollection,float, float)`
 >This method is not implemented for the class. Throws an exception containing String message if invoked.
 
 ---
 	
-`bool update(RectangleCollection rectangles)`
+`bool update(RectangleCollection rectangles,float width, float height)`
 
 >Updates the Rectangle Spatial Data index created. This method deletes existing index structure and constructs it for given set of rectangles
 
 >>Input Paramters
 >>>rectangles - Collection of rectangles to be indexed
+>>>width, height - of the bounding box containing all the rectangles. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
 
 >>Returns
 >>>bool - sucess status of the update operation
