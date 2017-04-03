@@ -39,12 +39,11 @@ public:
 
 //To be defined as a Singleton Class.
 class Catalog {
-  vector<CatalogItem*> catalogList;
-protected:
-  int remove(string, string);
-  int insert(CatalogItem*);
+  vector<CatalogItem*> catalogList;  
 public:
   CatalogItem* getCatalogItem(string, string);
+  int remove(string, string);
+  int insert(CatalogItem*);
   SpatialIndexInterface* getSpatialIndexedCollection(string, string);
   SpatialIndexInterface* getDataIndexedCollection(string, string);
   /*
