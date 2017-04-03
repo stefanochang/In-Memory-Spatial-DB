@@ -47,7 +47,9 @@ double PointOperations::getDistance (Point point1, Point point2){
 }
 
 double PointOperations::getDistance (Point point1, Rectangle rec){
-	return boost::geometry::distance(point(point1.getCoordinates().at(0), point1.getCoordinates().at(1)), box(point(rec.getCoordinates().at(0),rec.getCoordinates().at(1)), point(rec.getCoordinates().at(2),rec.getCoordinates().at(3))));
+	float rectCentroidX = (rec.getCoordinates().at(0)+rec.getCoordinates().at(2))/2;
+	float rectCentroidY = (rec.getCoordinates().at(1)+rec.getCoordinates().at(3))/2;
+	return boost::geometry::distance(point(point1.getCoordinates().at(0), point1.getCoordinates().at(1)), point(rectCentroidX, rectCentroidY));
 }
 
 
