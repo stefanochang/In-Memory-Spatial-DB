@@ -9,6 +9,8 @@
 #include <vector>
 #include "../integration/query-processing.h"
 
+
+#define INVALID 0
 #define TYPE_POINT 1
 #define TYPE_RECTANGLE 2
 #define TYPE_POINTPOINT 3
@@ -34,13 +36,15 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	PointCollection rightDataPoint = qTree.getRightDataPoint();
 	RectangleCollection rightDataRect = qTree.getRightDataRect();
 
+	// Initially set to Invalid, but it is set to appropriate result type when setting to result;
+	queryResult.setResultType(INVALID);
 	// left data is points
 	if (!leftDataPoint.isEmpty() && leftDataRect.isEmpty()) {
 		PointCollection leftResult = materializeBranch(leftFilter, leftDataPoint);
 		// no right branch
 		if (root[0] == "") {
+			queryResult.setResultType(TYPE_POINT);
 			queryResult.setPointCollection(leftResult);
-			queryResult.setResultType(1);
 		}
 		else {
 			// right data is points
@@ -48,18 +52,18 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				PointCollection rightResult = materializeBranch(rightFilter, rightDataPoint);
 				if (root[0] == "knnJoin") {
 					PointPointCollection distanceJoinResult = knnJoin(root, leftResult, rightFilter, rightResult);
+					queryResult.setResultType(TYPE_POINTPOINT);
 					queryResult.setPointPointCollection(distanceJoinResult);
-					queryResult.setResultType(3);
 				}
 				else if (root[0] == "rangeJoin") {
 					PointPointCollection distanceJoinResult = rangeJoin(leftResult, rightFilter, rightResult);
+					queryResult.setResultType(TYPE_POINTPOINT);
 					queryResult.setPointPointCollection(distanceJoinResult);
-					queryResult.setResultType(3);
 				}
 				else if (root[0] == "distanceJoin") {
 					PointPointCollection distanceJoinResult = distanceJoin(root, leftResult, rightFilter, rightResult);
+					queryResult.setResultType(TYPE_POINTPOINT);
 					queryResult.setPointPointCollection(distanceJoinResult);
-					queryResult.setResultType(3);
 				}
 			}
 			// right data is rectangles
@@ -67,18 +71,18 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				RectangleCollection rightResult = materializeBranch(rightFilter, rightDataRect);
 				if (root[0] == "knnJoin") {
 					PointRectangleCollection distanceJoinResult = knnJoin(root, leftResult, rightFilter, rightResult);
+					queryResult.setResultType(TYPE_POINTRECTANGLE);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(4);
 				}
 				else if (root[0] == "rangeJoin") {
 					PointRectangleCollection distanceJoinResult = rangeJoin(leftResult, rightFilter, rightResult);
+					queryResult.setResultType(TYPE_POINTRECTANGLE);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(4);
 				}
 				else if (root[0] == "distanceJoin") {
 					PointRectangleCollection distanceJoinResult = distanceJoin(root, leftResult, rightFilter, rightResult);
+					queryResult.setResultType(TYPE_POINTRECTANGLE);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(4);
 				}
 			}
 		}
@@ -88,8 +92,8 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 		RectangleCollection leftResult = materializeBranch(leftFilter, leftDataRect);
 		// no right branch
 		if (root[0] == "") {
+			queryResult.setResultType(TYPE_RECTANGLE);
 			queryResult.setRectangleCollection(leftResult);
-			queryResult.setResultType(2);
 		}
 		else {
 			// right data is points
@@ -97,18 +101,18 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				PointCollection rightResult = materializeBranch(rightFilter, rightDataPoint);
 				if (root[0] == "knnJoin") {
 					PointRectangleCollection distanceJoinResult = knnJoin(root, rightResult, rightFilter, leftResult);
+					queryResult.setResultType(TYPE_POINTRECTANGLE);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(4);
 				}
 				else if (root[0] == "rangeJoin") {
 					PointRectangleCollection distanceJoinResult = rangeJoin(rightResult, rightFilter, leftResult);
+					queryResult.setResultType(TYPE_POINTRECTANGLE);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(4);
 				}
 				else if (root[0] == "distanceJoin") {
 					PointRectangleCollection distanceJoinResult = distanceJoin(root, rightResult, rightFilter, leftResult);
+					queryResult.setResultType(TYPE_POINTRECTANGLE);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(4);
 				}
 			}
 			// right data is rectangles
@@ -116,18 +120,18 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				RectangleCollection rightResult = materializeBranch(rightFilter, rightDataRect);
 				if (root[0] == "knnJoin") {
 					RectangleRectangleCollection distanceJoinResult = knnJoin(root, rightResult, rightFilter, leftResult);
+					queryResult.setResultType(TYPE_RECTANGLERECTANGLE);
 					queryResult.setRectangleRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(5);
 				}
 				else if (root[0] == "rangeJoin") {
 					RectangleRectangleCollection distanceJoinResult = rangeJoin(rightResult, rightFilter, leftResult);
+					queryResult.setResultType(TYPE_RECTANGLERECTANGLE);
 					queryResult.setRectangleRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(5);
 				}
 				else if (root[0] == "distanceJoin") {
 					RectangleRectangleCollection distanceJoinResult = distanceJoin(root, rightResult, rightFilter, leftResult);
+					queryResult.setResultType(TYPE_RECTANGLERECTANGLE);
 					queryResult.setRectangleRectangleCollection(distanceJoinResult);
-					queryResult.setResultType(5);
 				}
 			}
 		}
@@ -140,7 +144,9 @@ PointCollection QueryProcessing::materializeBranch (vector<vector<string>> filte
 	// initialize result
 	PointCollection result;
 	vector<Point> points = data.getNext(1);
-	while (points.size()!=0) {
+	int j = 0;
+	while (j < data.getSize()) {
+		//cout << " 1 ";
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
 			passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],points[0]);
@@ -149,6 +155,7 @@ PointCollection QueryProcessing::materializeBranch (vector<vector<string>> filte
 			result.insert(points[0]);
 		}
 		points = data.getNext(1);
+		j++;
 	}
 	return result;
 }
@@ -157,7 +164,8 @@ RectangleCollection QueryProcessing::materializeBranch (vector<vector<string>> f
 	// initialize result
 	RectangleCollection result;
 	vector<Rectangle> rects = data.getNext(1);
-	while (rects.size()!=0) {
+	int j = 0;
+	while (j < data.getSize()) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
 			passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],rects[0]);
@@ -166,6 +174,9 @@ RectangleCollection QueryProcessing::materializeBranch (vector<vector<string>> f
 			result.insert(rects[0]);
 		}
 		rects = data.getNext(1);
+		Rectangle rt = rects.at(0);
+		//cout<< "Debug -> [ Box : (" << rt.getCoordinates().at(0)<< " ," << rt.getCoordinates().at(1)<< "), ("<< rt.getCoordinates().at(2)<< " ," << rt.getCoordinates().at(3)<<") ]"<<endl;
+		j++;
 	}
 	return result;
 }
@@ -211,12 +222,15 @@ PointPointCollection QueryProcessing::distanceJoin (vector<string> root, PointCo
 	double distThresh = stod(root[1]);
 	vector<PointPoint> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
-	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
+	//	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
+	PointCollection mat_right = materializeBranch(filter, rightData);
+	vector<Point> rightPoints = mat_right.getNext(mat_right.getSize());
 	for (int i=0;i<leftPoints.size();i++) {
 		for (int j=0;j<rightPoints.size();j++) {
-			if (PointOperations::getDistance(leftPoints[i],rightPoints[j]) <= distThresh) {
-				PointPoint pp(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
-						rightPoints[j].getCoordinates()[0],rightPoints[j].getCoordinates()[1]);
+			int curr_dist = PointOperations::getDistance(leftPoints[i],rightPoints[j]);
+			//cout << " Debug : " << curr_dist;
+			if ( curr_dist <= distThresh) {
+				PointPoint pp(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],rightPoints[j].getCoordinates()[0],rightPoints[j].getCoordinates()[1]);
 				joinResultVector.insert(joinResultVector.end(),pp);
 			}
 		}
@@ -230,7 +244,9 @@ RectangleRectangleCollection QueryProcessing::distanceJoin (vector<string> root,
 	double distThresh = stod(root[1]);
 	vector<RectangleRectangle> joinResultVector;
 	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
-	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
+	RectangleCollection mat_right = materializeBranch(filter, rightData);
+	vector<Rectangle> rightRects  = mat_right.getNext(mat_right.getSize());
+
 	for (int i=0;i<leftRects.size();i++) {
 		for (int j=0;j<rightRects.size();j++) {
 			if (RectangleOperations::getDistance(leftRects[i],rightRects[j]) <= distThresh) {
@@ -247,19 +263,19 @@ RectangleRectangleCollection QueryProcessing::distanceJoin (vector<string> root,
 }
 
 PointRectangleCollection QueryProcessing::distanceJoin (vector<string> root, PointCollection leftData,
-		vector<vector<string>> filter, RectangleCollection rightData) {
+	vector<vector<string>> filter, RectangleCollection rightData) {
 	double distThresh = stod(root[1]);
 	vector<PointRectangle> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
 	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
 	for (int i=0;i<leftPoints.size();i++) {
 		for (int j=0;j<rightRects.size();j++) {
-			if (PointOperations::getDistance(leftPoints[i],rightRects[j]) <= distThresh) {
+			/*if (PointOperations::getDistance(leftPoints[i],rightRects[j]) <= distThresh) {
 				PointRectangle pr(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
 						rightRects[j].getCoordinates()[0],rightRects[j].getCoordinates()[1],
 						rightRects[j].getCoordinates()[2],rightRects[j].getCoordinates()[3]);
 				joinResultVector.insert(joinResultVector.end(),pr);
-			}
+			}*/
 		}
 	}
 	PointRectangleCollection distanceJoinResult(POINTRECTANGLE,DB_NAME,TYPE_POINTRECTANGLE,joinResultVector);
