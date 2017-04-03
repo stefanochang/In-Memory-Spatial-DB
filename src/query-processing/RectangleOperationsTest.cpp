@@ -88,12 +88,12 @@ public:
 		}
 
 	}
-	static void getDistanceTest(Rectangle rec1, Rectangle rec2, bool expectedOutput) {
+	static void getDistanceTest(Rectangle rec1, Rectangle rec2, int expectedOutput) {
 		//float expectedOutput;
 		float actualOutput;
 		actualOutput = RectangleOperations::getDistance(rec1, rec2);
         //actualOutput = getDistance(rec1, rec2);
-        cout << actualOutput<<endl;
+        //cout << actualOutput<<endl;
 
         if (expectedOutput == actualOutput) {
 			cout << "Working Fine"<<endl;
@@ -124,6 +124,7 @@ int rectOperationTests() {
     Rectangle rec3 (0, 0, 1, 3);
     Rectangle rec4 (0, 0, 2, 2);
     Rectangle rec5 (5, 0, 7, 2);
+    Rectangle rec6 (2, 0, 4, 2);
 
     RectangleOperationsTest::isIntersectingTest(rec1, rec1, true);
     RectangleOperationsTest::isIntersectingTest(rec1, rec2, true);
@@ -133,9 +134,9 @@ int rectOperationTests() {
     RectangleOperationsTest::isWithinTest(rec1, rec1, true);
     RectangleOperationsTest::isWithinTest(rec1, rec2, false);
     RectangleOperationsTest::isOverlappingTest(rec1, rec2, true);
-    RectangleOperationsTest::isOverlappingTest(rec1, rec1, true);
+    RectangleOperationsTest::isOverlappingTest(rec1, rec1, false);
     RectangleOperationsTest::getDistanceTest(rec1, rec1, 0);
-    RectangleOperationsTest::getDistanceTest(rec2, rec5, 5);
+    RectangleOperationsTest::getDistanceTest(rec6, rec5, 3);
     RectangleOperationsTest::getAreaTest(rec4, 4);
 	return 0;
 }
