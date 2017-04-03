@@ -51,6 +51,10 @@ int PointCollection::insert(Point point) {
   return insertData(*this,point);
 }
 
+int PointCollection::insertBulk(PointCollection collection) {
+  return insertDataBulk(*this, collection);
+}
+
 /*int PointCollection::remove(Point point) {
   return deleteByUUID(point->id)
 }*/
@@ -112,6 +116,9 @@ int RectangleCollection::insert(Rectangle rectangle) {
   return insertData(*this,rectangle);
 }
 
+int RectangleCollection::insertBulk(RectangleCollection collection) {
+  return insertDataBulk(*this, collection);
+}
 
 // deleteData wrapper required to pass string table name and geometry
 /*int RectangleCollection::remove(Rectangle rectangle) {
@@ -144,6 +151,10 @@ PointPoint PointPointCollection::getById(int id) {
 
 int PointPointCollection::insert(PointPoint pntpnt) {
   return insertData(*this,pntpnt);
+}
+
+int PointPointCollection::insertBulk(PointPointCollection collection) {
+  return insertDataBulk(*this, collection);
 }
 
 vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
@@ -195,6 +206,10 @@ int RectangleRectangleCollection::insert(RectangleRectangle recrec) {
   return insertData(*this,recrec);
 }
 
+int RectangleRectangleCollection::insertBulk(RectangleRectangleCollection collection) {
+  return insertDataBulk(*this, collection);
+}
+
 vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int transactionId) {
   vector<RectangleRectangle> recrecs;
   RectangleRectangle *newRectangle;
@@ -242,6 +257,10 @@ PointRectangle PointRectangleCollection::getById(int id) {
 
 int PointRectangleCollection::insert(PointRectangle pntrec) {
   return insertData(*this,pntrec);
+}
+
+int PointRectangleCollection::insertBulk(PointRectangleCollection collection) {
+  return insertDataBulk(*this, collection);
 }
 
 vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionId) {
