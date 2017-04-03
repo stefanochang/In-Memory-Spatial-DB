@@ -27,7 +27,7 @@ bool pointOperationTests(){
 	cout<< (result == expected ? "Test Case 1 passed\n" : "Test Case 1 failed\n");
 
 	result = PointOperations::isIntersecting(pt1,rec2);
-	expected = 0;
+	expected = 1;
 	cout<< (result == expected ? "Test Case 2 passed\n" : "Test Case 2 failed\n");
 
 	result = PointOperations::isEqual(pt1,pt2);
@@ -71,7 +71,7 @@ bool pointOperationTests(){
 	cout<< (result == expected ? "Test Case 12 passed\n" : "Test Case 12 failed\n");
 
 	result = PointOperations::isOverlapping(pt1,pt3);
-	expected = 1;
+	expected = 0;
 	cout<< (result == expected ? "Test Case 13 passed\n" : "Test Case 13 failed\n");
 
 	result = PointOperations::isOverlapping(pt1,pt2);
