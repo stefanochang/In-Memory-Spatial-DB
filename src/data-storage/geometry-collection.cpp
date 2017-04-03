@@ -1,5 +1,5 @@
-#include "ds_api.h"
 #include <map>
+#include "ds_api.h"
 std::map<int, record *>getmap;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +58,8 @@ int PointCollection::insert(Point point) {
 int PointCollection::removeById(int id) {
   return deleteByUUID(id);
 }
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +142,10 @@ PointPoint PointPointCollection::getById(int id) {
   return *pntpnt;
 }
 
+int PointPointCollection::insert(PointPoint pntpnt) {
+  return insertData(*this,pntpnt);
+}
+
 vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
   vector<PointPoint> points;
   PointPoint *newPoint;
@@ -185,6 +191,10 @@ RectangleRectangle RectangleRectangleCollection::getById(int id) {
   return *recrec;
 }
 
+int RectangleRectangleCollection::insert(RectangleRectangle recrec) {
+  return insertData(*this,recrec);
+}
+
 vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int transactionId) {
   vector<RectangleRectangle> recrecs;
   RectangleRectangle *newRectangle;
@@ -228,6 +238,10 @@ PointRectangleCollection::PointRectangleCollection(string name, string databaseN
 PointRectangle PointRectangleCollection::getById(int id) {
   PointRectangle *pntrec = getPointRectangleByUUID(this->name, id);
   return *pntrec;
+}
+
+int PointRectangleCollection::insert(PointRectangle pntrec) {
+  return insertData(*this,pntrec);
 }
 
 vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionId) {
