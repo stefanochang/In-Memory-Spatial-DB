@@ -222,15 +222,12 @@ PointPointCollection QueryProcessing::distanceJoin (vector<string> root, PointCo
 	double distThresh = stod(root[1]);
 	vector<PointPoint> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
-	//	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
-	PointCollection mat_right = materializeBranch(filter, rightData);
-	vector<Point> rightPoints = mat_right.getNext(mat_right.getSize());
+	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
 	for (int i=0;i<leftPoints.size();i++) {
 		for (int j=0;j<rightPoints.size();j++) {
-			int curr_dist = PointOperations::getDistance(leftPoints[i],rightPoints[j]);
-			//cout << " Debug : " << curr_dist;
-			if ( curr_dist <= distThresh) {
-				PointPoint pp(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],rightPoints[j].getCoordinates()[0],rightPoints[j].getCoordinates()[1]);
+			if (PointOperations::getDistance(leftPoints[i],rightPoints[j]) <= distThresh) {
+				PointPoint pp(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
+						rightPoints[j].getCoordinates()[0],rightPoints[j].getCoordinates()[1]);
 				joinResultVector.insert(joinResultVector.end(),pp);
 			}
 		}
@@ -244,9 +241,7 @@ RectangleRectangleCollection QueryProcessing::distanceJoin (vector<string> root,
 	double distThresh = stod(root[1]);
 	vector<RectangleRectangle> joinResultVector;
 	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
-	RectangleCollection mat_right = materializeBranch(filter, rightData);
-	vector<Rectangle> rightRects  = mat_right.getNext(mat_right.getSize());
-
+	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
 	for (int i=0;i<leftRects.size();i++) {
 		for (int j=0;j<rightRects.size();j++) {
 			if (RectangleOperations::getDistance(leftRects[i],rightRects[j]) <= distThresh) {
@@ -263,19 +258,19 @@ RectangleRectangleCollection QueryProcessing::distanceJoin (vector<string> root,
 }
 
 PointRectangleCollection QueryProcessing::distanceJoin (vector<string> root, PointCollection leftData,
-	vector<vector<string>> filter, RectangleCollection rightData) {
+		vector<vector<string>> filter, RectangleCollection rightData) {
 	double distThresh = stod(root[1]);
 	vector<PointRectangle> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
 	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
 	for (int i=0;i<leftPoints.size();i++) {
 		for (int j=0;j<rightRects.size();j++) {
-			/*if (PointOperations::getDistance(leftPoints[i],rightRects[j]) <= distThresh) {
+			if (PointOperations::getDistance(leftPoints[i],rightRects[j]) <= distThresh) {
 				PointRectangle pr(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
 						rightRects[j].getCoordinates()[0],rightRects[j].getCoordinates()[1],
 						rightRects[j].getCoordinates()[2],rightRects[j].getCoordinates()[3]);
 				joinResultVector.insert(joinResultVector.end(),pr);
-			}*/
+			}
 		}
 	}
 	PointRectangleCollection distanceJoinResult(POINTRECTANGLE,DB_NAME,TYPE_POINTRECTANGLE,joinResultVector);
