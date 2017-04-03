@@ -1,5 +1,5 @@
-#include "ds_api.h"
 #include <map>
+#include "ds_api.h"
 std::map<int, record *>getmap;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +51,10 @@ int PointCollection::insert(Point point) {
   return insertData(*this,point);
 }
 
+int PointCollection::insertBulk(PointCollection collection) {
+  return insertDataBulk(*this, collection);
+}
+
 /*int PointCollection::remove(Point point) {
   return deleteByUUID(point->id)
 }*/
@@ -58,6 +62,8 @@ int PointCollection::insert(Point point) {
 int PointCollection::removeById(int id) {
   return deleteByUUID(id);
 }
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +116,9 @@ int RectangleCollection::insert(Rectangle rectangle) {
   return insertData(*this,rectangle);
 }
 
+int RectangleCollection::insertBulk(RectangleCollection collection) {
+  return insertDataBulk(*this, collection);
+}
 
 // deleteData wrapper required to pass string table name and geometry
 /*int RectangleCollection::remove(Rectangle rectangle) {
@@ -138,6 +147,14 @@ PointPointCollection::PointPointCollection(string name, string databaseName, int
 PointPoint PointPointCollection::getById(int id) {
   PointPoint *pntpnt = getPointPointByUUID(this->name, id);
   return *pntpnt;
+}
+
+int PointPointCollection::insert(PointPoint pntpnt) {
+  return insertData(*this,pntpnt);
+}
+
+int PointPointCollection::insertBulk(PointPointCollection collection) {
+  return insertDataBulk(*this, collection);
 }
 
 vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
@@ -185,6 +202,14 @@ RectangleRectangle RectangleRectangleCollection::getById(int id) {
   return *recrec;
 }
 
+int RectangleRectangleCollection::insert(RectangleRectangle recrec) {
+  return insertData(*this,recrec);
+}
+
+int RectangleRectangleCollection::insertBulk(RectangleRectangleCollection collection) {
+  return insertDataBulk(*this, collection);
+}
+
 vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int transactionId) {
   vector<RectangleRectangle> recrecs;
   RectangleRectangle *newRectangle;
@@ -228,6 +253,14 @@ PointRectangleCollection::PointRectangleCollection(string name, string databaseN
 PointRectangle PointRectangleCollection::getById(int id) {
   PointRectangle *pntrec = getPointRectangleByUUID(this->name, id);
   return *pntrec;
+}
+
+int PointRectangleCollection::insert(PointRectangle pntrec) {
+  return insertData(*this,pntrec);
+}
+
+int PointRectangleCollection::insertBulk(PointRectangleCollection collection) {
+  return insertDataBulk(*this, collection);
 }
 
 vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionId) {
