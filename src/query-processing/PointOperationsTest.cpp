@@ -97,9 +97,9 @@ bool pointOperationTests(){
 	cout<< (result == expected ? "Test Case 17 passed\n" : "Test Case 17 failed\n");
 
 
-	Rectangle rec4(6,6,10,11);
+	Rectangle rec4(6,6,10,12);
 	result = PointOperations::getDistance(pt7,rec4);
-	expected = 1;
+	expected = 5;
 	cout<< (result == expected ? "Test Case 18 passed\n" : "Test Case 18 failed\n");
 
 	return true;
