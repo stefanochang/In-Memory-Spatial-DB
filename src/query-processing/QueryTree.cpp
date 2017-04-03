@@ -1,5 +1,9 @@
 #include "../integration/query-processing.h"
 
+QueryTree::QueryTree(){
+
+}
+
 void QueryTree::setLeftPoints(PointCollection leftPoints) {
 	this->leftDataPoint = leftPoints;
 }
@@ -12,7 +16,7 @@ void QueryTree::setLeftRectangles(RectangleCollection leftRects) {
 	this->leftIndexedObject = leftIndexedObject;
 }*/
 
-void QueryTree::setLeftFilter(vector<vector<string>> leftBranch) {
+void QueryTree::setLeftFilter(vector<vector<string> > leftBranch) {
 	this->leftBranch = leftBranch;
 }
 
@@ -68,6 +72,6 @@ const vector<string>& QueryTree::getRoot() const {
 	this->rightIndexedObject = rightIndexedObject;
 }*/
 
-void QueryTree::setRightFilter(vector<vector<string>> rightBranch) {
+void QueryTree::setRightFilter(vector<vector<string> > rightBranch) {
 	this->rightBranch = rightBranch;
 }
