@@ -40,6 +40,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 		// no right branch
 		if (root[0] == "") {
 			queryResult.setPointCollection(leftResult);
+			queryResult.setResultType(1);
 		}
 		else {
 			// right data is points
@@ -48,14 +49,17 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				if (root[0] == "knnJoin") {
 					PointPointCollection distanceJoinResult = knnJoin(root, leftResult, rightFilter, rightResult);
 					queryResult.setPointPointCollection(distanceJoinResult);
+					queryResult.setResultType(3);
 				}
 				else if (root[0] == "rangeJoin") {
 					PointPointCollection distanceJoinResult = rangeJoin(leftResult, rightFilter, rightResult);
 					queryResult.setPointPointCollection(distanceJoinResult);
+					queryResult.setResultType(3);
 				}
 				else if (root[0] == "distanceJoin") {
 					PointPointCollection distanceJoinResult = distanceJoin(root, leftResult, rightFilter, rightResult);
 					queryResult.setPointPointCollection(distanceJoinResult);
+					queryResult.setResultType(3);
 				}
 			}
 			// right data is rectangles
@@ -64,14 +68,17 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				if (root[0] == "knnJoin") {
 					PointRectangleCollection distanceJoinResult = knnJoin(root, leftResult, rightFilter, rightResult);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(4);
 				}
 				else if (root[0] == "rangeJoin") {
 					PointRectangleCollection distanceJoinResult = rangeJoin(leftResult, rightFilter, rightResult);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(4);
 				}
 				else if (root[0] == "distanceJoin") {
 					PointRectangleCollection distanceJoinResult = distanceJoin(root, leftResult, rightFilter, rightResult);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(4);
 				}
 			}
 		}
@@ -82,6 +89,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 		// no right branch
 		if (root[0] == "") {
 			queryResult.setRectangleCollection(leftResult);
+			queryResult.setResultType(2);
 		}
 		else {
 			// right data is points
@@ -90,14 +98,17 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				if (root[0] == "knnJoin") {
 					PointRectangleCollection distanceJoinResult = knnJoin(root, rightResult, rightFilter, leftResult);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(4);
 				}
 				else if (root[0] == "rangeJoin") {
 					PointRectangleCollection distanceJoinResult = rangeJoin(rightResult, rightFilter, leftResult);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(4);
 				}
 				else if (root[0] == "distanceJoin") {
 					PointRectangleCollection distanceJoinResult = distanceJoin(root, rightResult, rightFilter, leftResult);
 					queryResult.setPointRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(4);
 				}
 			}
 			// right data is rectangles
@@ -106,14 +117,17 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				if (root[0] == "knnJoin") {
 					RectangleRectangleCollection distanceJoinResult = knnJoin(root, rightResult, rightFilter, leftResult);
 					queryResult.setRectangleRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(5);
 				}
 				else if (root[0] == "rangeJoin") {
 					RectangleRectangleCollection distanceJoinResult = rangeJoin(rightResult, rightFilter, leftResult);
 					queryResult.setRectangleRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(5);
 				}
 				else if (root[0] == "distanceJoin") {
 					RectangleRectangleCollection distanceJoinResult = distanceJoin(root, rightResult, rightFilter, leftResult);
 					queryResult.setRectangleRectangleCollection(distanceJoinResult);
+					queryResult.setResultType(5);
 				}
 			}
 		}
