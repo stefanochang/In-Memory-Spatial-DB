@@ -1,5 +1,3 @@
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
 #include <string>
 #include<vector>
 using namespace std;
@@ -61,4 +59,3 @@ class RectangleRectangle {
     vector<Rectangle> getRectangles();
 };
 
-#endif
