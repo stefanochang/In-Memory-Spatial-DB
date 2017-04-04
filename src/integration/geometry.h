@@ -58,3 +58,4 @@ class RectangleRectangle {
     vector<float> getCoordinates();
     vector<Rectangle> getRectangles();
 };
+
