@@ -1,5 +1,6 @@
-#include "data-storage.h"
 #include <iostream>
+#include <vector>
+#include <string.h>
 
 using namespace std;
 int get_geom_type_from_string(string geom) {
@@ -17,16 +18,16 @@ bool is_param_sufficient(vector<string> tokens, int required_params) {
     return true;
 }
 
-vector<string> split(string str,string sep){
-    char* cstr=const_cast<char*>(str.c_str());
-    char* current;
-    vector<string> arr;
-    current=strtok(cstr,sep.c_str());
-    while(current!=NULL){
-        arr.push_back(current);
-        current=strtok(NULL,sep.c_str());
-    }
-    return arr;
+vector<string> split(string str, string sep) {
+    char* cstr = const_cast<char*>(str.c_str());
+    char* current;
+    vector<string> arr;
+    current = strtok(cstr, sep.c_str());
+    while(current != NULL) {
+        arr.push_back(current);
+        current = strtok(NULL, sep.c_str());
+    }
+    return arr;
 }
 
 int main() {
@@ -163,7 +164,7 @@ int main() {
 
             right_param_vector = split(right_param_vector[1], ":");
             //query_param_tree.set_right_filter(right_param_vector);
-            cout << "Processing Query.."
+            cout << "Processing Query..";
             //QueryResults results = processQuery(query_param_tree);
 
         } else {
