@@ -1,4 +1,4 @@
-#include "../integration/geometry-collection.h"
+#include "geometry-collection.h"
 
 class QueryTree {
     vector<string> root;
