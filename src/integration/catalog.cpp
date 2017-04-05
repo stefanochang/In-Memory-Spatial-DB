@@ -1,4 +1,7 @@
+#ifndef CATALOG_H
 #include "catalog.h"
+#endif
+
 using namespace std;
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType) {
