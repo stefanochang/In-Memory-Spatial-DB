@@ -1,5 +1,5 @@
-#ifndef GEOMETRY_COLLECTION_H
-#include "geometry-collection.h"
+#ifndef DATA_STORAGE_H
+#include "../data-storage/data-storage.h"
 #endif
 
 #ifndef QUERY_PROCESSING_H

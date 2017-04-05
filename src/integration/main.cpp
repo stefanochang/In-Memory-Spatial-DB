@@ -1,8 +1,14 @@
+#ifndef QUERY_PROCESSING_H
+#include "query-processing.h"
+#endif
+
+#ifndef CATALOG_H
+#include "catalog.h"
+#endif
+
 #include <iostream>
 #include <vector>
 #include <string.h>
-#include "query-processing.h"
-#include "catalog.h"
 
 using namespace std;
 int get_geom_type_from_string(string geom) {
