@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string.h>
+#include "query-processing.h"
+#include "catalog.h"
 
 using namespace std;
 int get_geom_type_from_string(string geom) {
@@ -42,6 +44,7 @@ vector<vector<string> > get_predicates_from_string(string predicates) {
 int main() {
     while(1) {
         string query, cmd;
+        Catalog catalog = Catalog::getInstance();
         cout << "\nPlease, enter your query: ";
         getline (cin, query);
         vector<string> query_tokens = split(query, " ");            
@@ -68,15 +71,15 @@ int main() {
             int left_param_end = query_param.find("]"); 
             string left_branch = query_param.substr(1, left_param_end-1);            
             
-            //QueryTree query = new QueryTree();
+            // QueryTree query = new QueryTree();
             vector<string> collection_details = split(left_branch.substr(0, left_branch.find("|")), " ");
             if(collection_details[0] == "POINT") {
-                //query.setLeftPoints(Catalog.getPointCollectionByName(collection_details[1], collection_details[2]));
+                // query.setLeftPoints(catalog.getPointCollectionByName(collection_details[1], collection_details[2]));
             } else {
-                //query.setLeftRectangles(Catalog.getRectangleCollectionByName(collection_details[1], collection_details[2]));
+                // query.setLeftRectangles(catalog.getRectangleCollectionByName(collection_details[1], collection_details[2]));
             }
             vector<vector<string> > left_filter_param = get_predicates_from_string(left_branch);
-            //query.setLeftFilter(left_filter_param);
+            // query.setLeftFilter(left_filter_param);
 
 
         } else {

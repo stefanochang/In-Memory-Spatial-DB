@@ -1,3 +1,6 @@
+#ifndef GEOMETRY_COLLECTION_H
+#define GEOMETRY_COLLECTION_H
+
 #include<vector>
 #include "geometry.h"
 #include "../data-storage/list.h"
@@ -91,3 +94,5 @@ class RectangleRectangleCollection : public list {
     string getDBName();
     string getTableName();
 };
+
+#endif

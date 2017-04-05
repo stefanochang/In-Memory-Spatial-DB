@@ -1,3 +1,6 @@
+#ifndef CATALOG_H
+#define CATALOG_H
+
 #include "spatial-index-interface.h"
 #include <map>
 class CatalogItem {
@@ -40,7 +43,15 @@ public:
 //To be defined as a Singleton Class.
 class Catalog {
   vector<CatalogItem*> catalogList;  
+  Catalog() {}
+  // Catalog(Catalog const&);              // Don't Implement.
+  // void operator=(Catalog const&);
 public:
+  static Catalog& getInstance()
+  {
+      static Catalog instance;
+      return instance;
+  }
   CatalogItem* getCatalogItem(string, string);
   int remove(string, string);
   int insert(CatalogItem*);
@@ -55,3 +66,5 @@ public:
   PointCollection* getPointCollectionByName(string, string);
   RectangleCollection* getRectangleCollectionByName(string, string);
 };
+
+#endif
