@@ -56,8 +56,13 @@ void list::appendLast(geometry *geom)
   }
   else
   {
-    record* tmp_head = head->prev;
-    tmp_head->next = initRecord(curr_id++, geom, head, tmp_head);
+    record *tmp_head,*previous;
+    tmp_head = initRecord(curr_id++, geom, head, head);
+    previous = head->prev;
+    tmp_head->next = head;
+    tmp_head->prev = head->prev;
+    previous->next = tmp_head;
+    head->prev = tmp_head;
   }
   count++;
 }
@@ -252,17 +257,18 @@ Point* list::getPointByUUID(string table_name, int objectId)
   }
   else
   {
-    while(head != NULL)
+    record *temp = head;
+    do
     {
-      if(head->id == objectId && head->isDeleted == false)
+      if(temp->id == objectId && head->isDeleted == false)
       {
-        float x = head->geom->pnt->x;
-        float y = head->geom->pnt->y;
+        float x = temp->geom->pnt->x;
+        float y = temp->geom->pnt->y;
         Point* pt = new Point(x, y);
         return pt;
       }
-      head = head->next;
-    }
+      temp = temp->next;
+    }while(temp != head);
     return NULL;
   }
 }
@@ -685,7 +691,7 @@ vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionI
 }
 
 
-int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct)
+PointCollection* loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct)
 {
   FILE *fp;
   float x, y, x1, y1;
@@ -713,7 +719,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       pntcollection->appendLast(g);
     }
     //catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
-    return pntcollection->getSize();
+    return pntcollection;
   }
   else if(geomtype == TYPE_RECTANGLE)
   {
@@ -730,11 +736,9 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       rectanglecollection->appendLast(g);
     }
     //catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
-    return rectanglecollection->getSize();
+    //return rectanglecollection->getSize();
   }
   //Catalog.insert(catItem);
-
-  return -1;
 }
 
 // Insert a single point

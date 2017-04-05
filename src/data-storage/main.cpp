@@ -16,5 +16,7 @@ int main()
 
 int callLoadData()
 {
-  return loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
+  PointCollection *pntclctn = loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
+  Point pnt = pntclctn->getById(2);
+  cout<<pntclctn->getSize();
 }
