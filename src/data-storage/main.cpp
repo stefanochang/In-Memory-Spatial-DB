@@ -6,6 +6,7 @@
 
 using namespace std;
 int callLoadData();
+int callLoadDataBulk();
 int callGetSize();
 void test_deleteData();
 void test_insertData();
@@ -13,12 +14,24 @@ int main()
 {
   int status;
   cout<<"Returned status:"<<callGetSize()<<endl;
+  cout<<"Load Bulk Data:"<<callLoadDataBulk()<<endl;
   return 0;
 }
 
 int callLoadData()
 {
   loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
+}
+
+int callLoadDataBulk()
+{
+  PointCollection *pc1 = new PointCollection();
+  PointCollection *pc2 = new PointCollection();
+  Point *p = new Point(1.0,1.0);
+  Point *q = new Point(2.0,2.0);
+  pc1->insert(*p);
+  pc1->insert(*q);
+  return pc2->insertBulk(*pc1);
 }
 
 int callGetSize()
@@ -81,4 +94,3 @@ void test_deleteData(){
       cout << pntcollection->getSize();
 
 }
-
