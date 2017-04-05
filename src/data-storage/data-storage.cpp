@@ -450,11 +450,11 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
 }
 
 int PointCollection::insert(Point point) {
-  return insertData(*this,point);
+  return insertData(this,point);
 }
 
 int PointCollection::insertBulk(PointCollection collection) {
-  return insertDataBulk(*this, collection);
+  return insertDataBulk(this, collection);
 }
 
 /*int PointCollection::remove(Point point) {
@@ -515,11 +515,11 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
 
 // insertData wrapper required to pass string table name and geometry
 int RectangleCollection::insert(Rectangle rectangle) {
-  return insertData(*this,rectangle);
+  return insertData(this,rectangle);
 }
 
 int RectangleCollection::insertBulk(RectangleCollection collection) {
-  return insertDataBulk(*this, collection);
+  return insertDataBulk(this, collection);
 }
 
 // deleteData wrapper required to pass string table name and geometry
@@ -552,11 +552,11 @@ PointPoint PointPointCollection::getById(int id) {
 }
 
 int PointPointCollection::insert(PointPoint pntpnt) {
-  return insertData(*this,pntpnt);
+  return insertData(this,pntpnt);
 }
 
 int PointPointCollection::insertBulk(PointPointCollection collection) {
-  return insertDataBulk(*this, collection);
+  return insertDataBulk(this, collection);
 }
 
 vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
@@ -605,11 +605,11 @@ RectangleRectangle RectangleRectangleCollection::getById(int id) {
 }
 
 int RectangleRectangleCollection::insert(RectangleRectangle recrec) {
-  return insertData(*this,recrec);
+  return insertData(this,recrec);
 }
 
 int RectangleRectangleCollection::insertBulk(RectangleRectangleCollection collection) {
-  return insertDataBulk(*this, collection);
+  return insertDataBulk(this, collection);
 }
 
 vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int transactionId) {
@@ -658,11 +658,11 @@ PointRectangle PointRectangleCollection::getById(int id) {
 }
 
 int PointRectangleCollection::insert(PointRectangle pntrec) {
-  return insertData(*this,pntrec);
+  return insertData(this,pntrec);
 }
 
 int PointRectangleCollection::insertBulk(PointRectangleCollection collection) {
-  return insertDataBulk(*this, collection);
+  return insertDataBulk(this, collection);
 }
 
 vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionId) {
@@ -743,7 +743,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 }
 
 // Insert a single point
-bool insertData(list pointsRepo, Point pointToInsert)
+bool insertData(list *pointsRepo, Point pointToInsert)
 {
   geometry *g;
   point *pnt;
@@ -752,12 +752,12 @@ bool insertData(list pointsRepo, Point pointToInsert)
   g->pnt = pnt;
   g->pnt->x = pointToInsert.getCoordinates()[0];
   g->pnt->y = pointToInsert.getCoordinates()[1];
-  pointsRepo.appendLast(g);
+  pointsRepo->appendLast(g);
   return true;
 }
 
 //insert a single rectangle
-bool insertData(list rectanglesRepo, Rectangle rectangleToInsert)
+bool insertData(list *rectanglesRepo, Rectangle rectangleToInsert)
 {
   geometry *g;
   rectangle *rec;
@@ -768,13 +768,13 @@ bool insertData(list rectanglesRepo, Rectangle rectangleToInsert)
   g->rec->top_y = rectangleToInsert.getCoordinates()[1];
   g->rec->bottom_x = rectangleToInsert.getCoordinates()[2];
   g->rec->bottom_y = rectangleToInsert.getCoordinates()[3];
-  rectanglesRepo.appendLast(g);
+  rectanglesRepo->appendLast(g);
   return true;
 }
 
 
 //insert a single pointpoint
-bool insertData(list pointpointrepo, PointPoint pntpntToInsert)
+bool insertData(list *pointpointrepo, PointPoint pntpntToInsert)
 {
   geometry *g;
   pointpoint *pntpnt;
@@ -785,12 +785,12 @@ bool insertData(list pointpointrepo, PointPoint pntpntToInsert)
   g->pntpnt->point1.y = pntpntToInsert.getCoordinates()[1];
   g->pntpnt->point2.x = pntpntToInsert.getCoordinates()[2];
   g->pntpnt->point2.y = pntpntToInsert.getCoordinates()[3];
-  pointpointrepo.appendLast(g);
+  pointpointrepo->appendLast(g);
   return true;
 }
 
 //insert a single PointRectangle
-bool insertData(list recpointrepo, PointRectangle pntrectangleToInsert)
+bool insertData(list *recpointrepo, PointRectangle pntrectangleToInsert)
 {
   geometry *g;
   pointrectangle *pntrec;
@@ -803,12 +803,12 @@ bool insertData(list recpointrepo, PointRectangle pntrectangleToInsert)
   g->pntrec->rec.top_y = pntrectangleToInsert.getCoordinates()[3];
   g->pntrec->rec.bottom_x = pntrectangleToInsert.getCoordinates()[4];
   g->pntrec->rec.bottom_y = pntrectangleToInsert.getCoordinates()[5];
-  recpointrepo.appendLast(g);
+  recpointrepo->appendLast(g);
   return true;
 }
 
 //insert a single RectangleRectangle
-bool insertData(list recrectanglesRepo, RectangleRectangle recrectangleToInsert)
+bool insertData(list *recrectanglesRepo, RectangleRectangle recrectangleToInsert)
 {
   geometry *g;
   rectanglerectangle *recrec;
@@ -823,17 +823,17 @@ bool insertData(list recrectanglesRepo, RectangleRectangle recrectangleToInsert)
   g->recrec->rec2.top_y = recrectangleToInsert.getCoordinates()[5];
   g->recrec->rec2.bottom_x = recrectangleToInsert.getCoordinates()[6];
   g->recrec->rec2.bottom_y = recrectangleToInsert.getCoordinates()[7];
-  recrectanglesRepo.appendLast(g);
+  recrectanglesRepo->appendLast(g);
   return true;
 }
 
 //insert a list of items
-bool insertDataBulk(list repo, list geometryToInsert)
+bool insertDataBulk(list *repo, list geometryToInsert)
 {
   record * geometryToInsertPointer = geometryToInsert.getHead();
 
   do{
-    switch(repo.getType()) {
+    switch(repo->getType()) {
       case TYPE_POINT: insertData(repo, *(new Point(geometryToInsertPointer->geom->pnt->x, geometryToInsertPointer->geom->pnt->y))); break;
       case TYPE_RECTANGLE: insertData(repo, *(new Rectangle(geometryToInsertPointer->geom->rec->top_x, geometryToInsertPointer->geom->rec->top_y,geometryToInsertPointer->geom->rec->bottom_x, geometryToInsertPointer->geom->rec->bottom_y))); break;
       case TYPE_RECTANGLERECTANGLE: insertData(repo, *(new RectangleRectangle(geometryToInsertPointer->geom->recrec->rec1.top_x, geometryToInsertPointer->geom->recrec->rec1.top_y,geometryToInsertPointer->geom->recrec->rec1.bottom_x, geometryToInsertPointer->geom->recrec->rec1.bottom_y, geometryToInsertPointer->geom->recrec->rec2.top_x, geometryToInsertPointer->geom->recrec->rec2.top_y,geometryToInsertPointer->geom->recrec->rec2.bottom_x, geometryToInsertPointer->geom->recrec->rec2.bottom_y))); break;
