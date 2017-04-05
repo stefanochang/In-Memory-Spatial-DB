@@ -1,4 +1,7 @@
 #include "data-storage.h"
+#ifndef "../integration/catalog.h"
+#include "../integration/catalog.h"
+#endif
 #include <map>
 using namespace std;
 map<int, record *> getmap;
@@ -706,7 +709,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
   rectangle *rct;
   PointCollection *pntcollection;
   RectangleCollection *rectanglecollection;
-  //CatalogItem *catItem;
+  CatalogItem *catItem;
   fp = fopen(filepath.c_str(), "r");
   if(fp == NULL)
   {
@@ -724,8 +727,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       g->pnt = pnt;
       pntcollection->appendLast(g);
     }
-    //catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
-    return 1;
+    catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
   }
   else if(geomtype == TYPE_RECTANGLE)
   {
@@ -741,12 +743,15 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       g->rec = rct;
       rectanglecollection->appendLast(g);
     }
-    //catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
-    return 1;
+    catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
   }
-  //Catalog instance = Catalog::getInstance();
-  //instance.insert(catItem);
-  return -1;
+  else
+  {
+    return -1;
+  }
+  Catalog instance = Catalog::getInstance();
+  instance.insert(catItem);
+  return 1;
 }
 
 // Insert a single point
