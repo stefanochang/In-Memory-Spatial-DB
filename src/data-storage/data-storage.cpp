@@ -1,4 +1,7 @@
 #include "data-storage.h"
+#ifndef CATALOG_H
+#include "../integration/catalog.h"
+#endif
 #include <map>
 using namespace std;
 map<int, record *> getmap;
@@ -260,7 +263,7 @@ Point* list::getPointByUUID(string table_name, int objectId)
     record *temp = head;
     do
     {
-      if(temp->id == objectId && head->isDeleted == false)
+      if(temp->id == objectId && temp->isDeleted == false)
       {
         float x = temp->geom->pnt->x;
         float y = temp->geom->pnt->y;
@@ -283,19 +286,20 @@ Rectangle* list::getRectangleByUUID(string table_name, int objectId)
   }
   else
   {
-    while(head != NULL)
+    record *temp=head;
+    do
     {
-      if(head->id == objectId && head->isDeleted == false)
+      if(temp->id == objectId && temp->isDeleted == false)
       {
-        float x1 = head->geom->rec->top_x;
-        float y1 = head->geom->rec->top_y;
-        float x2 = head->geom->rec->bottom_x;
-        float y2 = head->geom->rec->bottom_y;
+        float x1 = temp->geom->rec->top_x;
+        float y1 = temp->geom->rec->top_y;
+        float x2 = temp->geom->rec->bottom_x;
+        float y2 = temp->geom->rec->bottom_y;
         Rectangle* rec = new Rectangle(x1, y1, x2, y2);
         return rec;
       }
-      head = head->next;
-    }
+      temp = temp->next;
+    }while(temp != head);
     return NULL;
   }
 }
@@ -428,7 +432,7 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
   vector<Point> points;
   Point *newPoint;
   record *from;
-  int rdcnt=0;
+  int rdcnt=n;
   if(getmap.find(transactionId) != getmap.end())
   {
     from = 	getmap.find(transactionId)->second;
@@ -438,14 +442,17 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
   {
     from = head;
   }
-  while(rdcnt < n and from != head->prev)
+  do
   {
     if(from->isDeleted)
-    continue;
+      continue;
     newPoint = new Point(from->geom->pnt->x, from->geom->pnt->y);
     points.push_back(*newPoint);
     free(newPoint);
-  }
+    from = from->next;
+    rdcnt--;
+  }while(from != head && rdcnt > 0);
+  getmap.insert(std::pair<int,record*>(transactionId,from));
   return points; // change name if wrapper function name changes
 }
 
@@ -492,7 +499,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   vector<Rectangle> rectangles;
   Rectangle *newRectangle;
   record *from;
-  int rdcnt=0;
+  int rdcnt=n;
   if(getmap.find(transactionId) != getmap.end())
   {
     from = 	getmap.find(transactionId)->second;
@@ -502,14 +509,16 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   {
     from = head;
   }
-  while(rdcnt < n and from != head->prev)
+  do
   {
     if(from->isDeleted)
-    continue;
+     continue;
     newRectangle = new Rectangle(from->geom->rec->top_x, from->geom->rec->top_y,from->geom->rec->bottom_x, from->geom->rec->bottom_y);
     rectangles.push_back(*newRectangle);
     free(newRectangle);
-  }
+    from = from->next;
+  }while(from != head && rdcnt > 0);
+  getmap.insert(std::pair<int,record*>(transactionId,from));
   return rectangles; // change name if wrapper function name changes
 }
 
@@ -700,7 +709,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
   rectangle *rct;
   PointCollection *pntcollection;
   RectangleCollection *rectanglecollection;
-  //CatalogItem *catItem;
+  CatalogItem *catItem;
   fp = fopen(filepath.c_str(), "r");
   if(fp == NULL)
   {
@@ -718,8 +727,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       g->pnt = pnt;
       pntcollection->appendLast(g);
     }
-    //catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
-    return 1;
+    catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
   }
   else if(geomtype == TYPE_RECTANGLE)
   {
@@ -735,11 +743,15 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       g->rec = rct;
       rectanglecollection->appendLast(g);
     }
-    //catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
-    return 1;
+    catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
   }
-  return -1;
-  //Catalog.insert(catItem);
+  else
+  {
+    return -1;
+  }
+  Catalog instance = Catalog::getInstance();
+  instance.insert(catItem);
+  return 1;
 }
 
 // Insert a single point

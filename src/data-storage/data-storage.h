@@ -1,3 +1,6 @@
+#ifndef DATASTORAGE_H
+#define DATASTORAGE_H
+
 #include "ds_datatypes.h"
 #include "ds_constants.h"
 #include "../integration/geometry.h"
@@ -62,7 +65,6 @@ class PointCollection : public list {
     vector<Point> getNext(int n=1, int transaction_id=1);
     int insert(Point);
     int insertBulk(PointCollection);
-    // bool isEmpty();
     int remove(Point);
     int removeById(int);  // size of PointCollection
     string getDBName();
@@ -82,7 +84,6 @@ class RectangleCollection : public list {
     int insertBulk(RectangleCollection);
     int remove(Rectangle);
     int removeById(int);
-    // bool isEmpty();
     string getDBName();
     string getTableName();
 };
@@ -98,7 +99,6 @@ class PointPointCollection : public list {
     vector<PointPoint> getNext(int n=1, int transaction_id=1);
     int insert(PointPoint);
     int insertBulk(PointPointCollection);
-    // bool isEmpty();
     string getDBName();
     string getTableName();
 };
@@ -114,7 +114,6 @@ class PointRectangleCollection : public list {
     vector<PointRectangle> getNext(int n=1, int transaction_id=1);
     int insert(PointRectangle);
     int insertBulk(PointRectangleCollection);
-    // bool isEmpty();
     string getDBName();
     string getTableName();
 };
@@ -130,7 +129,6 @@ class RectangleRectangleCollection : public list {
     vector<RectangleRectangle> getNext(int n=1,int transaction_id=1);
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
-    // bool isEmpty();
     string getDBName();
     string getTableName();
 };
@@ -161,3 +159,5 @@ bool insertDataBulk(list *repo, list geometryToInsert);
 
 //delete item with id equals geomid
 bool deleteData(list repo, int geomId);
+
+#endif
