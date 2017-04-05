@@ -71,19 +71,20 @@ int main() {
             int left_param_end = query_param.find("]"); 
             string left_branch = query_param.substr(1, left_param_end-1);            
             
-            QueryTree query = new QueryTree();
+            QueryTree* query;
             vector<string> left_collection_details = split(left_branch.substr(0, left_branch.find("|")), " ");
             if(left_collection_details[0].compare("POINT") == 0) {
-                // query.setLeftPoints(catalog.getPointCollectionByName(left_collection_details[1], left_collection_details[2]));
+                PointCollection pc = *catalog.getPointCollectionByName(left_collection_details[1], left_collection_details[2]);
+                query->setLeftPoints(pc);
             } else {
-                // query.setLeftRectangles(catalog.getRectangleCollectionByName(left_collection_details[1], left_collection_details[2]));
+                query->setLeftRectangles(*catalog.getRectangleCollectionByName(left_collection_details[1], left_collection_details[2]));
             }
             vector<vector<string> > left_filter_param = get_predicates_from_string(left_branch);
-            query.setLeftFilter(left_filter_param);
+            // query.setLeftFilter(left_filter_param);
             int root_param_end = query_param.substr(left_param_end+3).find("]");            
             string root = query_param.substr(left_param_end+3, root_param_end);
             vector<string> root_filter_param = split(root, ":");
-            query.setRoot(root_filter_param);
+            // query.setRoot(root_filter_param);
 
             int right_param_end = query_param.substr(left_param_end+root_param_end+6).find("]"); 
             string right_branch = query_param.substr(left_param_end+root_param_end+6, right_param_end);            
@@ -95,7 +96,7 @@ int main() {
                 // query.setRightRectangles(catalog.getRectangleCollectionByName(right_collection_details[1], right_collection_details[2]));
             }
             vector<vector<string> > right_filter_param = get_predicates_from_string(right_branch);
-            query.setRightFilter(right_filter_param);
+            // query.setRightFilter(right_filter_param);
             // QueryResult result = processQuery(query);
                         
 
