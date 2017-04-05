@@ -61,3 +61,24 @@ void test_insertData()
     cout << pntcollection->getSize();
 }
 
+
+void test_deleteData(){
+
+      PointCollection *pntcollection;
+      pntcollection = new PointCollection();
+
+      Point *p1;
+      p1 = new Point(12.34, 10.34);
+
+      Point *p2;
+      p2 = new Point(12.35, 10.34);
+
+      cout << pntcollection->insert(*p1);
+      cout << pntcollection->insert(*p2);
+      cout << pntcollection->getSize();
+
+      cout << pntcollection->removeById(1);
+      cout << pntcollection->getSize();
+
+}
+
