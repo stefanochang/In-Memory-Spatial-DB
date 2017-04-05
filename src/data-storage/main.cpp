@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 bool testGetNextSingle() {
   PointCollection *pc = new PointCollection();
 

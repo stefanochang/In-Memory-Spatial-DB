@@ -1,4 +1,5 @@
 #include "data-storage.h"
+
 #ifndef CATALOG_H
 #include "../integration/catalog.h"
 #endif
@@ -263,6 +264,7 @@ Point* list::getPointByUUID(string table_name, int objectId)
     record *temp = head;
     do
     {
+
       if(temp->id == objectId && temp->isDeleted == false)
       {
         float x = temp->geom->pnt->x;
@@ -286,6 +288,7 @@ Rectangle* list::getRectangleByUUID(string table_name, int objectId)
   }
   else
   {
+
     record *temp=head;
     do
     {
@@ -432,6 +435,7 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
   vector<Point> points;
   Point *newPoint;
   record *from;
+
   int rdcnt=n;
   if(getmap.find(transactionId) != getmap.end())
   {
@@ -442,6 +446,7 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
   {
     from = head;
   }
+
   do
   {
     if(from->isDeleted)
@@ -499,6 +504,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   vector<Rectangle> rectangles;
   Rectangle *newRectangle;
   record *from;
+
   int rdcnt=n;
   if(getmap.find(transactionId) != getmap.end())
   {
@@ -509,6 +515,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   {
     from = head;
   }
+
   do
   {
     if(from->isDeleted)
@@ -709,6 +716,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
   rectangle *rct;
   PointCollection *pntcollection;
   RectangleCollection *rectanglecollection;
+
   CatalogItem *catItem;
   fp = fopen(filepath.c_str(), "r");
   if(fp == NULL)
@@ -727,6 +735,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       g->pnt = pnt;
       pntcollection->appendLast(g);
     }
+
     catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
   }
   else if(geomtype == TYPE_RECTANGLE)
@@ -743,6 +752,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       g->rec = rct;
       rectanglecollection->appendLast(g);
     }
+
     catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
   }
   else

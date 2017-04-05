@@ -1,8 +1,21 @@
+// #ifndef DATA_STORAGE_H
+// #include "../data-storage/data-storage.h"
+// #endif
+
+#ifndef QUERY_PROCESSING_H
+#include "query-processing.h"
+#endif
+
+#ifndef CATALOG_H
+#include "../integration/catalog.h"
+#endif
+
 #include <iostream>
 #include <vector>
 #include <string.h>
-#include "query-processing.h"
-#include "catalog.h"
+
+// #include "catalog.h"
+
 
 using namespace std;
 int get_geom_type_from_string(string geom) {
@@ -75,7 +88,7 @@ int main() {
         if(query_tokens[0].compare("LOAD") == 0) {            
             if(is_param_sufficient(query_tokens, 6)) { 
                 int collection_structure = 2;
-                //loadData(query_tokens[1], query_tokens[2], get_geom_type_from_string(query_tokens[3]), query_tokens[4], collection_structure);                 
+                loadData(query_tokens[1], query_tokens[2], get_geom_type_from_string(query_tokens[3]), query_tokens[4], collection_structure);                 
                 cout << "Loaded " << query_tokens[3] << " data collection into " << query_tokens[1] << "." << query_tokens[2] <<
                  " from " << query_tokens[4]; 
             }
@@ -121,7 +134,7 @@ int main() {
             }
             vector<vector<string> > right_filter_param = get_predicates_from_string(right_branch);
             // query.setRightFilter(right_filter_param);
-            // QueryResult result = processQuery(query);
+            QueryResult result = processQuery(query);
                         
 
         } else if(query_tokens[0].compare("EXIT") == 0) {
