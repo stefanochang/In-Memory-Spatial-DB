@@ -50,25 +50,14 @@ void list::appendLast(geometry *geom)
 {
   if(head == NULL)
   {
-    head = initRecord(curr_id++, geom, head, head); /*(record *)malloc(sizeof(record));
-    head->geom = geom;
-    head->id = curr_id++;
-    head->isDeleted = false;
-    head->inDegree = 0;
+    head = initRecord(curr_id++, geom, head, head);
     head->next = head;
-    head->prev = head;*/
+    head->prev = head;
   }
   else
   {
     record* tmp_head = head->prev;
-    tmp_head->next = initRecord(curr_id++, geom, head, tmp_head); /*(record *)malloc(sizeof(record));
-    record* tmp = tmp_head->next;
-    tmp->next = head;
-    tmp->prev = tmp_head;
-    tmp->id = curr_id++;
-    tmp->isDeleted = false;
-    tmp->inDegree = 0;
-    tmp->geom = geom;*/
+    tmp_head->next = initRecord(curr_id++, geom, head, tmp_head);
   }
   count++;
 }
@@ -724,6 +713,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       pntcollection->appendLast(g);
     }
     //catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
+    return pntcollection->getSize();
   }
   else if(geomtype == TYPE_RECTANGLE)
   {
@@ -740,14 +730,11 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       rectanglecollection->appendLast(g);
     }
     //catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
-  }
-  else
-  {
-    return 0;
+    return rectanglecollection->getSize();
   }
   //Catalog.insert(catItem);
 
-  return 1;
+  return -1;
 }
 
 // Insert a single point
