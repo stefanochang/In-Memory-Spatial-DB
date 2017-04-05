@@ -41,6 +41,14 @@ bool testGetNextMultiple() {
   bool testResultPointCoordinates2 = resultPointCoordinates2[0] == 3 && resultPointCoordinates2[1] == 4;
 
   return testResultSize && testResultPointCoordinates && testResultPointCoordinates2;
+
+int callLoadData();
+int callGetSize();
+int main()
+{
+  int status;
+  cout<<"Returned status:"<<callGetSize()<<endl;
+  return 0;
 }
 
 bool testGetNext() {
@@ -49,7 +57,6 @@ bool testGetNext() {
 
 int main()
 {
-
     //loadData("mdd","ddd",1,"ddd",2);
     //return 0;
 
@@ -58,4 +65,22 @@ int main()
   PointCollection *pntclctn = loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
   Point pnt = pntclctn->getById(2);
   cout<<pntclctn->getSize();
+
+  loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
+}
+
+int callGetSize()
+{
+  PointCollection *pntcollection;
+  pntcollection = new PointCollection();
+
+  Point *p1;
+  p1 = new Point(12.34, 10.34);
+
+  Point *p2;
+  p2 = new Point(12.35, 10.34);
+  pntcollection->insert(*p1);
+  pntcollection->insert(*p2);
+
+  return pntcollection->getSize();
 }
