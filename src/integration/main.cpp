@@ -41,6 +41,30 @@ vector<vector<string> > get_predicates_from_string(string predicates) {
     return predicate_vector;
 }
 
+/*
+void print_query_result(QueryResult resultset) {
+    switch(resultset->resultType) {
+        case TYPE_POINT:        
+            vector<PointCollection> geoms = resultset->pointCollection->getNext(resultset->pointCollection->getSize());
+            for(int i=0; i< geoms.size(); i++) {
+                vector<float> coords = geoms[i]->getCoordinates();
+                cout << coords[0]  << " " << coords[1] << endl;   
+            }
+            break;
+        case TYPE_RECTANGLE:
+            break;
+        case TYPE_POINTPOINT:
+            break;
+        case TYPE_POINTRECTANGLE:
+            break;
+        case TYPE_RECTANGLERECTANGLE:
+            break;
+        default:
+            cout << "ERROR: Unknown Collection Type." << endl;
+    }
+}
+*/
+
 int main() {
     while(1) {
         string query, cmd;
@@ -103,7 +127,7 @@ int main() {
         } else if(query_tokens[0].compare("EXIT") == 0) {
             exit(0);
         } else {
-            cout << "Invalid command\n";        
+            cout << "ERROR: Invalid command" << endl;        
         }
     }
     return 0;
