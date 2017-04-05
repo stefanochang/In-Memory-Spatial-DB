@@ -1,4 +1,6 @@
+#ifndef DATASTORAGE_H
 #include "data-storage.h"
+#endif
 #ifndef CATALOG_H
 #include "../integration/catalog.h"
 #endif
@@ -493,6 +495,10 @@ RectangleCollection::RectangleCollection(string name, string databaseName, int c
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
+  vector<Rectangle>::iterator it;
+  for(it=rectangles.begin() ; it < rectangles.end(); it++ ) {
+    insertData(this,*it);
+  }
 }
 
 Rectangle RectangleCollection::getById(int id) {
@@ -732,7 +738,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       g->pnt = pnt;
       pntcollection->appendLast(g);
     }
-    catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
+    catItem = new CatalogItem(dbName, tableName, collectionStruct, (PointCollection *)pntcollection);
   }
   else if(geomtype == TYPE_RECTANGLE)
   {
@@ -748,7 +754,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       g->rec = rct;
       rectanglecollection->appendLast(g);
     }
-    catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
+    catItem = new CatalogItem(dbName, tableName, collectionStruct, (RectangleCollection *)rectanglecollection);
   }
   else
   {
