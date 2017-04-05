@@ -691,7 +691,7 @@ vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionI
 }
 
 
-PointCollection* loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct)
+int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct)
 {
   FILE *fp;
   float x, y, x1, y1;
@@ -719,7 +719,7 @@ PointCollection* loadData(string dbName, string tableName, int geomtype, string 
       pntcollection->appendLast(g);
     }
     //catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
-    return pntcollection;
+    return 1;
   }
   else if(geomtype == TYPE_RECTANGLE)
   {
@@ -736,8 +736,9 @@ PointCollection* loadData(string dbName, string tableName, int geomtype, string 
       rectanglecollection->appendLast(g);
     }
     //catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
-    //return rectanglecollection->getSize();
+    return 1;
   }
+  return -1;
   //Catalog.insert(catItem);
 }
 
