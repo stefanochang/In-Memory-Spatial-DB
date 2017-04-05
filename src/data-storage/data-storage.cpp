@@ -1,5 +1,5 @@
 #include "data-storage.h"
-#ifndef "../integration/catalog.h"
+#ifndef CATALOG_H
 #include "../integration/catalog.h"
 #endif
 #include <map>
