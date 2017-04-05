@@ -420,6 +420,11 @@ PointCollection::PointCollection(string name, string databaseName, int collectio
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
+
+  vector<Point>::iterator it;
+  for(it=points.begin() ; it < points.end(); it++ ) {
+    insertData(this,*it);
+  }
 }
 
 Point PointCollection::getById(int id) {
