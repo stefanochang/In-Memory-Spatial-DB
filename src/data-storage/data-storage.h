@@ -14,8 +14,7 @@ class list
 		head == NULL;
 		curr_id = 0;
 	}
-
-	public:
+public:
 	list();
 	list(int type);
 	~list();
@@ -65,8 +64,7 @@ class PointCollection : public list {
     int insertBulk(PointCollection);
     bool isEmpty();
     int remove(Point);
-    int removeById(int);
-    int getSize();  // size of PointCollection
+    int removeById(int);  // size of PointCollection
     string getDBName();
     string getTableName();
 };
@@ -85,7 +83,6 @@ class RectangleCollection : public list {
     int remove(Rectangle);
     int removeById(int);
     bool isEmpty();
-    int getSize();
     string getDBName();
     string getTableName();
 };
@@ -102,7 +99,6 @@ class PointPointCollection : public list {
     int insert(PointPoint);
     int insertBulk(PointPointCollection);
     bool isEmpty();
-    int getSize();
     string getDBName();
     string getTableName();
 };
@@ -119,7 +115,6 @@ class PointRectangleCollection : public list {
     int insert(PointRectangle);
     int insertBulk(PointRectangleCollection);
     bool isEmpty();
-    int getSize();
     string getDBName();
     string getTableName();
 };
@@ -136,7 +131,6 @@ class RectangleRectangleCollection : public list {
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
     bool isEmpty();
-    int getSize();
     string getDBName();
     string getTableName();
 };
@@ -145,24 +139,24 @@ class RectangleRectangleCollection : public list {
 int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct);
 
 // Insert a single point
-bool insertData(list pointsRepo, Point pointToInsert);
+bool insertData(list *pointsRepo, Point pointToInsert);
 
 //insert a single rectangle
-bool insertData(list rectanglesRepo, Rectangle rectangleToInsert);
+bool insertData(list *rectanglesRepo, Rectangle rectangleToInsert);
 
 
 //insert a single pointpoint
-bool insertData(list pointpointrepo, PointPoint pntpntToInsert);
+bool insertData(list *pointpointrepo, PointPoint pntpntToInsert);
 
 
 //insert a single PointRectangle
-bool insertData(list recpointrepo, PointRectangle pntrectangleToInsert);
+bool insertData(list *recpointrepo, PointRectangle pntrectangleToInsert);
 
 //insert a single RectangleRectangle
-bool insertData(list recrectanglesRepo, RectangleRectangle recrectangleToInsert);
+bool insertData(list *recrectanglesRepo, RectangleRectangle recrectangleToInsert);
 
 //insert a list of items
-bool insertDataBulk(list repo, list geometryToInsert);
+bool insertDataBulk(list *repo, list geometryToInsert);
 
 
 //delete item with id equals geomid
