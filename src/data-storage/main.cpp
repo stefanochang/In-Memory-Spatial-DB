@@ -49,8 +49,13 @@ bool testGetNext() {
 
 int main()
 {
+
     //loadData("mdd","ddd",1,"ddd",2);
     //return 0;
 
     cout << "Result for getNext: " << testGetNext();
+
+  PointCollection *pntclctn = loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
+  Point pnt = pntclctn->getById(2);
+  cout<<pntclctn->getSize();
 }
