@@ -3,6 +3,8 @@
 #include <string.h>
 #include "query-processing.h"
 #include "catalog.h"
+#include "../spatial-partitioning-indexing/SpatialIndexInterface.h"
+#include "../data-partioning-indexing/"
 
 using namespace std;
 int get_geom_type_from_string(string geom) {
@@ -45,6 +47,7 @@ int main() {
     while(1) {
         string query, cmd;
         Catalog catalog = Catalog::getInstance();
+        SpatialIndexInterface spatialIndexInterface = new SpatialIndexInterface();
         cout << "\nPlease, enter your query: ";
         getline (cin, query);
         vector<string> query_tokens = split(query, " ");            
@@ -57,10 +60,26 @@ int main() {
             }
         }  else  if(query_tokens[0].compare("CREATE") == 0) {
             if(is_param_sufficient(query_tokens, 3)) {
-                if(query_tokens[1].compare("SPATIAL-INDEX")) {
-                    //Class name unknown.
-                } else if(query_tokens[1].compare("DATA-INDEX")) {
-                    //Class name unknown.
+                if(query_tokens[1].compare("SPATIAL-INDEX") == 0){
+                    if(query_tokens[2].compare("POINT-COLLECTION") == 0){
+                        PointCollection* pc = catalog.getPointCollectionByName("","PointCollection");
+                        spatialIndexInterface.createIndex(pc);
+                    } else if (query_tokens[2].compare("RECTANGLE-COLLECTION") == 0){
+                        RectangleCollection* rc = catalog.getRectangleCollectionByName("", "RectangleCollection");
+                        spatialIndexInterface.createIndex(rc);
+                    } else {
+                        cout << "Invalid collection type.\n";
+                    }
+                } else if (query_tokens[1].compare("DATA-INDEX") == 0) {
+                    if(query_tokens[2].compare("POINT-COLLECTION") == 0){
+                        PointCollection* pc = catalog.getPointCollectionByName("","PointCollection");
+                        
+                    } else if (query_tokens[2].compare("RECTANGLE-COLLECTION") == 0){
+                        RectangleCollection* rc = catalog.getRectangleCollectionByName("", "RectangleCollection");
+
+                    } else {
+                        cout << "Invalid collection type.\n";
+                    }
                 } else {
                     cout << "Invalid index type.\n";                             
                 }
