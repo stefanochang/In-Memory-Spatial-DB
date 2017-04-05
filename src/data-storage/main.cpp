@@ -5,9 +5,16 @@
 #include "data-storage.h"
 
 using namespace std;
-
+int callLoadData();
 int main()
 {
-    loadData("mdd","ddd",1,"ddd",2);
+    int status;
+    status = callLoadData();
+    cout<<"Returned status:"<<status<<endl;
     return 0;
+}
+
+int callLoadData()
+{
+  return loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
 }
