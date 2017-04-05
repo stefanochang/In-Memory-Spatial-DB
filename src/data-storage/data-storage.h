@@ -14,8 +14,7 @@ class list
 		head == NULL;
 		curr_id = 0;
 	}
-
-	public:
+public:
 	list();
 	list(int type);
 	~list();
@@ -65,8 +64,7 @@ class PointCollection : public list {
     int insertBulk(PointCollection);
     bool isEmpty();
     int remove(Point);
-    int removeById(int);
-    int getSize();  // size of PointCollection
+    int removeById(int);  // size of PointCollection
     string getDBName();
     string getTableName();
 };
@@ -85,7 +83,6 @@ class RectangleCollection : public list {
     int remove(Rectangle);
     int removeById(int);
     bool isEmpty();
-    int getSize();
     string getDBName();
     string getTableName();
 };
@@ -102,7 +99,6 @@ class PointPointCollection : public list {
     int insert(PointPoint);
     int insertBulk(PointPointCollection);
     bool isEmpty();
-    int getSize();
     string getDBName();
     string getTableName();
 };
@@ -119,7 +115,6 @@ class PointRectangleCollection : public list {
     int insert(PointRectangle);
     int insertBulk(PointRectangleCollection);
     bool isEmpty();
-    int getSize();
     string getDBName();
     string getTableName();
 };
@@ -136,7 +131,6 @@ class RectangleRectangleCollection : public list {
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
     bool isEmpty();
-    int getSize();
     string getDBName();
     string getTableName();
 };
