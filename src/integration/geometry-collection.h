@@ -1,9 +1,8 @@
-#include <vector>
+#include<vector>
 #include "geometry.h"
-#include "../data-storage/list.h"
 using namespace std;
 
-class PointCollection : public list{
+class PointCollection {
     vector<Point> points;    
     string name, databaseName; 
     int collectionStructure;
@@ -22,7 +21,7 @@ class PointCollection : public list{
     string getTableName();
 };
 
-class RectangleCollection : public list{
+class RectangleCollection {
     vector<Rectangle> rectangles;    
     string name, databaseName; 
     int collectionStructure;
@@ -41,7 +40,7 @@ class RectangleCollection : public list{
     string getTableName();
 };
 
-class PointPointCollection : public list{
+class PointPointCollection {
     vector<PointPoint> pointPoints;    
     string name, databaseName; 
     int collectionStructure;
@@ -58,7 +57,7 @@ class PointPointCollection : public list{
     string getTableName();
 };
 
-class PointRectangleCollection : public list{
+class PointRectangleCollection {
     vector<PointRectangle> pointRectangles;    
     string name, databaseName; 
     int collectionStructure;
@@ -75,7 +74,7 @@ class PointRectangleCollection : public list{
     string getTableName();
 };
 
-class RectangleRectangleCollection : public list{
+class RectangleRectangleCollection {
     vector<RectangleRectangle> rectangleRectangles;    
     string name, databaseName; 
     int collectionStructure;
