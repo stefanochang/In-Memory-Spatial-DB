@@ -35,7 +35,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 			g->pnt = pnt;
 			pntcollection->appendLast(g);
 		}
-		catItem = new CatalogItem(dbName, tableName, *pntcollection);
+		catItem = new CatalogItem(dbName, tableName, (PointCollection *)pntcollection);
 	}
 	else if(geomtype == TYPE_RECTANGLE)
 	{
@@ -51,7 +51,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 			g->rec = rct;
 			rectanglecollection->appendLast(g);
 		}
-		catItem = new CatalogItem(dbName, tableName, *rectanglecollection);
+		catItem = new CatalogItem(dbName, tableName, (RectangleCollection *)rectanglecollection);
 	}
 	else
 	{

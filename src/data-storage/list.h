@@ -2,26 +2,33 @@
 #include <stdlib.h>
 #include "ds_constants.h"
 #include <string.h>
-#include <map>
 
 using namespace std;
-std::map<int, record *>getmap;
 class list
 {
+	protected:
 	int curr_id;
 	record* head;
 	short type;
 	int count;
 
-public:
-	list():head(NULL)/*, type(type)*/ {
+	void initList() {
+		head == NULL;
 		curr_id = 0;
-		count = 0;
 	}
-	list(int type):list() {
-		//head = NULL;
-		this->type = type;
-		//curr_id = 0;
+
+	public:
+	list()/*:head(NULL), type(type)*/ {
+  		//curr_id = 0;
+			initList();
+			count = 0;
+	}
+	list(int type)/*:list() */ {
+			initList();
+			//head = NULL;
+			this->type = type;
+			//curr_id = 0;
+
 	}
 	~list()	{
 		record *tmp1,*tmp;
@@ -34,22 +41,24 @@ public:
 				tmp = head->next;
 				free(head);
 				head = tmp;
+
 			}
 			free(head);
 		}
 	}
 
-	record initRecord(int id, geometry geom, record next, record previous) {
-		record newRecord = (record *)malloc(sizeof(record));
-		newRecord->id = id;
-		newRecord->geom = geom;
-		newRecord->next = next;
-		newRecord->prev = prev;
 
-		newRecord->isDeleted = false;
-		newRecord->inDegree = 0;
+		record * initRecord(int id, geometry * geom, record * next, record * previous) {
+			record * newRecord = (record *)malloc(sizeof(record));
+			newRecord->id = id;
+			newRecord->geom = geom;
+			newRecord->next = next;
+			newRecord->prev = previous;
 
-		return newRecord;
+			newRecord->isDeleted = false;
+			newRecord->inDegree = 0;
+
+			return newRecord;
 	}
 
 	void appendLast(geometry *geom)
@@ -76,9 +85,8 @@ public:
 			tmp->inDegree = 0;
 			tmp->geom = geom;*/
 		}
+		count++;
 	}
-	count++;
-}
 
 void appendFirst(geometry *geom)
 {
@@ -126,11 +134,12 @@ void appendSortedX(geometry *geom)
 	}
 	else
 	{
-		record* newNode = (record *)malloc(sizeof(record));
-		newNode->geom = geom;
-		newNode->id = curr_id++;
-		newNode->isDeleted = false;
-		newNode->inDegree = 0;
+		// record* newNode = (record *)malloc(sizeof(record));
+		// newNode->geom = geom;
+		// newNode->id = curr_id++;
+		// newNode->isDeleted = false;
+		// newNode->inDegree = 0;
+		record* newNode = initRecord(curr_id++, geom, NULL, NULL);
 		record* current = head;
 		record* previous = head->prev;
 		while(current->next != head)
@@ -170,11 +179,12 @@ void appendSortedY(geometry *geom)
 	}
 	else
 	{
-		record* newNode = (record *)malloc(sizeof(record));
-		newNode->geom = geom;
-		newNode->id = curr_id++;
-		newNode->isDeleted = false;
-		newNode->inDegree = 0;
+		// record* newNode = (record *)malloc(sizeof(record));
+		// newNode->geom = geom;
+		// newNode->id = curr_id++;
+		// newNode->isDeleted = false;
+		// newNode->inDegree = 0;
+		record* newNode = initRecord(curr_id++, geom, NULL, NULL);
 		record* current = head;
 		record* previous = head->prev;
 		while(current->next != head)
@@ -407,71 +417,6 @@ short getType() {
 
 int getCount()	{
 	return count;
-}
-void *getnext_base(int n, int transactionId)
-{
-	record *from;
-	Point **pnts;
-	Rectangle **recs;
-	PointPoint **pntpnt;
-	PointRectangle **pntrec;
-	RectangleRectangle **recrec;
-	int rdcnt=0;
-	if(getmap.find(transactionId) != getmap.end())
-	{
-		from = 	getmap.find(transactionId)->second;
-		from->inDegree--;
-	}
-	else
-	{
-		from = head;
-	}
-	while(rdcnt < n and from != head->prev)
-	{
-		if(from->isDeleted)
-		continue;
-		switch(type)
-		{
-			case TYPE_POINT:
-			pnts[rdcnt++] = new Point(from->geom->pnt->x, from->geom->pnt->y);
-			break;
-			case TYPE_RECTANGLE:
-			recs[rdcnt++] = new Rectangle(from->geom->rec->top_x, from->geom->rec->top_y,from->geom->rec->bottom_x, from->geom->rec->bottom_y);
-			break;
-			case TYPE_POINTPOINT:
-			pntpnt[rdcnt++] = new PointPoint(from->geom->pntpnt->point1.x, from->geom->pntpnt->point1.y, from->geom->pntpnt->point2.x, from->geom->pntpnt->point2.y);
-			break;
-			case TYPE_POINTRECTANGLE:
-			pntrec[rdcnt++] = new PointRectangle(from->geom->pntrec->point1.x, from->geom->pntrec->point1.y, from->geom->pntrec->rec.top_x, from->geom->pntrec->rec.top_y,from->geom->pntrec->rec.bottom_x, from->geom->pntrec->rec.bottom_y);
-			break;
-			case TYPE_RECTANGLERECTANGLE:
-			recrec[rdcnt++] = new RectangleRectangle(from->geom->recrec->rec1.top_x, from->geom->recrec->rec1.top_y,from->geom->recrec->rec1.bottom_x, from->geom->recrec->rec1.bottom_y, from->geom->recrec->rec2.top_x, from->geom->recrec->rec2.top_y,from->geom->recrec->rec2.bottom_x, from->geom->recrec->rec2.bottom_y);
-			break;
-		}
-		from = from->next;
-	}
-	getmap.erase(transactionId);
-	if(from != head->prev)
-	{
-		getmap[transactionId] = from;
-	}
-	if(type == TYPE_POINT)
-	{
-		return *pnts;
-	}
-	if(type == TYPE_RECTANGLE)
-	{
-		return *recs;
-	}
-	if(type == TYPE_POINTPOINT)
-	{
-		return *pntpnt;
-	}
-	if(type == TYPE_POINTRECTANGLE)
-	{
-		return *pntrec;
-	}
-	return *recrec;
 }
 
 bool isEmpty() {
