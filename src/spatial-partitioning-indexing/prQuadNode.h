@@ -2,11 +2,11 @@
 // Created by ravichandran on 18/03/17.
 //
 
-#ifndef ADVDBTEST_PRQUADNODE_H
-#define ADVDBTEST_PRQUADNODE_H
+#ifndef IN_MEMORY_SPATIAL_DB_PRQUADNODE_H
+#define IN_MEMORY_SPATIAL_DB_PRQUADNODE_H
 
-#include "QuadTreeLib.h"
-#include "QBoundingBox.h"
+#include "quadTreeLib.h"
+#include "qBoundingBox.h"
 
 class prQuadNode
 {
@@ -18,8 +18,8 @@ protected:
 public:
 
     int height;
-    QBoundingBox qbb;
-    vector<QPoint> points;
+    qBoundingBox qbb;
+    vector<qPoint> points;
     prQuadNode *prqnNW;
     prQuadNode *prqnNE;
     prQuadNode *prqnSW;
@@ -27,11 +27,11 @@ public:
 
 
     prQuadNode() {}
-    prQuadNode(QBoundingBox QBB)
+    prQuadNode(qBoundingBox QBB)
     {
         height = 0;
         leafCapacity = 4;
-        maxHeight = 20;
+        maxHeight = 25;
         (*this).qbb = QBB;
         (*this).prqnNW = NULL;
         (*this).prqnNE = NULL;
@@ -43,8 +43,8 @@ public:
     {
         height = 0;
         leafCapacity = 4;
-        maxHeight = 20;
-        QBoundingBox *QBB = new QBoundingBox(originX, originY, width, height);
+        maxHeight = 25;
+        qBoundingBox *QBB = new qBoundingBox(originX, originY, width, height);
         (*this).qbb = *QBB;
         (*this).prqnNW = NULL;
         (*this).prqnNE = NULL;
@@ -59,7 +59,7 @@ public:
     }
 
 
-    bool insert(QPoint *point)
+    bool insert(qPoint *point)
     {
 
         if ( !qbb.containsPoint(point) || ( isLeaf() && point->isIn(points) ) )
@@ -80,7 +80,7 @@ public:
     }
 
 
-    bool insertIntoChildren(QPoint *point)
+    bool insertIntoChildren(qPoint *point)
     {
 
         if (prqnNW->insert(point)) return true;
@@ -100,23 +100,23 @@ public:
         float current_x = qbb.getX() + w;
         float current_y = qbb.getY() + h;
 
-        QPoint *pNW = new QPoint(current_x-w,current_y);
-        QBoundingBox *qbbNW = new QBoundingBox( pNW, w, h);
+        qPoint *pNW = new qPoint(current_x-w,current_y);
+        qBoundingBox *qbbNW = new qBoundingBox( pNW, w, h);
         this->prqnNW = new prQuadNode(*qbbNW);
         this->prqnNW->height = this->height + 1;
 
-        QPoint *pNE = new QPoint(current_x,current_y);
-        QBoundingBox *qbbNE = new QBoundingBox( pNE, w, h);
+        qPoint *pNE = new qPoint(current_x,current_y);
+        qBoundingBox *qbbNE = new qBoundingBox( pNE, w, h);
         this->prqnNE = new prQuadNode(*qbbNE);
         this->prqnNE->height = this->height + 1;
 
-        QPoint *pSW = new QPoint(current_x-w,current_y-h);
-        QBoundingBox *qbbSW =new QBoundingBox( pSW, w, h);
+        qPoint *pSW = new qPoint(current_x-w,current_y-h);
+        qBoundingBox *qbbSW =new qBoundingBox( pSW, w, h);
         this->prqnSW = new prQuadNode(*qbbSW);
         this->prqnSW->height = this->height + 1;
 
-        QPoint *pSE = new QPoint(current_x,current_y-h);
-        QBoundingBox *qbbSE =new QBoundingBox( pSE, w, h);
+        qPoint *pSE = new qPoint(current_x,current_y-h);
+        qBoundingBox *qbbSE =new qBoundingBox( pSE, w, h);
         this->prqnSE = new prQuadNode(*qbbSE);
         this->prqnSE->height = this->height + 1;
 
@@ -126,7 +126,7 @@ public:
         points.clear();
     }
 
-     void queryRange(QBoundingBox range, vector<QPoint> &pointsInRange) {
+     void queryRange(qBoundingBox range, vector<qPoint> &pointsInRange) {
 
         if (!(*this).qbb.intersectsBox(range))
             return;
@@ -183,4 +183,4 @@ public:
 
 
 
-#endif //ADVDBTEST_PRQUADNODE_H
+#endif //IN_MEMORY_SPATIAL_DB_PRQUADNODE_H

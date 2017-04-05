@@ -1,5 +1,14 @@
-#include "data-storage.h"
+#ifndef QUERY_PROCESSING_H
+#include "query-processing.h"
+#endif
+
+#ifndef CATALOG_H
+#include "catalog.h"
+#endif
+
 #include <iostream>
+#include <vector>
+#include <string.h>
 
 using namespace std;
 int get_geom_type_from_string(string geom) {
@@ -17,28 +26,62 @@ bool is_param_sufficient(vector<string> tokens, int required_params) {
     return true;
 }
 
-vector<string> split(string str,string sep){
-    char* cstr=const_cast<char*>(str.c_str());
-    char* current;
-    vector<string> arr;
-    current=strtok(cstr,sep.c_str());
-    while(current!=NULL){
-        arr.push_back(current);
-        current=strtok(NULL,sep.c_str());
-    }
-    return arr;
+vector<string> split(string str, string sep) {
+    char* cstr = const_cast<char*>(str.c_str());
+    char* current;
+    vector<string> arr;
+    current = strtok(cstr, sep.c_str());
+    while(current != NULL) {
+        arr.push_back(current);
+        current = strtok(NULL, sep.c_str());
+    }
+    return arr;
 }
+
+vector<vector<string> > get_predicates_from_string(string predicates) {
+    vector<string> left_params = split(predicates, "|");
+    vector<vector<string> > predicate_vector;
+    for(int i=1; i<= left_params.size(); i++) {
+        predicate_vector.push_back(split(left_params[i], ":"));   
+    }
+    return predicate_vector;
+}
+
+/*
+void print_query_result(QueryResult resultset) {
+    switch(resultset->resultType) {
+        case TYPE_POINT:        
+            vector<PointCollection> geoms = resultset->pointCollection->getNext(resultset->pointCollection->getSize());
+            for(int i=0; i< geoms.size(); i++) {
+                vector<float> coords = geoms[i]->getCoordinates();
+                cout << coords[0]  << " " << coords[1] << endl;   
+            }
+            break;
+        case TYPE_RECTANGLE:
+            break;
+        case TYPE_POINTPOINT:
+            break;
+        case TYPE_POINTRECTANGLE:
+            break;
+        case TYPE_RECTANGLERECTANGLE:
+            break;
+        default:
+            cout << "ERROR: Unknown Collection Type." << endl;
+    }
+}
+*/
 
 int main() {
     while(1) {
         string query, cmd;
+        Catalog catalog = Catalog::getInstance();
         cout << "\nPlease, enter your query: ";
         getline (cin, query);
         vector<string> query_tokens = split(query, " ");            
         if(query_tokens[0].compare("LOAD") == 0) {            
             if(is_param_sufficient(query_tokens, 6)) { 
-                int collection_structure = 1;
-                //loadData(query_tokens[1], query_tokens[2], query_tokens[3], query_tokens[4], collection_structure);                 
+                int collection_structure = 2;
+                //loadData(query_tokens[1], query_tokens[2], get_geom_type_from_string(query_tokens[3]), query_tokens[4], collection_structure);                 
                 cout << "Loaded " << query_tokens[3] << " data collection into " << query_tokens[1] << "." << query_tokens[2] <<
                  " from " << query_tokens[4]; 
             }
@@ -55,119 +98,42 @@ int main() {
             }      
         } else if(query_tokens[0].compare("SELECT") == 0) {    
             string query_param = query.substr(7);
-            int left_param_end = query.substr(7).find("]");     
-            string left_param = query_param.substr(1, left_param_end-1);
-
-            int root_param_end = query_param.substr(left_param_end + 1).find("]");     
-            string root_param = query_param.substr(
-                left_param_end + query_param.substr(left_param_end).find("[") + 1, 
-                root_param_end-2);
-
-            int right_param_end = query_param.substr(left_param_end + root_param_end + 2).find("]");     
-            string right_param = query_param.substr(
-                left_param_end + root_param_end + 
-                query_param.substr(left_param_end + root_param_end).find("[") + 1, 
-                right_param_end-2);
-
-            //QueryTree query_param_tree = new QueryTree();
-            /*Root Parameter */
-            vector<string> root_param_vector = split(root_param, "|");
-            vector<string> root;
-            if(root_param_vector.size() > 1 ){
-                root.push_back(root_param_vector[0]);
-                root_param_vector = split(root_param_vector[1], ":");
-                root.insert(root.end(), root_param_vector.begin(), root_param_vector.end());                
-                //query_param_tree.set_root(root);
-            }            
-
-            //PointCollection leftPoints, rightPoints;
-            //RectangleCollection leftRectangle, rightRectangle;
-            //SpatialIndexInterface leftData, rightData;
-
-            /*Left Parameter */
-            vector<string> left_param_vector = split(left_param, "|");
-            bool isLeftPoint = false; 
-            vector<string> left_collection_meta_data = split(left_param_vector[0], " ");
-            if(left_collection_meta_data[0].compare("RECTANGLE") == 0) {
-                //leftRectangles = Catalog.getRectanlgesByName(left_collection_meta_data[1])
-            } else{
-                isLeftPoint = true;
-                //leftPoints = Catalog.getPointsByName(left_collection_meta_data[1])
-            }
-
-            bool isLeftIndexed = false;
-            if(left_param.find("WITH-SPATIAL-INDEX") != string::npos) {
-                isLeftIndexed = true;
-                if(isLeftPoint) {
-                    //leftData.createIndex(leftPoints)
-                } else {
-                    //leftData.createIndex(leftRectangles)
-                }                
-                //query_param_tree.set_left_indexed_object(leftData);
-
-            } else if(left_param.find("WITH-DATA-INDEX") != string::npos) {
-                isLeftIndexed = true;                
-                if(isLeftPoint) {
-                    //leftData.createIndex(leftPoints)
-                } else {
-                    //leftData.createIndex(leftRectangles)
-                }                
-                //query_param_tree.set_left_indexed_object(leftData);
+            int left_param_end = query_param.find("]"); 
+            string left_branch = query_param.substr(1, left_param_end-1);            
+            
+            QueryTree* query;
+            vector<string> left_collection_details = split(left_branch.substr(0, left_branch.find("|")), " ");
+            if(left_collection_details[0].compare("POINT") == 0) {
+                PointCollection pc = *catalog.getPointCollectionByName(left_collection_details[1], left_collection_details[2]);
+                query->setLeftPoints(pc);
             } else {
-                if(isLeftPoint) {
-                    //query_param_tree.set_left_points(leftPoints);
-                } else {
-                    //query_param_tree.set_left_rectangles(leftRectangles);
-                }
+                query->setLeftRectangles(*catalog.getRectangleCollectionByName(left_collection_details[1], left_collection_details[2]));
             }
+            vector<vector<string> > left_filter_param = get_predicates_from_string(left_branch);
+            // query.setLeftFilter(left_filter_param);
+            int root_param_end = query_param.substr(left_param_end+3).find("]");            
+            string root = query_param.substr(left_param_end+3, root_param_end);
+            vector<string> root_filter_param = split(root, ":");
+            // query.setRoot(root_filter_param);
 
-            left_param_vector = split(left_param_vector[1], ":");
-            //query_param_tree.set_left_filter(left_param_vector);
-
-             /*Right Parameter */
-            vector<string> right_param_vector = split(right_param, "|");
-            bool isRightPoint = false; 
-            vector<string> right_collection_meta_data = split(right_param_vector[0], " ");
-            if(right_collection_meta_data[0].compare("RECTANGLE") == 0) {
-                //rightRectangles = Catalog.getRectanlgesByName(right_collection_meta_data[1])
-            } else{
-                isRightPoint = true;
-                //rightPoints = Catalog.getPointsByName(right_collection_meta_data[1])
-            }
-
-            bool isRightIndexed = false;
-            if(right_param.find("WITH-SPATIAL-INDEX") != string::npos) {
-                isRightIndexed = true;
-                if(isRightPoint) {
-                    //rightData.createIndex(rightPoints)
-                } else {
-                    //rightData.createIndex(rightRectangles)
-                }                
-                //query_param_tree.set_right_indexed_object(rightData);
-
-            } else if(right_param.find("WITH-DATA-INDEX") != string::npos) {
-                isRightIndexed = true;                
-                if(isRightPoint) {
-                    //rightData.createIndex(rightPoints)
-                } else {
-                    //rightData.createIndex(rightRectangles)
-                }                
-                //query_param_tree.set_right_indexed_object(rightData);
+            int right_param_end = query_param.substr(left_param_end+root_param_end+6).find("]"); 
+            string right_branch = query_param.substr(left_param_end+root_param_end+6, right_param_end);            
+            
+            vector<string> right_collection_details = split(right_branch.substr(0, right_branch.find("|")), " ");
+            if(right_collection_details[0].compare("POINT") == 0) {
+                // query.setRightPoints(catalog.getPointCollectionByName(right_collection_details[1], right_collection_details[2]));
             } else {
-                if(isRightPoint) {
-                    //query_param_tree.set_right_points(rightPoints);
-                } else {
-                    //query_param_tree.set_right_rectangles(rightRectangles);
-                }
+                // query.setRightRectangles(catalog.getRectangleCollectionByName(right_collection_details[1], right_collection_details[2]));
             }
+            vector<vector<string> > right_filter_param = get_predicates_from_string(right_branch);
+            // query.setRightFilter(right_filter_param);
+            // QueryResult result = processQuery(query);
+                        
 
-            right_param_vector = split(right_param_vector[1], ":");
-            //query_param_tree.set_right_filter(right_param_vector);
-            cout << "Processing Query.."
-            //QueryResults results = processQuery(query_param_tree);
-
+        } else if(query_tokens[0].compare("EXIT") == 0) {
+            exit(0);
         } else {
-            cout << "Invalid command\n";        
+            cout << "ERROR: Invalid command" << endl;        
         }
     }
     return 0;

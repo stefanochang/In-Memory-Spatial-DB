@@ -1,0 +1,3 @@
+LOAD adb pointColl POINT arealm.csv 1
+SELECT [RECTANGLE rectCollName|filterBy:area:ge:5] [|] [|]
+SELECT [POINT pointCollName|KNN:Point(0,5):10] [|] [|]

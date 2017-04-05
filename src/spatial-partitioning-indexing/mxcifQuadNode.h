@@ -2,11 +2,11 @@
 // Created by ravichandran on 19/03/17.
 //
 
-#ifndef ADVDBTEST_MXCIFQUADNODE_H
-#define ADVDBTEST_MXCIFQUADNODE_H
+#ifndef IN_MEMORY_SPATIAL_DB_MXCIFQUADNODE_H
+#define IN_MEMORY_SPATIAL_DB_MXCIFQUADNODE_H
 
-#include "QuadTreeLib.h"
-#include "QBoundingBox.h"
+#include "quadTreeLib.h"
+#include "qBoundingBox.h"
 
 class mxcifQuadNode
 {
@@ -18,8 +18,8 @@ protected:
 
 public:
 
-    QBoundingBox qbb;
-    vector<QBoundingBox> rectangles;
+    qBoundingBox qbb;
+    vector<qBoundingBox> rectangles;
     mxcifQuadNode *mxqnNW;
     mxcifQuadNode *mxqnNE;
     mxcifQuadNode *mxqnSW;
@@ -27,10 +27,10 @@ public:
 
 
     mxcifQuadNode() {}
-    mxcifQuadNode(QBoundingBox QBB)
+    mxcifQuadNode(qBoundingBox QBB)
     {
-        minHeight = 0;
-        minWidth = 0;
+        minHeight = 1;
+        minWidth = 1;
         (*this).qbb = QBB;
         (*this).mxqnNW = NULL;
         (*this).mxqnNE = NULL;
@@ -40,9 +40,9 @@ public:
     }
     mxcifQuadNode(int originX, int originY, float width, float height)
     {
-        minHeight = 0;
-        minWidth = 0;
-        QBoundingBox *QBB = new QBoundingBox(originX, originY, width, height);
+        minHeight = 1;
+        minWidth = 1;
+        qBoundingBox *QBB = new qBoundingBox(originX, originY, width, height);
         (*this).qbb = *QBB;
         (*this).mxqnNW = NULL;
         (*this).mxqnNE = NULL;
@@ -56,15 +56,15 @@ public:
     }
 
 
-    bool insert(QBoundingBox * box)
+    bool insert(qBoundingBox * box)
     {
 
         // Ignore objects which do not belong in this quad tree
         if (!qbb.intersectsBox(*box))
             return false; // object cannot be added
-//        TODO - Spatail Indexing Team - Rectangles contains logic,check if a bounding box is contained within given rctangles vector of mxcifquadnode
-//        if (rectangles.contains(box))
-//            return true; // already exists
+//        TODO - Spatial Indexing Team - Rectangles contains logic,check if a bounding box is contained within given rectangles vector of mxcifquadnode
+        if(box->isIn(rectangles))
+            return true;
 
         // Subdivide then add the objects to whichever node will accept it
         if (isLeaf())
@@ -87,7 +87,7 @@ public:
     }
 
 
-    bool insertIntoChildren(QBoundingBox *box)
+    bool insertIntoChildren(qBoundingBox *box)
     {
         if (mxqnNW->qbb.insideThis(*box) && mxqnNW->insert(box)) return true;
         if (mxqnNE->qbb.insideThis(*box) && mxqnNE->insert(box)) return true;
@@ -96,7 +96,7 @@ public:
         return false;
     }
 
-    bool subdivide(QBoundingBox *box)
+    bool subdivide(qBoundingBox *box)
     {
         float h = qbb.getHeight()/2;
         float w = qbb.getWidth()/2;
@@ -106,30 +106,30 @@ public:
         float current_y = qbb.getY() + h;
 
 
-        QPoint *pNW = new QPoint(current_x-w,current_y);
-        QBoundingBox *qbbNW = new QBoundingBox( pNW, w, h);
+        qPoint *pNW = new qPoint(current_x-w,current_y);
+        qBoundingBox *qbbNW = new qBoundingBox( pNW, w, h);
         this->mxqnNW = new mxcifQuadNode(*qbbNW);
 
 
-        QPoint *pNE = new QPoint(current_x,current_y);
-        QBoundingBox *qbbNE = new QBoundingBox( pNE, w, h);
+        qPoint *pNE = new qPoint(current_x,current_y);
+        qBoundingBox *qbbNE = new qBoundingBox( pNE, w, h);
         this->mxqnNE = new mxcifQuadNode(*qbbNE);
 
 
-        QPoint *pSW = new QPoint(current_x-w,current_y-h);
-        QBoundingBox *qbbSW =new QBoundingBox( pSW, w, h);
+        qPoint *pSW = new qPoint(current_x-w,current_y-h);
+        qBoundingBox *qbbSW =new qBoundingBox( pSW, w, h);
         this->mxqnSW = new mxcifQuadNode(*qbbSW);
 
 
-        QPoint *pSE = new QPoint(current_x,current_y-h);
-        QBoundingBox *qbbSE =new QBoundingBox( pSE, w, h);
+        qPoint *pSE = new qPoint(current_x,current_y-h);
+        qBoundingBox *qbbSE =new qBoundingBox( pSE, w, h);
         this->mxqnSE = new mxcifQuadNode(*qbbSE);
 
 
         return insertIntoChildren(box);
     }
 
-    void queryRange(QBoundingBox range, vector<QBoundingBox> &rectsInRange) {
+    void queryRange(qBoundingBox range, vector<qBoundingBox> &rectsInRange) {
 
         if (!(*this).qbb.intersectsBox(range))
             return;
@@ -182,4 +182,4 @@ public:
 
 };
 
-#endif //ADVDBTEST_MXCIFQUADNODE_H
+#endif //IN_MEMORY_SPATIAL_DB_MXCIFQUADNODE_H

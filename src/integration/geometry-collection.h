@@ -1,8 +1,12 @@
+#ifndef GEOMETRY_COLLECTION_H
+#define GEOMETRY_COLLECTION_H
+
 #include<vector>
 #include "geometry.h"
+#include "../data-storage/list.h"
 using namespace std;
 
-class PointCollection {
+class PointCollection : public list {
     vector<Point> points;    
     string name, databaseName; 
     int collectionStructure;
@@ -10,7 +14,7 @@ class PointCollection {
     PointCollection();
     PointCollection(string, string, int, vector<Point>);
     Point getById(int);
-    vector<Point> getNext(int n=1);
+    vector<Point> getNext(int n=1, int transaction_id=1);
     int insert(Point);
     int insertBulk(PointCollection);
     bool isEmpty();
@@ -21,7 +25,7 @@ class PointCollection {
     string getTableName();
 };
 
-class RectangleCollection {
+class RectangleCollection : public list {
     vector<Rectangle> rectangles;    
     string name, databaseName; 
     int collectionStructure;
@@ -29,7 +33,7 @@ class RectangleCollection {
     RectangleCollection();
     RectangleCollection(string, string, int, vector<Rectangle>);
     Rectangle getById(int);
-    vector<Rectangle> getNext(int n=1);
+    vector<Rectangle> getNext(int n=1, int transaction_id=1);
     int insert(Rectangle);
     int insertBulk(RectangleCollection);
     int remove(Rectangle);
@@ -40,7 +44,7 @@ class RectangleCollection {
     string getTableName();
 };
 
-class PointPointCollection {
+class PointPointCollection : public list {
     vector<PointPoint> pointPoints;    
     string name, databaseName; 
     int collectionStructure;
@@ -48,7 +52,7 @@ class PointPointCollection {
     PointPointCollection();
     PointPointCollection(string, string, int, vector<PointPoint>);
     PointPoint getById(int);
-    vector<PointPoint> getNext(int n=1);
+    vector<PointPoint> getNext(int n=1, int transaction_id=1);
     int insert(PointPoint);
     int insertBulk(PointPointCollection);
     bool isEmpty();
@@ -57,7 +61,7 @@ class PointPointCollection {
     string getTableName();
 };
 
-class PointRectangleCollection {
+class PointRectangleCollection : public list {
     vector<PointRectangle> pointRectangles;    
     string name, databaseName; 
     int collectionStructure;
@@ -65,7 +69,7 @@ class PointRectangleCollection {
     PointRectangleCollection();
     PointRectangleCollection(string, string, int, vector<PointRectangle>);
     PointRectangle getById(int);
-    vector<PointRectangle> getNext(int n=1);
+    vector<PointRectangle> getNext(int n=1, int transaction_id=1);
     int insert(PointRectangle);
     int insertBulk(PointRectangleCollection);
     bool isEmpty();
@@ -74,7 +78,7 @@ class PointRectangleCollection {
     string getTableName();
 };
 
-class RectangleRectangleCollection {
+class RectangleRectangleCollection : public list {
     vector<RectangleRectangle> rectangleRectangles;    
     string name, databaseName; 
     int collectionStructure;
@@ -82,7 +86,7 @@ class RectangleRectangleCollection {
     RectangleRectangleCollection();
     RectangleRectangleCollection(string, string, int, vector<RectangleRectangle>);
     RectangleRectangle getById(int);
-    vector<RectangleRectangle> getNext(int n=1);
+    vector<RectangleRectangle> getNext(int n=1, int transaction_id=1);
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
     bool isEmpty();
@@ -90,3 +94,5 @@ class RectangleRectangleCollection {
     string getDBName();
     string getTableName();
 };
+
+#endif
