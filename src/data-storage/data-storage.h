@@ -136,7 +136,7 @@ class RectangleRectangleCollection : public list {
 };
 
 //Initial data load supported for Points and Rectangles
-PointCollection* loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct);
+int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct);
 
 // Insert a single point
 bool insertData(list pointsRepo, Point pointToInsert);
