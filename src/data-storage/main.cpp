@@ -6,17 +6,31 @@
 
 using namespace std;
 int callLoadData();
+int callGetSize();
 int main()
 {
-    int status;
-    status = callLoadData();
-    cout<<"Returned status:"<<status<<endl;
-    return 0;
+  int status;
+  cout<<"Returned status:"<<callGetSize()<<endl;
+  return 0;
 }
 
 int callLoadData()
 {
-  PointCollection *pntclctn = loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
-  Point pnt = pntclctn->getById(2);
-  cout<<pntclctn->getSize();
+  loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
+}
+
+int callGetSize()
+{
+  PointCollection *pntcollection;
+  pntcollection = new PointCollection();
+
+  Point *p1;
+  p1 = new Point(12.34, 10.34);
+
+  Point *p2;
+  p2 = new Point(12.35, 10.34);
+  pntcollection->insert(*p1);
+  pntcollection->insert(*p2);
+
+  return pntcollection->getSize();
 }
