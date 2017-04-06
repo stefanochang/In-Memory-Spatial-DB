@@ -5,7 +5,7 @@
 #include "ds_constants.h"
 #include "../integration/geometry.h"
 
-class list
+class GeometryCollection
 {
 	protected:
 	int curr_id;
@@ -13,14 +13,14 @@ class list
 	short type;
 	int count;
 
-	void initList() {
+	void initGeometryCollection() {
 		head == NULL;
 		curr_id = 0;
 	}
 public:
-	list();
-	list(int type);
-	~list();
+	GeometryCollection();
+	GeometryCollection(int type);
+	~GeometryCollection();
 
 
 	record * initRecord(int id, geometry * geom, record * next, record * previous);
@@ -54,7 +54,7 @@ public:
 	bool isEmpty();
 };
 
-class PointCollection : public list {
+class PointCollection : public GeometryCollection {
     vector<Point> points;
     string name, databaseName;
     int collectionStructure;
@@ -71,7 +71,7 @@ class PointCollection : public list {
     string getTableName();
 };
 
-class RectangleCollection : public list {
+class RectangleCollection : public GeometryCollection {
     vector<Rectangle> rectangles;
     string name, databaseName;
     int collectionStructure;
@@ -88,7 +88,7 @@ class RectangleCollection : public list {
     string getTableName();
 };
 
-class PointPointCollection : public list {
+class PointPointCollection : public GeometryCollection {
     vector<PointPoint> pointPoints;
     string name, databaseName;
     int collectionStructure;
@@ -103,7 +103,7 @@ class PointPointCollection : public list {
     string getTableName();
 };
 
-class PointRectangleCollection : public list {
+class PointRectangleCollection : public GeometryCollection {
     vector<PointRectangle> pointRectangles;
     string name, databaseName;
     int collectionStructure;
@@ -118,7 +118,7 @@ class PointRectangleCollection : public list {
     string getTableName();
 };
 
-class RectangleRectangleCollection : public list {
+class RectangleRectangleCollection : public GeometryCollection {
     vector<RectangleRectangle> rectangleRectangles;
     string name, databaseName;
     int collectionStructure;
@@ -137,27 +137,27 @@ class RectangleRectangleCollection : public list {
 int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct);
 
 // Insert a single point
-bool insertData(list *pointsRepo, Point pointToInsert);
+bool insertData(GeometryCollection *pointsRepo, Point pointToInsert);
 
 //insert a single rectangle
-bool insertData(list *rectanglesRepo, Rectangle rectangleToInsert);
+bool insertData(GeometryCollection *rectanglesRepo, Rectangle rectangleToInsert);
 
 
 //insert a single pointpoint
-bool insertData(list *pointpointrepo, PointPoint pntpntToInsert);
+bool insertData(GeometryCollection *pointpointrepo, PointPoint pntpntToInsert);
 
 
 //insert a single PointRectangle
-bool insertData(list *recpointrepo, PointRectangle pntrectangleToInsert);
+bool insertData(GeometryCollection *recpointrepo, PointRectangle pntrectangleToInsert);
 
 //insert a single RectangleRectangle
-bool insertData(list *recrectanglesRepo, RectangleRectangle recrectangleToInsert);
+bool insertData(GeometryCollection *recrectanglesRepo, RectangleRectangle recrectangleToInsert);
 
-//insert a list of items
-bool insertDataBulk(list *repo, list geometryToInsert);
+//insert a GeometryCollection of items
+bool insertDataBulk(GeometryCollection *repo, GeometryCollection geometryToInsert);
 
 
 //delete item with id equals geomid
-bool deleteData(list repo, int geomId);
+bool deleteData(GeometryCollection repo, int geomId);
 
 #endif
