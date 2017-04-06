@@ -20,3 +20,14 @@ a.out
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
+
+#IDE Related Files
+
+*.iml
+**/.idea/*
+**/.idea/workspace.xml
+**/.idea/libraries
+
+# Clion
+**/cmake-build-debug/*
+*CMakeLists.txt

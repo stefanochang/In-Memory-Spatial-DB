@@ -1,4 +1,5 @@
-#include "Test/testCases.h"
+
+#include "spatialTests/testCasesSpatialIndexing.h"
 
 using namespace std;
 

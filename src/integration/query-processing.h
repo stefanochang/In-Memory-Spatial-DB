@@ -1,11 +1,10 @@
+
+#ifndef DATA_STORAGE_H
+#include "../data-storage/data-storage.h"
+#endif
+
 #ifndef QUERY_PROCESSING_H
 #define QUERY_PROCESSING_H
-
-
-
-#include <string>
-#include <vector>
-#include "geometry-collection.h"
 
 #define INVALID 0
 #define TYPE_POINT 1
