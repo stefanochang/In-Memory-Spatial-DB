@@ -44,11 +44,11 @@ For 'Range Join":
 
 ```
 1. filterBy
- Area on RectangeCollection
+	Area on RectangeCollection
 		a. Filter by area
 			{ “filterBy”, “area”, op, value }
 			Example: { “filterBy”, “area”, “le”, “10” }
- Distance on PointCollection & RectangleCollection:
+	Distance on PointCollection & RectangleCollection:
 		b. point:
 			{ “filterBy”, “distance”, op, dist_value, x, y }
 			Example: { “filterBy”, “distance”, “ge”, “15”, “2”, “3.3” }
@@ -58,12 +58,12 @@ For 'Range Join":
 		op can be any of: “lt”, ”gt”, ”le”, ”ge”, ”eq”
 
 2. kNN
-a. For PointCollection:
-	{ “kNN”, k, x, y } // where k is any int value
-	Example: { “kNN”, k, “2”, “3.3” }
-b. For RectangleCollection:
-	{ “kNN”, k, x1, y1, x2, y2 } // where k is any int value
-	Example: { “kNN”, k, “25.6”, “2.5”, “2.5”, “3”, “1” }
+	a. For PointCollection:
+		{ “kNN”, k, x, y } // where k is any int value
+		Example: { “kNN”, k, “2”, “3.3” }
+	b. For RectangleCollection:
+		{ “kNN”, k, x1, y1, x2, y2 } // where k is any int value
+		Example: { “kNN”, k, “25.6”, “2.5”, “2.5”, “3”, “1” }
 
 3. objectsInRange
 	{ “objectsInRange”, “pt1”, “pt2”, “pt3”, “pt4” }
