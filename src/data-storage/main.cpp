@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
+#ifndef DATASTORAGE_H
 #include "data-storage.h"
+#endif
 
 using namespace std;
 
@@ -80,6 +82,16 @@ int callLoadData();
 int callLoadDataBulk();
 int callGetSize();
 
+int testAddVector()
+{
+  PointCollection *pntCollection;
+  Point *pnt1 = new Point(5.5, 6.5);
+  Point *pnt2 = new Point(4, 6.7);
+  vector<Point> vecpnt = {*pnt1, *pnt2};
+  pntCollection = new PointCollection("djdhd","djhdjh", 1, vecpnt);
+  return pntCollection->getSize();
+}
+
 bool testGetNext() {
   return testGetNextSingle() && testGetNextMultiple() && testGetNextState();
 }
@@ -89,10 +101,10 @@ int main()
     //loadData("mdd","ddd",1,"ddd",2);
     //return 0;
     int status;
-    cout<<"Returned status:"<<callGetSize()<<endl;
+    cout<<"Returned status:"<<testAddVector()<<endl;
     //return 0;
 
-    cout << "\n\nResult for getNext: " << testGetNext();
+    //cout << "\n\nResult for getNext: " << testGetNext();
 
   //loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
 
