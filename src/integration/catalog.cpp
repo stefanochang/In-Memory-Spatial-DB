@@ -11,27 +11,37 @@ CatalogItem::CatalogItem(string dbName, string tableName, int collectionType) {
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, PointCollection* pointCollection) {
-    CatalogItem(dbName, tableName, collectionType);
+    this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->points = pointCollection;
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, RectangleCollection* rectangleCollection) {
-	CatalogItem(dbName, tableName, collectionType);
+	this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->rectangles = rectangleCollection;
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, PointPointCollection* pointPointCollection) {
-	CatalogItem(dbName, tableName, collectionType);
+	this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->pointsPoints = pointPointCollection;
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, RectangleRectangleCollection* rectangleRectangleCollection) {
-	CatalogItem(dbName, tableName, collectionType);
+	this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->rectanglesRectangles = rectangleRectangleCollection;
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, PointRectangleCollection* pointRectangleCollection) {
-	CatalogItem(dbName, tableName, collectionType);
+	this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->pointsRectangles = pointRectangleCollection;
 }
 
