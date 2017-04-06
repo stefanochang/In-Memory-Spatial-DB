@@ -8,33 +8,32 @@
 using namespace std;
 map<int, ds_record *> getmap;
 
-GeometryCollection::GeometryCollection()/*:head(NULL), type(type)*/ {
-  //curr_id = 0;
+GeometryCollection::GeometryCollection() {
+  curr_id = 0;
   initGeometryCollection();
+  head = NULL;
   count = 0;
 }
 GeometryCollection::GeometryCollection(int type){
   initGeometryCollection();
-  //head = NULL;
+  head = NULL;
   this->type = type;
-  //curr_id = 0;
+  curr_id = 0;
 
 }
 GeometryCollection::~GeometryCollection()	{
-  ds_record *tmp1,*tmp;
+  /*ds_record *tmp1,*tmp;
+  tmp = head;
   if(head != NULL)
   {
-    tmp1 = head;
-    head = head->next;
-    while(head != tmp1)
+    int numItems = getSize();
+    for(int i=0;i<numItems; i++)
     {
       tmp = head->next;
       free(head);
       head = tmp;
-      free(head);
-
     }
-  }
+  }*/
 }
 
 
@@ -458,6 +457,7 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
     from = from->next;
     rdcnt--;
   }while(from != head && rdcnt > 0);
+  getmap.erase(transactionId);
   getmap.insert(std::pair<int,ds_record*>(transactionId,from));
   return points; // change name if wrapper function name changes
 }
@@ -527,6 +527,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
     free(newRectangle);
     from = from->next;
   }while(from != head && rdcnt > 0);
+  getmap.erase(transactionId);
   getmap.insert(std::pair<int,ds_record*>(transactionId,from));
   return rectangles; // change name if wrapper function name changes
 }
