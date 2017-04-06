@@ -2,10 +2,10 @@
 // Created by ravichandran on 19/03/17.
 //
 
-#ifndef ADVDBTEST_TESTCASESPRQUADTREE_H_H
-#define ADVDBTEST_TESTCASESPRQUADTREE_H_H
+#ifndef IN_MEMORY_SPATIAL_DB_TESTCASESPRQUADTREE_H_H
+#define IN_MEMORY_SPATIAL_DB_TESTCASESPRQUADTREE_H_H
 
-#include "../UtilityFunctions.h"
+#include "../qUtilityFunctions.h"
 #include "../prQuadNode.h"
 #include "../prQuadTree.h"
 
@@ -13,12 +13,12 @@ void testprQuadNode()
 {
     cout<<"\n\n prQuadNode Testing - Started"<<endl;
 
-    cout<<"\n\n prQuadNode Test Case 1"<<endl;
+    cout<<"\n\n prQuadNode spatialTests Case 1"<<endl;
     prQuadNode *prQuadNode1= new prQuadNode();
     prQuadNode1->print();
 
-    cout<<"\n\n prQuadNode Test Case 2"<<endl;
-    QBoundingBox *tqbb1 = new QBoundingBox(0,0,100,100);
+    cout<<"\n\n prQuadNode spatialTests Case 2"<<endl;
+    qBoundingBox *tqbb1 = new qBoundingBox(0,0,100,100);
     prQuadNode *prQuadNode2= new prQuadNode(*tqbb1);
     prQuadNode2->print();
 
@@ -28,19 +28,19 @@ void testprQuadNode()
 
 void printprQuadTreeRange(prQuadTree *prQT,float x, float y, float width, float height)
 {
-    vector<QPoint> vQPoint = prQT->queryRange(x,y,width,height);
+    vector<qPoint> vQPoint = prQT->queryRange(x,y,width,height);
     printQPointVectors(vQPoint);
 
 }
 
 //testcase 1:
-vector<QPoint*> pointsTestCase1(){
-    vector<QPoint*> vQPoint;
-    vQPoint.push_back(new QPoint(20,20,5));
-    vQPoint.push_back(new QPoint(30,30,6));
-    vQPoint.push_back(new QPoint(40,40,7));
-    vQPoint.push_back(new QPoint(22,22,10));
-    vQPoint.push_back(new QPoint(42,42,11));
+vector<qPoint*> pointsTestCase1(){
+    vector<qPoint*> vQPoint;
+    vQPoint.push_back(new qPoint(20,20,5));
+    vQPoint.push_back(new qPoint(30,30,6));
+    vQPoint.push_back(new qPoint(40,40,7));
+    vQPoint.push_back(new qPoint(22,22,10));
+    vQPoint.push_back(new qPoint(42,42,11));
 
     return vQPoint;
 
@@ -48,9 +48,9 @@ vector<QPoint*> pointsTestCase1(){
 
 void prQuadTreeTestCase1()
 {
-    cout<<"\n\nprQuadTree Test Case 1"<<endl;
+    cout<<"\n\nprQuadTree spatialTests Case 1"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,200,200);
-    vector<QPoint*> testQPoints=pointsTestCase1();
+    vector<qPoint*> testQPoints=pointsTestCase1();
     for(int i=0;i<testQPoints.size();i++) {
         prQT->insert(testQPoints[i]);
     }
@@ -66,9 +66,9 @@ void prQuadTreeTestCase1()
 
 void prQuadTreeTestCase1Delete()
 {
-    cout<<"\n\nDelete prQuadTree Test Case 1"<<endl;
+    cout<<"\n\nDelete prQuadTree spatialTests Case 1"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,200,200);
-    vector<QPoint*> testQPoints=pointsTestCase1();
+    vector<qPoint*> testQPoints=pointsTestCase1();
     for(int i=0;i<testQPoints.size();i++) {
         prQT->insert(testQPoints[i]);
     }
@@ -80,12 +80,12 @@ void prQuadTreeTestCase1Delete()
 }
 
 //testcase 2:
-vector<QPoint*> pointsTestCase2(){
-    vector<QPoint*> vQPoint;
-    vQPoint.push_back(new QPoint(20,30,5));
-    vQPoint.push_back(new QPoint(30,30,6));
-    vQPoint.push_back(new QPoint(30,20,7));
-    vQPoint.push_back(new QPoint(20,20,8));
+vector<qPoint*> pointsTestCase2(){
+    vector<qPoint*> vQPoint;
+    vQPoint.push_back(new qPoint(20,30,5));
+    vQPoint.push_back(new qPoint(30,30,6));
+    vQPoint.push_back(new qPoint(30,20,7));
+    vQPoint.push_back(new qPoint(20,20,8));
 
     return vQPoint;
 
@@ -93,9 +93,9 @@ vector<QPoint*> pointsTestCase2(){
 
 void prQuadTreeTestCase2()
 {
-    cout<<"\n\nprQuadTree Test Case 2"<<endl;
+    cout<<"\n\nprQuadTree spatialTests Case 2"<<endl;
     prQuadTree *prQT = new prQuadTree(25,25,50,50);
-    vector<QPoint*> testQPoints=pointsTestCase2();
+    vector<qPoint*> testQPoints=pointsTestCase2();
     for(int i=0;i<testQPoints.size();i++) {
         prQT->insert(testQPoints[i]);
     }
@@ -147,22 +147,22 @@ void prQuadTreeTestCase2()
 }
 
 //testcase 3:
-vector<QPoint*> pointsTestCase3(){
-    vector<QPoint*> vQPoint;
-    vQPoint.push_back(new QPoint(100,100,5));
-    vQPoint.push_back(new QPoint(150,150,6));
-    vQPoint.push_back(new QPoint(175,175,7));
-    vQPoint.push_back(new QPoint(187.5,187.5,8));
-    vQPoint.push_back(new QPoint(193.75,193.75,9));
+vector<qPoint*> pointsTestCase3(){
+    vector<qPoint*> vQPoint;
+    vQPoint.push_back(new qPoint(100,100,5));
+    vQPoint.push_back(new qPoint(150,150,6));
+    vQPoint.push_back(new qPoint(175,175,7));
+    vQPoint.push_back(new qPoint(187.5,187.5,8));
+    vQPoint.push_back(new qPoint(193.75,193.75,9));
     return vQPoint;
 
 }
 
 void prQuadTreeTestCase3()
 {
-    cout<<"\n\nprQuadTree Test Case 3"<<endl;
+    cout<<"\n\nprQuadTree spatialTests Case 3"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,400,400);
-    vector<QPoint*> testQPoints=pointsTestCase3();
+    vector<qPoint*> testQPoints=pointsTestCase3();
     for(int i=0;i<testQPoints.size();i++) {
         prQT->insert(testQPoints[i]);
     }
@@ -177,13 +177,13 @@ void prQuadTreeTestCase3()
 }
 
 //testcase 4:
-vector<QPoint*> pointsTestCase4(){
-    vector<QPoint*> vQPoint;
-    vQPoint.push_back(new QPoint(55,55,5));
-    vQPoint.push_back(new QPoint(60,60,6));
-    vQPoint.push_back(new QPoint(65,65,7));
-    vQPoint.push_back(new QPoint(70,70,8));
-    vQPoint.push_back(new QPoint(50,60,9)); //on border
+vector<qPoint*> pointsTestCase4(){
+    vector<qPoint*> vQPoint;
+    vQPoint.push_back(new qPoint(55,55,5));
+    vQPoint.push_back(new qPoint(60,60,6));
+    vQPoint.push_back(new qPoint(65,65,7));
+    vQPoint.push_back(new qPoint(70,70,8));
+    vQPoint.push_back(new qPoint(50,60,9)); //on border
     return vQPoint;
 
 }
@@ -192,7 +192,7 @@ void prQuadTreeTestCase4()
 {
     cout<<"\n\nprQuadTree 4"<<endl;
     prQuadTree *prQT = new prQuadTree(50,50,100,100);
-    vector<QPoint*> testQPoints = pointsTestCase4();
+    vector<qPoint*> testQPoints = pointsTestCase4();
     for(int i=0;i<testQPoints.size();i++) {
         prQT->insert(testQPoints[i]);
     }
@@ -223,4 +223,4 @@ void testprQuadTree()
 
 
 
-#endif //ADVDBTEST_TESTCASESPRQUADTREE_H_H
+#endif //IN_MEMORY_SPATIAL_DB_TESTCASESPRQUADTREE_H_H

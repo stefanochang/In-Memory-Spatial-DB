@@ -1,4 +1,11 @@
-#include "geometry-collection.h"
+#ifndef DATA_STORAGE_H
+#include "../data-storage/data-storage.h"
+#endif
+
+#ifndef SPATIALINDEXINTERFACE_H
+#define SPATIALINDEXINTERFACE_H
+
+
 
 class SpatialIndexInterface
 {
@@ -11,3 +18,5 @@ class SpatialIndexInterface
 	bool update(RectangleCollection);
 	bool deleteIndex();
 };
+
+#endif

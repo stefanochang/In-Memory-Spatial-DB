@@ -2,15 +2,17 @@
 // Created by ravichandran on 18/03/17.
 //
 
-#ifndef ADVDBTEST_TESTCASES_H
-#define ADVDBTEST_TESTCASES_H
+#ifndef IN_MEMORY_SPATIAL_DB_TESTCASESSPATIALINDEXING_H
+#define IN_MEMORY_SPATIAL_DB_TESTCASESSPATIALINDEXING_H
 
-#include "testCasesQPoint.h"
-#include "testCasesQBoundingBox.h"
+#include "testCasesqPoint.h"
+#include "testCasesqBoundingBox.h"
 #include "testCasesprQuadTree.h"
 #include "testCasesmxcifQuadTree.h"
 
+
 using namespace std;
+
 
 void executeSpatialIndexingTestCases()
 {
@@ -20,9 +22,11 @@ void executeSpatialIndexingTestCases()
     testQBoundingBox();
     testprQuadNode();
     testprQuadTree();
+    testmxcifQuadNode();
+    testmxcifQuadTree();
     cout<<"\n\n\nSpatial Indexing Testing - Ended"<<endl;
 
 }
 
 
-#endif //ADVDBTEST_TESTCASES_H
+#endif //IN_MEMORY_SPATIAL_DB_TESTCASES_H

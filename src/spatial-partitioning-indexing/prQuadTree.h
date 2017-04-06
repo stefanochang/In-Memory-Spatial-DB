@@ -2,18 +2,18 @@
 // Created by ravichandran on 18/03/17.
 //
 
-#ifndef ADVDBTEST_PRQUADTREE_H
-#define ADVDBTEST_PRQUADTREE_H
+#ifndef IN_MEMORY_SPATIAL_DB_PRQUADTREE_H
+#define IN_MEMORY_SPATIAL_DB_PRQUADTREE_H
 
-#include "QuadTreeLib.h"
+#include "quadTreeLib.h"
 #include "prQuadNode.h"
 
 class prQuadTree
 {
 
 private:
-    QPoint XY_POINT;
-    QBoundingBox RANGE;
+    qPoint XY_POINT;
+    qBoundingBox RANGE;
 
     prQuadNode *root;
 
@@ -23,36 +23,40 @@ public:
     prQuadTree(float originX, float originY, float width, float height) {
         float x = originX - width/2;
         float y = originY - height/2;
-        QPoint *xyPoint = new QPoint(x,y);
-        QBoundingBox *QBB = new QBoundingBox(xyPoint,width,height);
+        qPoint *xyPoint = new qPoint(x,y);
+        qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
         root = new prQuadNode( *QBB );
     }
 
     prQuadTree(float width, float height) {
         float x = 0 - width/2;
         float y = 0 - height/2;
-        QPoint *xyPoint = new QPoint(x,y);
-        QBoundingBox *QBB = new QBoundingBox(xyPoint,width,height);
+        qPoint *xyPoint = new qPoint(x,y);
+        qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
         root = new prQuadNode( *QBB );
+    }
+
+    prQuadTree(qBoundingBox *qbb) {
+        root = new prQuadNode( *qbb );
     }
 
     prQuadNode* getRoot() {
         return root;
     }
 
-    bool insert(QPoint *xyPoint) {
+    bool insert(qPoint *xyPoint) {
 
         return (*root).insert(xyPoint);
     }
 
     bool insert(float x, float y) {
-        QPoint *xyPoint = new QPoint(x,y);
+        qPoint *xyPoint = new qPoint(x,y);
 
         return (*root).insert(xyPoint);
     }
 
     bool insert(float x, float y, int id) {
-        QPoint *xyPoint = new QPoint(x,y,id);
+        qPoint *xyPoint = new qPoint(x,y,id);
 
         return (*root).insert(xyPoint);
     }
@@ -102,15 +106,15 @@ public:
 
     }
 
-    vector<QPoint> queryRange(float x, float y, float width, float height) {
-        vector<QPoint> vQPoint;
+    vector<qPoint> queryRange(float x, float y, float width, float height) {
+        vector<qPoint> vQPoint;
         if (root == NULL)
             return vQPoint;
 
         XY_POINT.set(x,y);
         RANGE.set(&XY_POINT,width,height);
 
-        vector<QPoint> pointsInRange;
+        vector<qPoint> pointsInRange;
         root->queryRange(RANGE,pointsInRange);
         return pointsInRange;
     }
@@ -119,4 +123,4 @@ public:
 
 
 
-#endif //ADVDBTEST_PRQUADTREE_H
+#endif //IN_MEMORY_SPATIAL_DB_PRQUADTREE_H
