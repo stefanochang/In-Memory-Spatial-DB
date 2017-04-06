@@ -66,9 +66,7 @@ LEFT TREE | RIGHT TREE
 ---------- | -----------
 leftDataPoint = <data_source> | rightDataPoint = <data_source>
 leftDataRect = <empty_collection> | rightDataRect = <empty_collection>
-
 OR | OR
-
 leftDataPoint = <empty_collection> | rightDataPoint = <empty_collection>
 leftDataRect = <data_source> | rightDataRect = <data_source>
 
