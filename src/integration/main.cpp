@@ -11,8 +11,8 @@
 #include <string.h>
 #include "query-processing.h"
 #include "catalog.h"
-#include "../spatial-partitioning-indexing/SpatialIndexInterface.h"
-#include "../data-partioning-indexing/"
+#include "../spatial-partitioning-indexing/SpatialIndexImpl.h"
+#include "../data-partioning-indexing/data-indexing-main.cpp"
 
 using namespace std;
 int get_geom_type_from_string(string geom) {
@@ -79,7 +79,6 @@ int main() {
     while(1) {
         string query, cmd;
         Catalog catalog = Catalog::getInstance();
-        SpatialIndexInterface spatialIndexInterface = new SpatialIndexInterface();
         cout << "\nPlease, enter your query: ";
         getline (cin, query);
         vector<string> query_tokens = split(query, " ");            
@@ -91,32 +90,51 @@ int main() {
                  " from " << query_tokens[4]; 
             }
         }  else  if(query_tokens[0].compare("CREATE") == 0) {
-            if(is_param_sufficient(query_tokens, 3)) {
+            if(is_param_sufficient(query_tokens, 5)) {
                 if(query_tokens[1].compare("SPATIAL-INDEX") == 0){
-                    if(query_tokens[2].compare("POINT-COLLECTION") == 0){
-                        PointCollection* pc = catalog.getPointCollectionByName("","PointCollection");
+
+                    SpatialIndexImpl spatialIndexInterface = new SpatialIndexImpl();
+
+                    if(query_tokens[2].compare("POINT") == 0){
+                        PointCollection* pc = catalog.getPointCollectionByName(query_tokens[3],query_tokens[4]);
                         spatialIndexInterface.createIndex(pc);
-                    } else if (query_tokens[2].compare("RECTANGLE-COLLECTION") == 0){
-                        RectangleCollection* rc = catalog.getRectangleCollectionByName("", "RectangleCollection");
+                        *(catalog.getCatalogItem(query_tokens[3],query_tokens[4])).addSpatialIndex(spatialIndexInterface);
+                        cout << "Spatial index created for point collection";
+
+                    } else if (query_tokens[2].compare("RECTANGLE") == 0){
+                        RectangleCollection* rc = catalog.getRectangleCollectionByName(query_tokens[3], query_tokens[4]);
                         spatialIndexInterface.createIndex(rc);
-                    } else {
-                        cout << "Invalid collection type.\n";
-                    }
-                } else if (query_tokens[1].compare("DATA-INDEX") == 0) {
-                    if(query_tokens[2].compare("POINT-COLLECTION") == 0){
-                        PointCollection* pc = catalog.getPointCollectionByName("","PointCollection");
-                        
-                    } else if (query_tokens[2].compare("RECTANGLE-COLLECTION") == 0){
-                        RectangleCollection* rc = catalog.getRectangleCollectionByName("", "RectangleCollection");
+                        *(catalog.getCatalogItem(query_tokens[3], query_tokens[4])).addSpatialIndex(spatialIndexInterface);
+                        cout << "Spatial index created for rectangle collection";
 
                     } else {
                         cout << "Invalid collection type.\n";
                     }
+
+                } else if (query_tokens[1].compare("DATA-INDEX") == 0) {
+                    DataIndexingWrapper spatialIndexInterface = new DataIndexingWrapper();
+
+                    if(query_tokens[2].compare("POINT") == 0){
+                        PointCollection* pc = catalog.getPointCollectionByName(query_tokens[3], query_tokens[4]);    
+                        spatialIndexInterface.createIndex(pc);
+                        *(catalog.getCatalogItem(query_tokens[3], query_tokens[4])).addDataIndex(spatialIndexInterface);
+                        cout << "Data index created for point collection";
+
+                    } else if (query_tokens[2].compare("RECTANGLE") == 0){
+                        RectangleCollection* rc = catalog.getRectangleCollectionByName(query_tokens[3], query_tokens[4]);
+                        spatialIndexInterface.createIndex(rc);
+                        *(catalog.getCatalogItem(query_tokens[3], query_tokens[4])).addDataIndex(spatialIndexInterface);
+                        cout << "Data index created for rectangle collection";
+
+                    } else {
+                        cout << "Invalid collection type.\n";
+                    }
+
                 } else {
                     cout << "Invalid index type.\n";                             
                 }
 
-            }      
+            }
         } else if(query_tokens[0].compare("SELECT") == 0) {    
             string query_param = query.substr(7);
             int left_param_end = query_param.find("]"); 
