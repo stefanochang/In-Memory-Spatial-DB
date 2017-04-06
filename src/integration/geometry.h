@@ -12,7 +12,8 @@ class Rectangle {
     int getId();
     void setId(int);
     vector<float> getCoordinates();
-    Rectangle getEnvelope();    
+    Rectangle getEnvelope(); 
+    float getVal(int);
 };
 
 class Point {
@@ -24,6 +25,8 @@ class Point {
     void setId(int);
     vector<float> getCoordinates();
     Rectangle getEnvelope();
+    float getX();
+    float getY();
 };
 
 class PointPoint {

@@ -22,6 +22,16 @@ vector<float> Rectangle::getCoordinates() {
 	return coords;
 }
 
+float Rectangle::getVal(int i) const {
+    switch (i){
+        case 0: return x1;
+        case 1: return y1;
+        case 2: return x2;
+        case 3: return y2;
+        default: return -1;
+    }
+}
+
 Point::Point( float x, float y) {
         this->x = x;
 	this->y = y;
@@ -39,6 +49,8 @@ vector<float> Point::getCoordinates() {
         vector<float> coords = {x, y};
         return coords;
 }
+float Point::getX() const { return x; }
+float Point::getY() const { return y; }
 
 PointPoint::PointPoint( float x1, float y1, float x2, float y2) {
         this->x1 = x1;
