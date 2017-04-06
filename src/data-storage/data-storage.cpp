@@ -8,19 +8,19 @@
 using namespace std;
 map<int, record *> getmap;
 
-list::list()/*:head(NULL), type(type)*/ {
+GeometryCollection::GeometryCollection()/*:head(NULL), type(type)*/ {
   //curr_id = 0;
-  initList();
+  initGeometryCollection();
   count = 0;
 }
-list::list(int type){
-  initList();
+GeometryCollection::GeometryCollection(int type){
+  initGeometryCollection();
   //head = NULL;
   this->type = type;
   //curr_id = 0;
 
 }
-list::~list()	{
+GeometryCollection::~GeometryCollection()	{
   record *tmp1,*tmp;
   if(head != NULL)
   {
@@ -38,7 +38,7 @@ list::~list()	{
 }
 
 
-record * list::initRecord(int id, geometry * geom, record * next, record * previous) {
+record * GeometryCollection::initRecord(int id, geometry * geom, record * next, record * previous) {
   record * newRecord = (record *)malloc(sizeof(record));
   newRecord->id = id;
   newRecord->geom = geom;
@@ -51,7 +51,7 @@ record * list::initRecord(int id, geometry * geom, record * next, record * previ
   return newRecord;
 }
 
-void list::appendLast(geometry *geom)
+void GeometryCollection::appendLast(geometry *geom)
 {
   if(head == NULL)
   {
@@ -72,7 +72,7 @@ void list::appendLast(geometry *geom)
   count++;
 }
 
-void list::appendFirst(geometry *geom)
+void GeometryCollection::appendFirst(geometry *geom)
 {
   if(head == NULL)
   {
@@ -103,7 +103,7 @@ void list::appendFirst(geometry *geom)
   count++;
 }
 
-void list::appendSortedX(geometry *geom)
+void GeometryCollection::appendSortedX(geometry *geom)
 {
   if(head == NULL)
   {
@@ -148,7 +148,7 @@ void list::appendSortedX(geometry *geom)
   count++;
 }
 
-void list::appendSortedY(geometry *geom)
+void GeometryCollection::appendSortedY(geometry *geom)
 {
   if(head == NULL)
   {
@@ -193,7 +193,7 @@ void list::appendSortedY(geometry *geom)
   count++;
 }
 
-int list::deleteByUUID(int id)
+int GeometryCollection::deleteByUUID(int id)
 {
   if(head == NULL)
   {
@@ -252,7 +252,7 @@ int list::deleteByUUID(int id)
   return -1;
 }
 
-Point* list::getPointByUUID(string table_name, int objectId)
+Point* GeometryCollection::getPointByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
@@ -278,7 +278,7 @@ Point* list::getPointByUUID(string table_name, int objectId)
   }
 }
 
-Rectangle* list::getRectangleByUUID(string table_name, int objectId)
+Rectangle* GeometryCollection::getRectangleByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
@@ -306,7 +306,7 @@ Rectangle* list::getRectangleByUUID(string table_name, int objectId)
   }
 }
 
-PointPoint* list::getPointPointByUUID(string table_name, int objectId)
+PointPoint* GeometryCollection::getPointPointByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
@@ -333,7 +333,7 @@ PointPoint* list::getPointPointByUUID(string table_name, int objectId)
   }
 }
 
-PointRectangle* list::getPointRectangleByUUID(string table_name, int objectId)
+PointRectangle* GeometryCollection::getPointRectangleByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
@@ -362,7 +362,7 @@ PointRectangle* list::getPointRectangleByUUID(string table_name, int objectId)
   }
 }
 
-RectangleRectangle* list::getRectangleRectangleByUUID(string table_name, int objectId)
+RectangleRectangle* GeometryCollection::getRectangleRectangleByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
@@ -393,19 +393,19 @@ RectangleRectangle* list::getRectangleRectangleByUUID(string table_name, int obj
   }
 }
 
-record * list::getHead() {
+record * GeometryCollection::getHead() {
   return head;
 }
 
-short list::getType() {
+short GeometryCollection::getType() {
   return type;
 }
 
-int list::getSize()	{
+int GeometryCollection::getSize()	{
   return count;
 }
 
-bool list::isEmpty() {
+bool GeometryCollection::isEmpty() {
   return  head == NULL;
 }
 
@@ -414,11 +414,10 @@ bool list::isEmpty() {
 // POINT COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PointCollection::PointCollection()
-: list(TYPE_POINT) {}
+: GeometryCollection(TYPE_POINT) {}
 
-// constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 PointCollection::PointCollection(string name, string databaseName, int collectionStructure, vector<Point> points)
-: list(TYPE_POINT) {
+: GeometryCollection(TYPE_POINT) {
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
@@ -487,11 +486,10 @@ int PointCollection::removeById(int id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RectangleCollection::RectangleCollection()
-: list(TYPE_RECTANGLE) {}
+: GeometryCollection(TYPE_RECTANGLE) {}
 
-// constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 RectangleCollection::RectangleCollection(string name, string databaseName, int collectionStructure, vector<Rectangle> rectangles)
-: list(TYPE_RECTANGLE) {
+: GeometryCollection(TYPE_RECTANGLE) {
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
@@ -556,11 +554,10 @@ int RectangleCollection::removeById(int id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 PointPointCollection::PointPointCollection()
-: list(TYPE_POINTPOINT) {}
+: GeometryCollection(TYPE_POINTPOINT) {}
 
-// constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 PointPointCollection::PointPointCollection(string name, string databaseName, int collectionStructure, vector<PointPoint> pointpoints)
-: list(TYPE_POINTPOINT) {
+: GeometryCollection(TYPE_POINTPOINT) {
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
@@ -609,11 +606,10 @@ vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RectangleRectangleCollection::RectangleRectangleCollection()
-: list(TYPE_RECTANGLERECTANGLE) {}
+: GeometryCollection(TYPE_RECTANGLERECTANGLE) {}
 
-// constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 RectangleRectangleCollection::RectangleRectangleCollection(string name, string databaseName, int collectionStructure, vector<RectangleRectangle> rectanglerectangle)
-: list(TYPE_RECTANGLERECTANGLE) {
+: GeometryCollection(TYPE_RECTANGLERECTANGLE) {
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
@@ -662,11 +658,10 @@ vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int tran
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 PointRectangleCollection::PointRectangleCollection()
-: list(TYPE_POINTRECTANGLE) {}
+: GeometryCollection(TYPE_POINTRECTANGLE) {}
 
-// constructor in list.h required - initialize list from vector based on organization type (x sorted, y sorted)
 PointRectangleCollection::PointRectangleCollection(string name, string databaseName, int collectionStructure, vector<PointRectangle> pointrectangles)
-: list(TYPE_POINTRECTANGLE) {
+: GeometryCollection(TYPE_POINTRECTANGLE) {
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
@@ -760,13 +755,13 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
   {
     return -1;
   }
-  Catalog instance = Catalog::getInstance();
-  instance.insert(catItem);
+  Catalog::Instance()->insert(catItem);
+  // instance.insert(catItem);
   return 1;
 }
 
 // Insert a single point
-bool insertData(list *pointsRepo, Point pointToInsert)
+bool insertData(GeometryCollection *pointsRepo, Point pointToInsert)
 {
   geometry *g;
   point *pnt;
@@ -780,7 +775,7 @@ bool insertData(list *pointsRepo, Point pointToInsert)
 }
 
 //insert a single rectangle
-bool insertData(list *rectanglesRepo, Rectangle rectangleToInsert)
+bool insertData(GeometryCollection *rectanglesRepo, Rectangle rectangleToInsert)
 {
   geometry *g;
   rectangle *rec;
@@ -797,7 +792,7 @@ bool insertData(list *rectanglesRepo, Rectangle rectangleToInsert)
 
 
 //insert a single pointpoint
-bool insertData(list *pointpointrepo, PointPoint pntpntToInsert)
+bool insertData(GeometryCollection *pointpointrepo, PointPoint pntpntToInsert)
 {
   geometry *g;
   pointpoint *pntpnt;
@@ -813,7 +808,7 @@ bool insertData(list *pointpointrepo, PointPoint pntpntToInsert)
 }
 
 //insert a single PointRectangle
-bool insertData(list *recpointrepo, PointRectangle pntrectangleToInsert)
+bool insertData(GeometryCollection *recpointrepo, PointRectangle pntrectangleToInsert)
 {
   geometry *g;
   pointrectangle *pntrec;
@@ -831,7 +826,7 @@ bool insertData(list *recpointrepo, PointRectangle pntrectangleToInsert)
 }
 
 //insert a single RectangleRectangle
-bool insertData(list *recrectanglesRepo, RectangleRectangle recrectangleToInsert)
+bool insertData(GeometryCollection *recrectanglesRepo, RectangleRectangle recrectangleToInsert)
 {
   geometry *g;
   rectanglerectangle *recrec;
@@ -850,8 +845,8 @@ bool insertData(list *recrectanglesRepo, RectangleRectangle recrectangleToInsert
   return true;
 }
 
-//insert a list of items
-bool insertDataBulk(list *repo, list geometryToInsert)
+//insert a GeometryCollection of items
+bool insertDataBulk(GeometryCollection *repo, GeometryCollection geometryToInsert)
 {
   record * geometryToInsertPointer = geometryToInsert.getHead();
 
@@ -871,6 +866,6 @@ bool insertDataBulk(list *repo, list geometryToInsert)
 }
 
 //delete item with id equals geomid
-bool deleteData(list repo, int geomId){
+bool deleteData(GeometryCollection repo, int geomId){
   return repo.deleteByUUID(geomId);
 }
