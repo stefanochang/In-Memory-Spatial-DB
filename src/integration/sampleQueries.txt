@@ -1,3 +1,6 @@
-LOAD adb pointColl POINT arealm.csv 1
-SELECT [RECTANGLE rectCollName|filterBy:area:ge:5] [|] [|]
-SELECT [POINT pointCollName|KNN:Point(0,5):10] [|] [|]
+LOAD adb pts POINT pointsfile.txt 2
+LOAD adb rects RECTANGLE rectfile.txt 2
+SELECT [RECTANGLE rects|filterBy:distance:ge:5:0:0] [] [|]
+SELECT [POINT adb pts|filterBy:distance:ge:5:0:0] [] [|]
+SELECT [RECTANGLE adb rects|filterBy:distance:le:50:0:0] [] [|]
+SELECT [POINT adb pts|filterBy:distance:ge:5:0:0] [distanceJoin:500] [POINT adb pts|filterBy:distance:ge:5:0:0]

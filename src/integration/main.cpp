@@ -52,6 +52,7 @@ vector<vector<string> > get_predicates_from_string(string predicates) {
 
 void print_query_result(QueryResult resultset) {
     int resultType = resultset.getResultType();
+    cout << "Result Type: " << resultType << endl;
     if (resultType == TYPE_POINT) {      
         PointCollection pc = resultset.getPointCollection(); 
         int size = pc.getSize();
@@ -59,10 +60,48 @@ void print_query_result(QueryResult resultset) {
                 for (int i=0; i< pc.getSize(); i++) {
             vector<Point> point = pc.getNext(1);
             vector<float> coords = point[0].getCoordinates();
-            cout << coords[0] << " " << coords[1] << endl;
+            cout << "[(" << coords[0] << ", " << coords[1] << ")]" << endl;
         }
-    }
-    else {
+    } else if (resultType == TYPE_RECTANGLE) {      
+        RectangleCollection rc = resultset.getRectangleCollection(); 
+        int size = rc.getSize();
+        cout << "ResultSet size: " << size << endl;
+        for (int i=0; i < size; i++) {
+            vector<Rectangle> rectangle = rc.getNext(1);
+            vector<float> coords = rectangle[0].getCoordinates();
+            cout << "[(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")]" << endl;
+        }
+    } else if (resultType == TYPE_POINTPOINT) {      
+        PointPointCollection ppc = resultset.getPointPointCollection(); 
+        int size = ppc.getSize();
+        cout << "ResultSet size: " << size << endl;
+        for (int i=0; i< ppc.getSize(); i++) {
+            vector<PointPoint> pointPoint = ppc.getNext(1);
+            vector<float> coords = pointPoint[0].getCoordinates();
+            cout << "[(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")]" << endl;
+        }
+    } else if (resultType == TYPE_POINTRECTANGLE) {      
+        PointRectangleCollection prc = resultset.getPointRectangleCollection(); 
+        int size = prc.getSize();
+        cout << "ResultSet size: " << size << endl;
+        for (int i=0; i< prc.getSize(); i++) {
+            vector<PointRectangle> pointRectangle = prc.getNext(1);
+            vector<float> coords = pointRectangle[0].getCoordinates();
+            cout << "[ [(" << coords[0] << ", " << coords[1] << "), [(" 
+                << coords[2] << ", " << coords[3] << "), ("
+                << coords[4] << ", " << coords[5] << ")] ]" << endl;
+        }
+    } else if (resultType == TYPE_RECTANGLERECTANGLE) {      
+        RectangleRectangleCollection rrc = resultset.getRectangleRectangleCollection(); 
+        int size = rrc.getSize();
+        cout << "ResultSet size: " << size << endl;
+        for (int i=0; i< rrc.getSize(); i++) {
+            vector<RectangleRectangle> rectangleRectangle = rrc.getNext(1);
+            vector<float> coords = rectangleRectangle[0].getCoordinates();
+            cout << "[ [(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")], " 
+                << "[(" << coords[4] << ", " << coords[5] << "), (" << coords[6] << ", " << coords[7] << ")] ]"<< endl;
+        }
+    } else {
         cout << "ERROR: Unknown Collection Type." << endl;
     }
 }
@@ -71,7 +110,7 @@ void print_query_result(QueryResult resultset) {
 int main() {
     while(1) {
         string query, cmd;
-        cout << endl << "Please, enter your query: ";
+        cout << endl << "Enter your query: ";
         getline (cin, query);
         vector<string> query_tokens = split(query, " "); 
 
@@ -81,7 +120,7 @@ int main() {
                 loadData(query_tokens[1], query_tokens[2], get_geom_type_from_string(query_tokens[3]), query_tokens[4], collection_structure);                 
                 cout << "Loaded " << query_tokens[3] << " data collection into " << query_tokens[1] << "." << query_tokens[2] <<
                  " from " << query_tokens[4] << endl; 
-                cout << "The Catalog now has " << Catalog::Instance()->getCatalogSize() << " entries." << endl;
+                cout << "The Catalog now has " << Catalog::Instance()->getCatalogSize() << " item(s)." << endl;
             }
         }  else  if(query_tokens[0].compare("CREATE") == 0) {
             if(is_param_sufficient(query_tokens, 3)) {
@@ -95,48 +134,46 @@ int main() {
 
             }      
         } else if(query_tokens[0].compare("SELECT") == 0) {    
-            string query_param = query.substr(7);
-            int left_param_end = query_param.find("]"); 
-            string left_branch = query_param.substr(1, left_param_end-1);  
-            vector<vector<string> > left_filter_param = get_predicates_from_string(left_branch);
-            
             QueryTree* qTree = new QueryTree();
             QueryResult* qResult = new QueryResult();
             QueryProcessing* qProcess = new QueryProcessing();
 
-            vector<string> rootnull = { "" };
-            vector<vector<string> > leftfilternull;
-            leftfilternull.push_back(rootnull);
-            vector<vector<string> > rightfilternull;
-            rightfilternull.push_back(rootnull);
-                        
+            string query_param = query.substr(7);
+            
+            int left_param_end = query_param.find("]"); 
+            string left_branch = query_param.substr(1, left_param_end-1);  
+            vector<vector<string> > left_filter_param = get_predicates_from_string(left_branch);                       
             vector<string> left_collection_details = split(left_branch.substr(0, left_branch.find("|")), " ");
             if(left_collection_details[0].compare("POINT") == 0) {
-                PointCollection* pc = Catalog::Instance()->getPointCollectionByName(left_collection_details[1], left_collection_details[2]);
-                qTree->setLeftPoints(*pc);
+                PointCollection* left_pc = Catalog::Instance()->getPointCollectionByName(left_collection_details[1], left_collection_details[2]);
+                qTree->setLeftPoints(*left_pc);
             } else {
-                RectangleCollection* rc = Catalog::Instance()->getRectangleCollectionByName(left_collection_details[1], left_collection_details[2]);
-                qTree->setLeftRectangles(*rc);
+                RectangleCollection* left_rc = Catalog::Instance()->getRectangleCollectionByName(left_collection_details[1], left_collection_details[2]);
+                qTree->setLeftRectangles(*left_rc);
             }
             
             qTree->setLeftFilter(left_filter_param);
-            qTree->setRoot(rootnull);
-            // int root_param_end = query_param.substr(left_param_end+3).find("]");            
-            // string root = query_param.substr(left_param_end+3, root_param_end);
-            // vector<string> root_filter_param = split(root, ":");
-            // qTree->setRoot(root_filter_param);
-
-            // int right_param_end = query_param.substr(left_param_end+root_param_end+6).find("]"); 
-            // string right_branch = query_param.substr(left_param_end+root_param_end+6, right_param_end);            
             
-            // vector<string> right_collection_details = split(right_branch.substr(0, right_branch.find("|")), " ");
-            // if(right_collection_details[0].compare("POINT") == 0) {
-            //     // qTree->setRightPoints(Catalog::Instance()->getPointCollectionByName(right_collection_details[1], right_collection_details[2]));
-            // } else if(right_collection_details[0].compare("RECTANGLE") == 0) {
-            //     // qTree->setRightRectangles(Catalog::Instance()->getRectangleCollectionByName(right_collection_details[1], right_collection_details[2]));
-            // }
-            // vector<vector<string> > right_filter_param = get_predicates_from_string(right_branch);
-            // qTree->setRightFilter(right_filter_param);
+            int root_param_end = query_param.substr(left_param_end+3).find("]");            
+            string root = query_param.substr(left_param_end+3, root_param_end);
+            vector<string> root_filter_param = split(root, ":");
+            
+            qTree->setRoot(root_filter_param);
+
+            int right_param_end = query_param.substr(left_param_end+root_param_end+6).find("]"); 
+            string right_branch = query_param.substr(left_param_end+root_param_end+6, right_param_end);
+            vector<vector<string> > right_filter_param = get_predicates_from_string(right_branch);
+            if(right_branch.compare("|") != 0 && right_branch.compare("") != 0 ) {
+                vector<string> right_collection_details = split(right_branch.substr(0, right_branch.find("|")), " ");
+                if(right_collection_details[0].compare("POINT") == 0) {
+                    PointCollection* right_pc = Catalog::Instance()->getPointCollectionByName(right_collection_details[1], right_collection_details[2]);
+                    qTree->setRightPoints(*right_pc);
+                } else {
+                    RectangleCollection* right_rc = Catalog::Instance()->getRectangleCollectionByName(right_collection_details[1], right_collection_details[2]);
+                    qTree->setRightRectangles(*right_rc);
+                }                
+                qTree->setRightFilter(right_filter_param);
+            }            
             print_query_result(qProcess->processQuery(*qTree));
             
             
