@@ -15,24 +15,21 @@ Class QueryTree{
 	RectangleCollection rightDataRect;
 }
 ```
-
 ### Each member of the above class can accept follwing values:
-
 A root can accept following values:
 ```
-	For Simple  'select', 'filterBy', and 'objectsInRange' queries, root can be empty: 
+For Simple  'select', 'filterBy', and 'objectsInRange' queries, root can be empty: 
 	1.	root = { “” }
-	For 'Distance Join':
+For 'Distance Join':
 	2. root = { “distanceJoin”, distance } // where distance is any float value
 		* Example: { “distanceJoin”, “5.05”}
-	For 'KNN Join queries':
+For 'KNN Join queries':
 	3. { “knnJoin”, k } // where k is any int value
 		* Example: { “knnJoin”, “5” }
-	For 'Range Join":
+For 'Range Join":
 	4. { “rangeJoin” }
 ```
-
-###A branch can have multiple levels. Each level can have combination of following structure. If you are using 
+###A branch can have multiple levels. Each level can have combination of following structure. If you are using
 ```
 1. filterBy
 	Area on RectangeCollection
@@ -61,7 +58,6 @@ A root can accept following values:
 ```
 
 ###At any given time, either of Rectangle or Point should be assigned i.e.,
-
 LEFT TREE | RIGHT TREE
 ---------- | -----------
 leftDataPoint = <data_source> | rightDataPoint = <data_source>
