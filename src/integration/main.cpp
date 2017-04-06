@@ -74,7 +74,6 @@ void print_query_result(QueryResult resultset) {
 int main() {
     while(1) {
         string query, cmd;
-        Catalog catalog = Catalog::getInstance();
         cout << "\nPlease, enter your query: ";
         getline (cin, query);
         vector<string> query_tokens = split(query, " ");            
@@ -104,10 +103,11 @@ int main() {
             QueryTree* query;
             vector<string> left_collection_details = split(left_branch.substr(0, left_branch.find("|")), " ");
             if(left_collection_details[0].compare("POINT") == 0) {
-                PointCollection pc = *catalog.getPointCollectionByName(left_collection_details[1], left_collection_details[2]);
-                query->setLeftPoints(pc);
+                PointCollection* pc = Catalog::Instance()->getPointCollectionByName(left_collection_details[1], left_collection_details[2]);
+                query->setLeftPoints(*pc);
             } else {
-                query->setLeftRectangles(*catalog.getRectangleCollectionByName(left_collection_details[1], left_collection_details[2]));
+                RectangleCollection* rc = Catalog::Instance()->getRectangleCollectionByName(left_collection_details[1], left_collection_details[2]);
+                query->setLeftRectangles(*rc);
             }
             vector<vector<string> > left_filter_param = get_predicates_from_string(left_branch);
             // query.setLeftFilter(left_filter_param);
@@ -121,9 +121,9 @@ int main() {
             
             vector<string> right_collection_details = split(right_branch.substr(0, right_branch.find("|")), " ");
             if(right_collection_details[0].compare("POINT") == 0) {
-                // query.setRightPoints(catalog.getPointCollectionByName(right_collection_details[1], right_collection_details[2]));
+                // query.setRightPoints(Catalog::Instance()->getPointCollectionByName(right_collection_details[1], right_collection_details[2]));
             } else {
-                // query.setRightRectangles(catalog.getRectangleCollectionByName(right_collection_details[1], right_collection_details[2]));
+                // query.setRightRectangles(Catalog::Instance()->getRectangleCollectionByName(right_collection_details[1], right_collection_details[2]));
             }
             vector<vector<string> > right_filter_param = get_predicates_from_string(right_branch);
             // query.setRightFilter(right_filter_param);
