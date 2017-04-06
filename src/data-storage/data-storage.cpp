@@ -6,7 +6,7 @@
 #endif
 #include <map>
 using namespace std;
-map<int, record *> getmap;
+map<int, ds_record *> getmap;
 
 GeometryCollection::GeometryCollection()/*:head(NULL), type(type)*/ {
   //curr_id = 0;
@@ -21,7 +21,7 @@ GeometryCollection::GeometryCollection(int type){
 
 }
 GeometryCollection::~GeometryCollection()	{
-  record *tmp1,*tmp;
+  ds_record *tmp1,*tmp;
   if(head != NULL)
   {
     tmp1 = head;
@@ -38,8 +38,8 @@ GeometryCollection::~GeometryCollection()	{
 }
 
 
-record * GeometryCollection::initRecord(int id, geometry * geom, record * next, record * previous) {
-  record * newRecord = (record *)malloc(sizeof(record));
+ds_record * GeometryCollection::initRecord(int id, ds_geometry * geom, ds_record * next, ds_record * previous) {
+  ds_record * newRecord = (ds_record *)malloc(sizeof(ds_record));
   newRecord->id = id;
   newRecord->geom = geom;
   newRecord->next = next;
@@ -51,7 +51,7 @@ record * GeometryCollection::initRecord(int id, geometry * geom, record * next, 
   return newRecord;
 }
 
-void GeometryCollection::appendLast(geometry *geom)
+void GeometryCollection::appendLast(ds_geometry *geom)
 {
   if(head == NULL)
   {
@@ -61,7 +61,7 @@ void GeometryCollection::appendLast(geometry *geom)
   }
   else
   {
-    record *tmp_head,*previous;
+    ds_record *tmp_head,*previous;
     tmp_head = initRecord(curr_id++, geom, head, head);
     previous = head->prev;
     tmp_head->next = head;
@@ -72,7 +72,7 @@ void GeometryCollection::appendLast(geometry *geom)
   count++;
 }
 
-void GeometryCollection::appendFirst(geometry *geom)
+void GeometryCollection::appendFirst(ds_geometry *geom)
 {
   if(head == NULL)
   {
@@ -87,7 +87,7 @@ void GeometryCollection::appendFirst(geometry *geom)
   }
   else
   {
-    record* tmp = initRecord(curr_id++, geom, head, head->prev);
+    ds_record* tmp = initRecord(curr_id++, geom, head, head->prev);
     head->prev = tmp;
     head = tmp;
     // record *tmp_head = (record *)malloc(sizeof(record));
@@ -103,7 +103,7 @@ void GeometryCollection::appendFirst(geometry *geom)
   count++;
 }
 
-void GeometryCollection::appendSortedX(geometry *geom)
+void GeometryCollection::appendSortedX(ds_geometry *geom)
 {
   if(head == NULL)
   {
@@ -123,9 +123,9 @@ void GeometryCollection::appendSortedX(geometry *geom)
     // newNode->id = curr_id++;
     // newNode->isDeleted = false;
     // newNode->inDegree = 0;
-    record* newNode = initRecord(curr_id++, geom, NULL, NULL);
-    record* current = head;
-    record* previous = head->prev;
+    ds_record* newNode = initRecord(curr_id++, geom, NULL, NULL);
+    ds_record* current = head;
+    ds_record* previous = head->prev;
     while(current->next != head)
     {
       if(current->geom->pnt->x > newNode->geom->pnt->x)
@@ -148,7 +148,7 @@ void GeometryCollection::appendSortedX(geometry *geom)
   count++;
 }
 
-void GeometryCollection::appendSortedY(geometry *geom)
+void GeometryCollection::appendSortedY(ds_geometry *geom)
 {
   if(head == NULL)
   {
@@ -168,9 +168,9 @@ void GeometryCollection::appendSortedY(geometry *geom)
     // newNode->id = curr_id++;
     // newNode->isDeleted = false;
     // newNode->inDegree = 0;
-    record* newNode = initRecord(curr_id++, geom, NULL, NULL);
-    record* current = head;
-    record* previous = head->prev;
+    ds_record* newNode = initRecord(curr_id++, geom, NULL, NULL);
+    ds_record* current = head;
+    ds_record* previous = head->prev;
     while(current->next != head)
     {
       if(current->geom->pnt->y > newNode->geom->pnt->y)
@@ -201,9 +201,9 @@ int GeometryCollection::deleteByUUID(int id)
   }
   else
   {
-    record* current = head;
-    record* previous = head->prev;
-    record* temp = head;
+    ds_record* current = head;
+    ds_record* previous = head->prev;
+    ds_record* temp = head;
     while(current->next != head)
     {
       if(current->id == id)
@@ -262,7 +262,7 @@ Point* GeometryCollection::getPointByUUID(string table_name, int objectId)
   }
   else
   {
-    record *temp = head;
+    ds_record *temp = head;
     do
     {
       if(temp->id == objectId && temp->isDeleted == false)
@@ -288,7 +288,7 @@ Rectangle* GeometryCollection::getRectangleByUUID(string table_name, int objectI
   }
   else
   {
-    record *temp=head;
+    ds_record *temp=head;
     do
     {
       if(temp->id == objectId && temp->isDeleted == false)
@@ -393,7 +393,7 @@ RectangleRectangle* GeometryCollection::getRectangleRectangleByUUID(string table
   }
 }
 
-record * GeometryCollection::getHead() {
+ds_record * GeometryCollection::getHead() {
   return head;
 }
 
@@ -437,7 +437,7 @@ Point PointCollection::getById(int id) {
 vector<Point> PointCollection::getNext(int n, int transactionId) {
   vector<Point> points;
   Point *newPoint;
-  record *from;
+  ds_record *from;
   int rdcnt=n;
   if(getmap.find(transactionId) != getmap.end())
   {
@@ -458,12 +458,12 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
     from = from->next;
     rdcnt--;
   }while(from != head && rdcnt > 0);
-  getmap.insert(std::pair<int,record*>(transactionId,from));
+  getmap.insert(std::pair<int,ds_record*>(transactionId,from));
   return points; // change name if wrapper function name changes
 }
 
-int PointCollection::insert(Point point) {
-  return insertData(this,point);
+int PointCollection::insert(Point pnt) {
+  return insertData(this,pnt);
 }
 
 int PointCollection::insertBulk(PointCollection collection) {
@@ -507,7 +507,7 @@ Rectangle RectangleCollection::getById(int id) {
 vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   vector<Rectangle> rectangles;
   Rectangle *newRectangle;
-  record *from;
+  ds_record *from;
   int rdcnt=n;
   if(getmap.find(transactionId) != getmap.end())
   {
@@ -527,13 +527,13 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
     free(newRectangle);
     from = from->next;
   }while(from != head && rdcnt > 0);
-  getmap.insert(std::pair<int,record*>(transactionId,from));
+  getmap.insert(std::pair<int,ds_record*>(transactionId,from));
   return rectangles; // change name if wrapper function name changes
 }
 
 // insertData wrapper required to pass string table name and geometry
-int RectangleCollection::insert(Rectangle rectangle) {
-  return insertData(this,rectangle);
+int RectangleCollection::insert(Rectangle rec) {
+  return insertData(this,rec);
 }
 
 int RectangleCollection::insertBulk(RectangleCollection collection) {
@@ -579,7 +579,7 @@ int PointPointCollection::insertBulk(PointPointCollection collection) {
 vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
   vector<PointPoint> points;
   PointPoint *newPoint;
-  record *from;
+  ds_record *from;
   int rdcnt=0;
   if(getmap.find(transactionId) != getmap.end())
   {
@@ -631,7 +631,7 @@ int RectangleRectangleCollection::insertBulk(RectangleRectangleCollection collec
 vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int transactionId) {
   vector<RectangleRectangle> recrecs;
   RectangleRectangle *newRectangle;
-  record *from;
+  ds_record *from;
   int rdcnt=0;
   if(getmap.find(transactionId) != getmap.end())
   {
@@ -683,7 +683,7 @@ int PointRectangleCollection::insertBulk(PointRectangleCollection collection) {
 vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionId) {
   vector<PointRectangle> pointrecs;
   PointRectangle *newRectangle;
-  record *from;
+  ds_record *from;
   int rdcnt=0;
   if(getmap.find(transactionId) != getmap.end())
   {
@@ -710,9 +710,9 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
 {
   FILE *fp;
   float x, y, x1, y1;
-  geometry *g;
-  point *pnt;
-  rectangle *rct;
+  ds_geometry *g;
+  ds_point *pnt;
+  ds_rectangle *rct;
   PointCollection *pntcollection;
   RectangleCollection *rectanglecollection;
   CatalogItem *catItem;
@@ -726,8 +726,8 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
     pntcollection = new PointCollection();
     while(fscanf(fp, "%f,%f\n", &x, &y) == 2)
     {
-      g = (geometry *)malloc(sizeof(geometry));
-      pnt = (point *)malloc(sizeof(point));
+      g = (ds_geometry *)malloc(sizeof(ds_geometry));
+      pnt = (ds_point *)malloc(sizeof(ds_point));
       pnt->x = x;
       pnt->y = y;
       g->pnt = pnt;
@@ -740,8 +740,8 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
     rectanglecollection = new RectangleCollection();
     while(fscanf(fp, "%f,%f,%f,%f\n", &x, &y, &x1, &y1) == 4)
     {
-      g = (geometry *)malloc(sizeof(geometry));
-      rct = (rectangle *)malloc(sizeof(rectangle));
+      g = (ds_geometry *)malloc(sizeof(ds_geometry));
+      rct = (ds_rectangle *)malloc(sizeof(ds_rectangle));
       rct->top_x = x;
       rct->top_y = y;
       rct->bottom_x = x1;
@@ -760,13 +760,13 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
   return 1;
 }
 
-// Insert a single point
+// Insert a single ds_point
 bool insertData(GeometryCollection *pointsRepo, Point pointToInsert)
 {
-  geometry *g;
-  point *pnt;
-  g = (geometry *)malloc(sizeof(geometry));
-  pnt = (point *)malloc(sizeof(point));
+  ds_geometry *g;
+  ds_point *pnt;
+  g = (ds_geometry *)malloc(sizeof(ds_geometry));
+  pnt = (ds_point *)malloc(sizeof(ds_point));
   g->pnt = pnt;
   g->pnt->x = pointToInsert.getCoordinates()[0];
   g->pnt->y = pointToInsert.getCoordinates()[1];
@@ -777,10 +777,10 @@ bool insertData(GeometryCollection *pointsRepo, Point pointToInsert)
 //insert a single rectangle
 bool insertData(GeometryCollection *rectanglesRepo, Rectangle rectangleToInsert)
 {
-  geometry *g;
-  rectangle *rec;
-  g = (geometry *)malloc(sizeof(geometry));
-  rec = (rectangle *)malloc(sizeof(rectangle));
+  ds_geometry *g;
+  ds_rectangle *rec;
+  g = (ds_geometry *)malloc(sizeof(ds_geometry));
+  rec = (ds_rectangle *)malloc(sizeof(ds_rectangle));
   g->rec = rec;
   g->rec->top_x = rectangleToInsert.getCoordinates()[0];
   g->rec->top_y = rectangleToInsert.getCoordinates()[1];
@@ -794,10 +794,10 @@ bool insertData(GeometryCollection *rectanglesRepo, Rectangle rectangleToInsert)
 //insert a single pointpoint
 bool insertData(GeometryCollection *pointpointrepo, PointPoint pntpntToInsert)
 {
-  geometry *g;
-  pointpoint *pntpnt;
-  g = (geometry *)malloc(sizeof(geometry));
-  pntpnt = (pointpoint *)malloc(sizeof(pointpoint));
+  ds_geometry *g;
+  ds_pointpoint *pntpnt;
+  g = (ds_geometry *)malloc(sizeof(ds_geometry));
+  pntpnt = (ds_pointpoint *)malloc(sizeof(ds_pointpoint));
   g->pntpnt = pntpnt;
   g->pntpnt->point1.x = pntpntToInsert.getCoordinates()[0];
   g->pntpnt->point1.y = pntpntToInsert.getCoordinates()[1];
@@ -810,10 +810,10 @@ bool insertData(GeometryCollection *pointpointrepo, PointPoint pntpntToInsert)
 //insert a single PointRectangle
 bool insertData(GeometryCollection *recpointrepo, PointRectangle pntrectangleToInsert)
 {
-  geometry *g;
-  pointrectangle *pntrec;
-  g = (geometry *)malloc(sizeof(geometry));
-  pntrec = (pointrectangle *)malloc(sizeof(pointrectangle));
+  ds_geometry *g;
+  ds_pointrectangle *pntrec;
+  g = (ds_geometry *)malloc(sizeof(ds_geometry));
+  pntrec = (ds_pointrectangle *)malloc(sizeof(ds_pointrectangle));
   g->pntrec = pntrec;
   g->pntrec->point1.x = pntrectangleToInsert.getCoordinates()[0];
   g->pntrec->point1.y = pntrectangleToInsert.getCoordinates()[1];
@@ -828,10 +828,10 @@ bool insertData(GeometryCollection *recpointrepo, PointRectangle pntrectangleToI
 //insert a single RectangleRectangle
 bool insertData(GeometryCollection *recrectanglesRepo, RectangleRectangle recrectangleToInsert)
 {
-  geometry *g;
-  rectanglerectangle *recrec;
-  g = (geometry *)malloc(sizeof(geometry));
-  recrec = (rectanglerectangle *)malloc(sizeof(rectanglerectangle));
+  ds_geometry *g;
+  ds_rectanglerectangle *recrec;
+  g = (ds_geometry *)malloc(sizeof(ds_geometry));
+  recrec = (ds_rectanglerectangle *)malloc(sizeof(ds_rectanglerectangle));
   g->recrec = recrec;
   g->recrec->rec1.top_x = recrectangleToInsert.getCoordinates()[0];
   g->recrec->rec1.top_y = recrectangleToInsert.getCoordinates()[1];
@@ -848,7 +848,7 @@ bool insertData(GeometryCollection *recrectanglesRepo, RectangleRectangle recrec
 //insert a GeometryCollection of items
 bool insertDataBulk(GeometryCollection *repo, GeometryCollection geometryToInsert)
 {
-  record * geometryToInsertPointer = geometryToInsert.getHead();
+  ds_record * geometryToInsertPointer = geometryToInsert.getHead();
 
   do{
     switch(repo->getType()) {

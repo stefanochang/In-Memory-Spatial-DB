@@ -9,7 +9,7 @@ class GeometryCollection
 {
 	protected:
 	int curr_id;
-	record* head;
+	ds_record* head;
 	short type;
 	int count;
 
@@ -23,15 +23,15 @@ public:
 	~GeometryCollection();
 
 
-	record * initRecord(int id, geometry * geom, record * next, record * previous);
+	ds_record * initRecord(int id, ds_geometry * geom, ds_record * next, ds_record * previous);
 
-	void appendLast(geometry *geom);
+	void appendLast(ds_geometry *geom);
 
-	void appendFirst(geometry *geom);
+	void appendFirst(ds_geometry *geom);
 
-	void appendSortedX(geometry *geom);
+	void appendSortedX(ds_geometry *geom);
 
-	void appendSortedY(geometry *geom);
+	void appendSortedY(ds_geometry *geom);
 
 	int deleteByUUID(int id);
 
@@ -45,7 +45,7 @@ public:
 
 	RectangleRectangle* getRectangleRectangleByUUID(string table_name, int objectId);
 
-	record * getHead();
+	ds_record * getHead();
 
 	short getType();
 
