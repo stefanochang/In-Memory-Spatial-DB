@@ -2,6 +2,14 @@
 
 This module accepts a Query Tree as input and executes it based on the predicates, joins and data sources mentioned in the query.
 
+In order to call query processing module include "integration/query-processing.h"
+
+```
+include "integration/query-processing.h"
+```
+
+Call `processQuery(QueryTree queryTree)` method of `QueryProcessing` class.
+
 ## Structure of QueryTree
 
 ```
@@ -32,7 +40,7 @@ For 'Range Join":
 	4. { “rangeJoin” }
 ```
 
-###A branch can have multiple levels. Each level can have combination of following structure. If you are using
+### A branch can have multiple levels. Each level can have combination of following structure. If you are using
 
 ```
 1. filterBy
@@ -61,15 +69,13 @@ For 'Range Join":
 	{ “objectsInRange”, “pt1”, “pt2”, “pt3”, “pt4” }
 ```
 
-###At any given time, either of Rectangle or Point should be assigned i.e.,
+### At any given time, either of Rectangle or Point should be assigned i.e.,
 
 LEFT TREE | RIGHT TREE
 ---------- | -----------
-leftDataPoint = <data_source> | rightDataPoint = <data_source>
-leftDataRect = <empty_collection> | rightDataRect = <empty_collection>
+leftDataPoint = <data_source> leftDataRect = <empty_collection>| rightDataPoint = <data_source> rightDataRect = <empty_collection>
 OR | OR
-leftDataPoint = <empty_collection> | rightDataPoint = <empty_collection>
-leftDataRect = <data_source> | rightDataRect = <data_source>
+leftDataPoint = <empty_collection> leftDataRect = <data_source> | rightDataPoint = <empty_collection> rightDataRect = <data_source>
 
 
 
