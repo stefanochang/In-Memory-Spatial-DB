@@ -1,7 +1,10 @@
+#ifndef SPATIALINDEXINTERFACE_H
+#include "spatial-index-interface.h"
+#endif
+
 #ifndef CATALOG_H
 #define CATALOG_H
 
-#include "spatial-index-interface.h"
 #include <map>
 class CatalogItem {
   string dbName, tableName;

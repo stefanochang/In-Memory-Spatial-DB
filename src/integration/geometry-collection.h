@@ -86,7 +86,7 @@ class RectangleRectangleCollection : public list {
     RectangleRectangleCollection();
     RectangleRectangleCollection(string, string, int, vector<RectangleRectangle>);
     RectangleRectangle getById(int);
-    vector<RectangleRectangle> getNext(int n=1);
+    vector<RectangleRectangle> getNext(int n=1, int transaction_id=1);
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
     bool isEmpty();

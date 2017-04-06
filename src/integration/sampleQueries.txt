@@ -1,4 +1,4 @@
-LOAD adb pointColl POINT filepath 1
+LOAD adb pointColl POINT arealm.csv 1
 SELECT [RECTANGLE rectCollName|filterBy:area:ge:5] [|] [|]
 SELECT [POINT pointCollName|KNN:Point(0,5):10] [|] [|]
 CREATE SPATIAL-INDEX [PointCollection|RectangleCollection|PointPointCollection|PointRectangleCollection|RectangleRectangleCollection]
