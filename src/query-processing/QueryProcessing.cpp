@@ -41,12 +41,12 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	// left data is points
 	if (!leftDataPoint.isEmpty() && leftDataRect.isEmpty()) {
 		PointCollection leftResult = materializeBranch(leftFilter, leftDataPoint);
-		cout << "Printing leftResult : \n";
-		/*for(int i=0; i < leftResult.getSize(); i++) {
+		/*cout << "Printing leftResult : \n";
+		  for(int i=0; i < leftResult.getSize(); i++) {
 			vector<Point> point = leftResult.getNext(1);
-            vector<float> coords = point[0].getCoordinates();
-            cout << coords[0] << " " << coords[1] << endl;
-        }*/
+            		vector<float> coords = point[0].getCoordinates();
+		        cout << coords[0] << " " << coords[1] << endl;
+        	}*/
 		// no right branch
 		if (root[0] == "") {
 			queryResult.setResultType(TYPE_POINT);
@@ -167,13 +167,13 @@ PointCollection QueryProcessing::materializeBranch (vector<vector<string>> filte
 		//points = data.getNext(1);
 		j++;
 	}
-	cout << "Print before return : \n";
+	/*cout << "Print before return : \n";
 	vector<Point> point_r = result.getNext(result.getSize());
 //	vector<Point> point_r = result.points;
 	for(int i=0; i < point_r.size(); i++) {
         vector<float> coords = point_r[i].getCoordinates();
         cout << coords[0] << " " << coords[1] << endl;
-    	}
+    	}*/
 	return result;
 }
 
