@@ -35,7 +35,6 @@ void GeometryCollection::initGeometryCollection(){
   from = head = NULL;
   curr_id = count = 0;
   type = 0;
-  collectionStructure = 10;
 }
 ds_record * GeometryCollection::initRecord(int id, ds_geometry * geom, ds_record * next, ds_record * previous) {
   ds_record * newRecord = (ds_record *)malloc(sizeof(ds_record));
@@ -139,6 +138,8 @@ void GeometryCollection::appendSortedX(ds_geometry *geom)
         previous->next = newNode;
         newNode->prev = previous;
         current->prev = newNode;
+        if(current == head)
+          head = newNode;
         break;
       }
       previous = current;
@@ -174,6 +175,8 @@ void GeometryCollection::appendSortedY(ds_geometry *geom)
         previous->next = newNode;
         newNode->prev = previous;
         current->prev = newNode;
+        if(current == head)
+          head = newNode;
         break;
       }
       previous = current;
@@ -704,7 +707,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
   }
   if(geomtype == TYPE_POINT)
   {
-    pntcollection = new PointCollection();
+    pntcollection = new PointCollection(dbName, tableName, collectionStruct, {});
     while(fscanf(fp, "%f,%f\n", &x, &y) == 2)
     {
       g = (ds_geometry *)malloc(sizeof(ds_geometry));
@@ -718,7 +721,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
   }
   else if(geomtype == TYPE_RECTANGLE)
   {
-    rectanglecollection = new RectangleCollection();
+    rectanglecollection = new RectangleCollection(dbName, tableName, collectionStruct, {});
     while(fscanf(fp, "%f,%f,%f,%f\n", &x, &y, &x1, &y1) == 4)
     {
       g = (ds_geometry *)malloc(sizeof(ds_geometry));
