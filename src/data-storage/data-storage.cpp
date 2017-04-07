@@ -74,9 +74,9 @@ void GeometryCollection::appendFirst(ds_geometry *geom)
   if(head == NULL)
   {
     head = initRecord(curr_id++, geom, head, head);
-    // 	head = (record *)malloc(sizeof(record));
     // 	head->next = head;
     // 	head->prev = head;
+    // 	head = (record *)malloc(sizeof(record));
     // 	head->id = curr_id++;
     // 	head->isDeleted = false;
     // 	head->inDegree = 0;
@@ -105,21 +105,11 @@ void GeometryCollection::appendSortedX(ds_geometry *geom)
   if(head == NULL)
   {
     head = initRecord(curr_id++, geom, head, head);
-    // head = (record *)malloc(sizeof(record));
-    // head->next = head;
-    // head->prev = head;
-    // head->id = curr_id++;
-    // head->geom = geom;
-    // head->isDeleted = false;
-    // head->inDegree = 0;
+    head->next = head;
+    head->prev = head;
   }
   else
   {
-    // record* newNode = (record *)malloc(sizeof(record));
-    // newNode->geom = geom;
-    // newNode->id = curr_id++;
-    // newNode->isDeleted = false;
-    // newNode->inDegree = 0;
     ds_record* newNode = initRecord(curr_id++, geom, NULL, NULL);
     ds_record* current = head;
     ds_record* previous = head->prev;
@@ -150,21 +140,11 @@ void GeometryCollection::appendSortedY(ds_geometry *geom)
   if(head == NULL)
   {
     head = initRecord(curr_id++, geom, head, head);
-    // head = (record *)malloc(sizeof(record));
-    // head->next = head;
-    // head->prev = head;
-    // head->id = curr_id++;
-    // head->geom = geom;
-    // head->isDeleted = false;
-    // head->inDegree = 0;
+    head->next = head;
+    head->prev = head;
   }
   else
   {
-    // record* newNode = (record *)malloc(sizeof(record));
-    // newNode->geom = geom;
-    // newNode->id = curr_id++;
-    // newNode->isDeleted = false;
-    // newNode->inDegree = 0;
     ds_record* newNode = initRecord(curr_id++, geom, NULL, NULL);
     ds_record* current = head;
     ds_record* previous = head->prev;
