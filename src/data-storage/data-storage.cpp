@@ -8,6 +8,57 @@
 using namespace std;
 map<int, ds_record *> getmap;
 
+////////// FUNCTIONS TO CONVERT BETWEEN GEOMETRY STURCT AND GEOMETRY OBJECTS /////////
+Point * getPointObjectFromStruct(ds_record * pointStruct) {
+  float x = pointStruct->geom->pnt->x;
+  float y = pointStruct->geom->pnt->y;
+  Point* pt = new Point(x, y);
+  return pt;
+}
+
+Rectangle * getRectangleObjectFromStruct(ds_record * rectangleStruct) {
+  float x1 = rectangleStruct->geom->rec->top_x;
+  float y1 = rectangleStruct->geom->rec->top_y;
+  float x2 = rectangleStruct->geom->rec->bottom_x;
+  float y2 = rectangleStruct->geom->rec->bottom_y;
+  Rectangle* rec = new Rectangle(x1, y1, x2, y2);
+  return rec;
+}
+
+PointPoint * getPointPointObjectFromStruct(ds_record * pointPointStruct) {
+  float x1 = pointPointStruct->geom->pntpnt->point1.x;
+  float y1 = pointPointStruct->geom->pntpnt->point1.y;
+  float x2 = pointPointStruct->geom->pntpnt->point2.x;
+  float y2 = pointPointStruct->geom->pntpnt->point2.y;
+  PointPoint* pt = new PointPoint(x1, y1, x2, y2);
+  return pt;
+}
+
+PointRectangle * getPointRectangleObjectFromStruct(ds_record * pointRectangleStruct) {
+  float x1 = pointRectangleStruct->geom->pntrec->point1.x;
+  float y1 = pointRectangleStruct->geom->pntrec->point1.y;
+  float x2 = pointRectangleStruct->geom->pntrec->rec.top_x;
+  float y2 = pointRectangleStruct->geom->pntrec->rec.top_y;
+  float x3 = pointRectangleStruct->geom->pntrec->rec.bottom_x;
+  float y3 = pointRectangleStruct->geom->pntrec->rec.bottom_y;
+  PointRectangle* ptrec = new PointRectangle(x1, y1, x2, y2, x3, y3);
+  return ptrec;
+}
+
+RectangleRectangle * getRectangleRectangleObjectFromStruct(ds_record * rectangleRectangleStruct) {
+  float x1 = rectangleRectangleStruct->geom->recrec->rec1.top_x;
+  float y1 = rectangleRectangleStruct->geom->recrec->rec1.top_y;
+  float x2 = rectangleRectangleStruct->geom->recrec->rec1.bottom_x;
+  float y2 = rectangleRectangleStruct->geom->recrec->rec1.bottom_y;
+  float x3 = rectangleRectangleStruct->geom->recrec->rec2.top_x;
+  float y3 = rectangleRectangleStruct->geom->recrec->rec2.top_y;
+  float x4 = rectangleRectangleStruct->geom->recrec->rec2.bottom_x;
+  float y4 = rectangleRectangleStruct->geom->recrec->rec2.bottom_y;
+  RectangleRectangle* recrec = new RectangleRectangle(x1, y1, x2, y2, x3, y3, x4, y4);
+  return recrec;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 GeometryCollection::GeometryCollection() {
   initGeometryCollection();
 }
@@ -247,145 +298,60 @@ int GeometryCollection::deleteByUUID(int id)
   return -1;
 }
 
+ds_record * GeometryCollection::getRecordByUUID(int objectId) {
+  if(head == NULL) {
+    return NULL;
+  }
+  else {
+    ds_record *temp = head;
+    do {
+      if(temp->id == objectId && temp->isDeleted == false) {
+        return temp;
+      }
+      temp = temp->next;
+    } while(temp != head);
+    return NULL;
+  }
+}
+
 Point* GeometryCollection::getPointByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
-  if(head == NULL)
-  {
-    return NULL;
-  }
-  else
-  {
-    ds_record *temp = head;
-    do
-    {
-      if(temp->id == objectId && temp->isDeleted == false)
-      {
-        float x = temp->geom->pnt->x;
-        float y = temp->geom->pnt->y;
-        Point* pt = new Point(x, y);
-        return pt;
-      }
-      temp = temp->next;
-    }while(temp != head);
-    return NULL;
-  }
+  ds_record * record = getRecordByUUID(objectId);
+  return getPointObjectFromStruct(record);
 }
 
 Rectangle* GeometryCollection::getRectangleByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
-  if(head == NULL)
-  {
-    return NULL;
-  }
-  else
-  {
-    ds_record *temp=head;
-    do
-    {
-      if(temp->id == objectId && temp->isDeleted == false)
-      {
-        float x1 = temp->geom->rec->top_x;
-        float y1 = temp->geom->rec->top_y;
-        float x2 = temp->geom->rec->bottom_x;
-        float y2 = temp->geom->rec->bottom_y;
-        Rectangle* rec = new Rectangle(x1, y1, x2, y2);
-        return rec;
-      }
-      temp = temp->next;
-    }while(temp != head);
-    return NULL;
-  }
+  ds_record * record = getRecordByUUID(objectId);
+  return getRectangleObjectFromStruct(record);
 }
 
 PointPoint* GeometryCollection::getPointPointByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
-  if(head == NULL)
-  {
-    return NULL;
-  }
-  else
-  {
-    while(head != NULL)
-    {
-      if(head->id == objectId && head->isDeleted == false)
-      {
-        float x1 = head->geom->pntpnt->point1.x;
-        float y1 = head->geom->pntpnt->point1.y;
-        float x2 = head->geom->pntpnt->point2.x;
-        float y2 = head->geom->pntpnt->point2.y;
-        PointPoint* pt = new PointPoint(x1, y1, x2, y2);
-        return pt;
-      }
-      head = head->next;
-    }
-    return NULL;
-  }
+  ds_record * record = getRecordByUUID(objectId);
+  return getPointPointObjectFromStruct(record);
 }
 
 PointRectangle* GeometryCollection::getPointRectangleByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
-  if(head == NULL)
-  {
-    return NULL;
-  }
-  else
-  {
-    while(head != NULL)
-    {
-      if(head->id == objectId && head->isDeleted == false)
-      {
-        float x1 = head->geom->pntrec->point1.x;
-        float y1 = head->geom->pntrec->point1.y;
-        float x2 = head->geom->pntrec->rec.top_x;
-        float y2 = head->geom->pntrec->rec.top_y;
-        float x3 = head->geom->pntrec->rec.bottom_x;
-        float y3 = head->geom->pntrec->rec.bottom_y;
-        PointRectangle* ptrec = new PointRectangle(x1, y1, x2, y2, x3, y3);
-        return ptrec;
-      }
-      head = head->next;
-    }
-    return NULL;
-  }
+  ds_record * record = getRecordByUUID(objectId);
+  return getPointRectangleObjectFromStruct(record);
 }
 
 RectangleRectangle* GeometryCollection::getRectangleRectangleByUUID(string table_name, int objectId)
 {
   //place-holder for call to metadata table to get head
   //place-holder for assigning received head to the head variable
-  if(head == NULL)
-  {
-    return NULL;
-  }
-  else
-  {
-    while(head != NULL)
-    {
-      if(head->id == objectId && head->isDeleted == false)
-      {
-        float x1 = head->geom->recrec->rec1.top_x;
-        float y1 = head->geom->recrec->rec1.top_y;
-        float x2 = head->geom->recrec->rec1.bottom_x;
-        float y2 = head->geom->recrec->rec1.bottom_y;
-        float x3 = head->geom->recrec->rec2.top_x;
-        float y3 = head->geom->recrec->rec2.top_y;
-        float x4 = head->geom->recrec->rec2.bottom_x;
-        float y4 = head->geom->recrec->rec2.bottom_y;
-        RectangleRectangle* recrec = new RectangleRectangle(x1, y1, x2, y2, x3, y3, x4, y4);
-        return recrec;
-      }
-      head = head->next;
-    }
-    return NULL;
-  }
+  ds_record * record = getRecordByUUID(objectId);
+  return getRectangleRectangleObjectFromStruct(record);
 }
 
 ds_record * GeometryCollection::getHead() {

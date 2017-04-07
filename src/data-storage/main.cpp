@@ -98,7 +98,7 @@ bool testGetNextState() {
 bool testGetNext() {
   bool result = testGetNextSingle() && testGetNextMultiple() && testGetNextState();
   if(result) {
-    cout << "GetNext passing for all defined test cases\n";
+    cout << "\nGetNext passing for all defined test cases\n";
   }
 }
 
@@ -179,6 +179,48 @@ void test_deleteData() {
 
 }
 
+bool testGetPointByUUID() {
+  PointCollection *pntcollection;
+  pntcollection = new PointCollection();
+
+  Point *p1;
+  p1 = new Point(12.34, 10.34);
+
+  Point *p2;
+  p2 = new Point(12.35, 10.34);
+
+  pntcollection->insert(*p1);
+  pntcollection->insert(*p2);
+
+  Point * point = pntcollection->getPointByUUID("name", 0);
+  vector<float> resultPointCoordinates = point->getCoordinates();
+
+  bool testResultPointCoordinates = (resultPointCoordinates[0] == 12.34f && resultPointCoordinates[1] == 10.34f);
+  if(!testResultPointCoordinates) {
+    cout << "testGetPointByUUID: Failed getting first point by ID\n";
+    return false;
+  }
+
+  point = pntcollection->getPointByUUID("name", 1);
+  resultPointCoordinates = point->getCoordinates();
+
+  bool testResultPointCoordinates2 = resultPointCoordinates[0] == 12.35f && resultPointCoordinates[1] == 10.34f;
+  if(!testResultPointCoordinates2) {
+    cout << "testGetPointByUUID: Failed getting second point by ID\n";
+    return false;
+  }
+
+  return testResultPointCoordinates && testResultPointCoordinates2;
+}
+
+void testGetByUUID() {
+    bool resultGetPointByUUID = testGetPointByUUID();
+
+    if(resultGetPointByUUID) {
+      cout << "\ntestGetByUUID passing for all test cases\n";
+    }
+}
+
 int main() {
     //loadData("mdd","ddd",1,"ddd",2);
     //return 0;
@@ -187,6 +229,7 @@ int main() {
     //return 0;
 
     testGetNext();
+    testGetByUUID();
 
   //loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
 

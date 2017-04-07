@@ -34,6 +34,8 @@ public:
 
 	int deleteByUUID(int id);
 
+	ds_record * getRecordByUUID(int);
+
 	Point* getPointByUUID(string table_name, int objectId);
 
 	Rectangle* getRectangleByUUID(string table_name, int objectId);
