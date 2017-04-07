@@ -4,7 +4,6 @@
 #include <string>
 #ifndef DATASTORAGE_H
 #include "data-storage.h"
-#include "../integration/catalog.h"
 #endif
 #ifndef CATALOG_H
 #include "../integration/catalog.h"
@@ -132,16 +131,6 @@ int testAddVector() {
   return pntCollection->getSize();
 }
 
-int callLoadDataBulk() {
-  PointCollection *pc1 = new PointCollection();
-  PointCollection *pc2 = new PointCollection();
-  Point *p = new Point(1.0,1.0);
-  Point *q = new Point(2.0,2.0);
-  pc1->insert(*p);
-  pc1->insert(*q);
-  return pc2->insertBulk(*pc1);
-}
-
 int callGetSize() {
   PointCollection *pntcollection;
   pntcollection = new PointCollection();
@@ -180,50 +169,6 @@ void test_insertData() {
     cout <<"Size: " << pntcollection->getSize() << "\n";
     printData(pntcollection);
 }
-
-void test_insertDataSortedX() {
-    PointCollection *pntcollection;
-    pntcollection = new PointCollection();
-
-    Point *p1;
-    p1 = new Point(12.34, 10.34);
-
-    Point *p2;
-    p2 = new Point(12.35, 10.34);
-
-    Point *p3;
-    p3 = new Point(12.36, 10.34);
-
-    Point *p4;
-    p4 = new Point(12.37, 10.34);
-
-    cout << pntcollection->insert(*p1);
-    cout << pntcollection->insert(*p2);
-    cout << pntcollection->insert(*p3);
-    cout << pntcollection->insert(*p4);
-    cout << pntcollection->getSize();
-}
-
-void test_deleteData() {
-
-      PointCollection *pntcollection;
-      pntcollection = new PointCollection();
-
-      Point *p1;
-      p1 = new Point(12.34, 10.34);
-
-      Point *p2;
-      p2 = new Point(12.35, 10.34);
-
-      cout << pntcollection->insert(*p1) << "\n";
-      cout << pntcollection->insert(*p2) << "\n";
-      cout << pntcollection->getSize() << "\n";
-
-      cout << pntcollection->removeById(1);
-      cout << pntcollection->getSize();
-
-}
-
 
 bool testGetPointByUUID() {
   PointCollection *pntcollection;
@@ -267,6 +212,30 @@ void testGetByUUID() {
   }
 }
 
+void test_insertDataSortedX() {
+    PointCollection *pntcollection;
+    pntcollection = new PointCollection("", "", COLLECTION_STRUCT_SORTEDX, {});
+
+    Point *p1;
+    p1 = new Point(12.34, 10.34);
+
+    Point *p2;
+    p2 = new Point(12.35, 10.54);
+
+    Point *p3;
+    p3 = new Point(12.36, 1.34);
+
+    Point *p4;
+    p4 = new Point(12.37, 4.34);
+
+    pntcollection->insert(*p1);
+    pntcollection->insert(*p2);
+    pntcollection->insert(*p3);
+    pntcollection->insert(*p4);
+    cout << "Size: " << pntcollection->getSize() << "/n";
+    printData(pntcollection);
+}
+
 void test_insertDataSortedY() {
     PointCollection *pntcollection;
     pntcollection = new PointCollection("", "", COLLECTION_STRUCT_SORTEDY, {});
@@ -292,24 +261,9 @@ void test_insertDataSortedY() {
 }
 
 int main() {
-    loadData("datastore","pointcollection",1,"pointsdata",12);
-    PointCollection *pointcollection = Catalog::Instance()->getPointCollectionByName("datastore", "pointcollection");
-    vector<Point> vpts =  pointcollection->getNext(pointcollection->getSize());
-    for(int i = 0; i < vpts.size(); i++) {
-      cout << vpts[i].getCoordinates().at(0) << " : " << vpts[i].getCoordinates().at(1) << endl;
-    }
-    //return 0;
-
-    //int status;
-
-    //int status;=
     test_insertData();
-    //cout<<"Returned status:"<<testAddVector()<<endl;
-    //return 0;
-
+    test_insertDataSortedX();
+    test_insertDataSortedY();
     testGetNext();
     testGetByUUID();
-
-  //loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
-
 }
