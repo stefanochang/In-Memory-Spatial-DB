@@ -34,6 +34,8 @@ GeometryCollection::~GeometryCollection()	{
 void GeometryCollection::initGeometryCollection(){
   from = head = NULL;
   curr_id = count = 0;
+  type = 0;
+  collectionStructure = 10;
 }
 ds_record * GeometryCollection::initRecord(int id, ds_geometry * geom, ds_record * next, ds_record * previous) {
   ds_record * newRecord = (ds_record *)malloc(sizeof(ds_record));
