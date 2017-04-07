@@ -167,13 +167,13 @@ PointCollection QueryProcessing::materializeBranch (vector<vector<string>> filte
 		//points = data.getNext(1);
 		j++;
 	}
-	/*cout << "Print before return : \n";
+	cout << "Print before return : \n";
 	vector<Point> point_r = result.getNext(result.getSize());
 //	vector<Point> point_r = result.points;
 	for(int i=0; i < point_r.size(); i++) {
         vector<float> coords = point_r[i].getCoordinates();
-        cout << coords[0] << " " << coords[1] << endl;*/
-    }
+        cout << coords[0] << " " << coords[1] << endl;
+    	}
 	return result;
 }
 
