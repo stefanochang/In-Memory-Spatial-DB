@@ -10,6 +10,24 @@
 #endif
 using namespace std;
 
+void printData(PointCollection *pointsRepo){
+  ds_record *tmp_head;
+  tmp_head = pointsRepo->getHead();
+  if(tmp_head == NULL)
+    cout << "Empty Collection" << "\n";
+  else{
+    cout << "X: " << tmp_head->geom->pnt->x;
+    cout << " Y: " << tmp_head->geom->pnt->y << "\n";
+    ds_record *tmp_node = tmp_head->next;
+    while(tmp_node != tmp_head){
+      cout << "X: " << tmp_node->geom->pnt->x;
+      cout << " Y: " << tmp_node->geom->pnt->y << "\n";
+      tmp_node = tmp_node->next;
+    }
+  }
+
+}
+
 bool testGetNextSingle() {
   PointCollection *pc = new PointCollection();
 
@@ -134,11 +152,12 @@ void test_insertData() {
     Point *p4;
     p4 = new Point(12.37, 10.34);
 
-    cout << pntcollection->insert(*p1);
-    cout << pntcollection->insert(*p2);
-    cout << pntcollection->insert(*p3);
-    cout << pntcollection->insert(*p4);
-    cout << pntcollection->getSize();
+    cout << pntcollection->insert(*p1) << "\n";
+    cout << pntcollection->insert(*p2) << "\n";
+    cout << pntcollection->insert(*p3) << "\n";
+    cout << pntcollection->insert(*p4) << "\n";
+    cout <<"Size: " << pntcollection->getSize() << "\n";
+    printData(pntcollection);
 }
 
 void test_insertDataSortedX() {
@@ -175,13 +194,37 @@ void test_deleteData() {
       Point *p2;
       p2 = new Point(12.35, 10.34);
 
-      cout << pntcollection->insert(*p1);
-      cout << pntcollection->insert(*p2);
-      cout << pntcollection->getSize();
+      cout << pntcollection->insert(*p1) << "\n";
+      cout << pntcollection->insert(*p2) << "\n";
+      cout << pntcollection->getSize() << "\n";
 
       cout << pntcollection->removeById(1);
       cout << pntcollection->getSize();
 
+}
+
+void test_insertDataSortedY() {
+    PointCollection *pntcollection;
+    pntcollection = new PointCollection(COLLECTION_STRUCT_SORTEDY);
+
+    Point *p1;
+    p1 = new Point(12.34, 10.34);
+
+    Point *p2;
+    p2 = new Point(12.35, 10.54);
+
+    Point *p3;
+    p3 = new Point(12.36, 1.34);
+
+    Point *p4;
+    p4 = new Point(12.37, 4.34);
+
+    pntcollection->insert(*p1);
+    pntcollection->insert(*p2);
+    pntcollection->insert(*p3);
+    pntcollection->insert(*p4);
+    cout << "Size: " << pntcollection->getSize() << "/n";
+    printData(*pntcollection);
 }
 
 int main() {
@@ -192,7 +235,8 @@ int main() {
       cout << vpts[i].getCoordinates().at(0) << " : " << vpts[i].getCoordinates().at(1) << endl;
     }
     //return 0;
-    //int status;
+    //int status;=
+    test_insertData();
     //cout<<"Returned status:"<<testAddVector()<<endl;
     //return 0;
 
