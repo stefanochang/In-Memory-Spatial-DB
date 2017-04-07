@@ -158,6 +158,30 @@ void test_deleteData() {
 
 }
 
+void test_insertDataSortedY() {
+    PointCollection *pntcollection;
+    pntcollection = new PointCollection(COLLECTION_STRUCT_SORTEDY);
+
+    Point *p1;
+    p1 = new Point(12.34, 10.34);
+
+    Point *p2;
+    p2 = new Point(12.35, 10.54);
+
+    Point *p3;
+    p3 = new Point(12.36, 1.34);
+
+    Point *p4;
+    p4 = new Point(12.37, 4.34);
+
+    pntcollection->insert(*p1);
+    pntcollection->insert(*p2);
+    pntcollection->insert(*p3);
+    pntcollection->insert(*p4);
+    cout << "Size: " << pntcollection->getSize() << "/n";
+    printData(*pntcollection);
+}
+
 int main() {
     //loadData("mdd","ddd",1,"ddd",2);
     //return 0;
