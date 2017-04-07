@@ -10,19 +10,16 @@ class GeometryCollection
 	protected:
 	int curr_id;
 	ds_record* head;
+	ds_record* from;
 	short type;
 	int count;
 
-	void initGeometryCollection() {
-		head == NULL;
-		curr_id = 0;
-	}
 public:
 	GeometryCollection();
 	GeometryCollection(int type);
 	~GeometryCollection();
 
-
+	void initGeometryCollection();
 	ds_record * initRecord(int id, ds_geometry * geom, ds_record * next, ds_record * previous);
 
 	void appendLast(ds_geometry *geom);

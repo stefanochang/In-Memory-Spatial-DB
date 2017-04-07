@@ -9,16 +9,11 @@ using namespace std;
 map<int, ds_record *> getmap;
 
 GeometryCollection::GeometryCollection() {
-  curr_id = 0;
   initGeometryCollection();
-  head = NULL;
-  count = 0;
 }
 GeometryCollection::GeometryCollection(int type){
   initGeometryCollection();
-  head = NULL;
   this->type = type;
-  curr_id = 0;
 
 }
 GeometryCollection::~GeometryCollection()	{
@@ -36,7 +31,10 @@ GeometryCollection::~GeometryCollection()	{
   }*/
 }
 
-
+void GeometryCollection::initGeometryCollection(){
+  from = head = NULL;
+  curr_id = count = 0;
+}
 ds_record * GeometryCollection::initRecord(int id, ds_geometry * geom, ds_record * next, ds_record * previous) {
   ds_record * newRecord = (ds_record *)malloc(sizeof(ds_record));
   newRecord->id = id;
@@ -436,14 +434,8 @@ Point PointCollection::getById(int id) {
 vector<Point> PointCollection::getNext(int n, int transactionId) {
   vector<Point> points;
   Point *newPoint;
-  ds_record *from;
   int rdcnt=n;
-  if(getmap.find(transactionId) != getmap.end())
-  {
-    from = 	getmap.find(transactionId)->second;
-    from->inDegree--;
-  }
-  else
+  if(from == NULL)
   {
     from = head;
   }
@@ -457,8 +449,6 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
     from = from->next;
     rdcnt--;
   }while(from != head && rdcnt > 0);
-  getmap.erase(transactionId);
-  getmap.insert(std::pair<int,ds_record*>(transactionId,from));
   return points; // change name if wrapper function name changes
 }
 
@@ -507,14 +497,8 @@ Rectangle RectangleCollection::getById(int id) {
 vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   vector<Rectangle> rectangles;
   Rectangle *newRectangle;
-  ds_record *from;
   int rdcnt=n;
-  if(getmap.find(transactionId) != getmap.end())
-  {
-    from = 	getmap.find(transactionId)->second;
-    from->inDegree--;
-  }
-  else
+  if(from == NULL)
   {
     from = head;
   }
@@ -527,8 +511,6 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
     free(newRectangle);
     from = from->next;
   }while(from != head && rdcnt > 0);
-  getmap.erase(transactionId);
-  getmap.insert(std::pair<int,ds_record*>(transactionId,from));
   return rectangles; // change name if wrapper function name changes
 }
 
