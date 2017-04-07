@@ -5,7 +5,6 @@
 #ifndef DATASTORAGE_H
 #include "data-storage.h"
 #endif
-
 using namespace std;
 
 bool testGetNextSingle() {
@@ -78,12 +77,7 @@ bool testGetNextState() {
   return testResultPointCoordinates && testResultPointCoordinates2;
 }
 
-int callLoadData();
-int callLoadDataBulk();
-int callGetSize();
-
-int testAddVector()
-{
+int testAddVector() {
   PointCollection *pntCollection;
   Point *pnt1 = new Point(5.5, 6.5);
   Point *pnt2 = new Point(4, 6.7);
@@ -96,22 +90,7 @@ bool testGetNext() {
   return testGetNextSingle() && testGetNextMultiple() && testGetNextState();
 }
 
-int main()
-{
-    //loadData("mdd","ddd",1,"ddd",2);
-    //return 0;
-    int status;
-    cout<<"Returned status:"<<testAddVector()<<endl;
-    //return 0;
-
-    //cout << "\n\nResult for getNext: " << testGetNext();
-
-  //loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
-
-}
-
-int callLoadDataBulk()
-{
+int callLoadDataBulk() {
   PointCollection *pc1 = new PointCollection();
   PointCollection *pc2 = new PointCollection();
   Point *p = new Point(1.0,1.0);
@@ -121,8 +100,7 @@ int callLoadDataBulk()
   return pc2->insertBulk(*pc1);
 }
 
-int callGetSize()
-{
+int callGetSize() {
   PointCollection *pntcollection;
   pntcollection = new PointCollection();
 
@@ -137,8 +115,7 @@ int callGetSize()
   return pntcollection->getSize();
 }
 
-void test_insertData()
-{
+void test_insertData() {
     PointCollection *pntcollection;
     pntcollection = new PointCollection();
 
@@ -161,8 +138,7 @@ void test_insertData()
     cout << pntcollection->getSize();
 }
 
-
-void test_deleteData(){
+void test_deleteData() {
 
       PointCollection *pntcollection;
       pntcollection = new PointCollection();
@@ -179,5 +155,18 @@ void test_deleteData(){
 
       cout << pntcollection->removeById(1);
       cout << pntcollection->getSize();
+
+}
+
+int main() {
+    //loadData("mdd","ddd",1,"ddd",2);
+    //return 0;
+    int status;
+    cout<<"Returned status:"<<testAddVector()<<endl;
+    //return 0;
+
+    //cout << "\n\nResult for getNext: " << testGetNext();
+
+  //loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
 
 }
