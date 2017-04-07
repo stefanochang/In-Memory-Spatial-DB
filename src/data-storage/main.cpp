@@ -4,6 +4,7 @@
 #include <string>
 #ifndef DATASTORAGE_H
 #include "data-storage.h"
+#include "../integration/catalog.h"
 #endif
 using namespace std;
 
@@ -21,6 +22,10 @@ bool testGetNextSingle() {
   if(result.size() > 0) {
       vector<float> resultPointCoordinates = result[0].getCoordinates();
       testResultPointCoordinates = resultPointCoordinates[0] == 1 && resultPointCoordinates[1] == 2;
+      if(!testResultPointCoordinates) {
+        cout << "testGetNextSingle: Failed in getting single points\n";
+        return false;
+      }
   }
 
   return testResultSize && testResultPointCoordinates;
@@ -37,7 +42,7 @@ bool testGetNextMultiple() {
 
   vector<Point> result = pc->getNext(2, 2);
   bool testResultSize = result.size() == 2;
-  cout<<"\nResult1 Size: "<<result.size();
+
   bool testResultPointCoordinates = false;
   bool testResultPointCoordinates2 = false;
   if(result.size() > 0) {
@@ -46,6 +51,11 @@ bool testGetNextMultiple() {
 
     vector<float> resultPointCoordinates2 = result[1].getCoordinates();
     testResultPointCoordinates2 = resultPointCoordinates2[0] == 3 && resultPointCoordinates2[1] == 4;
+
+    if(!(testResultPointCoordinates && testResultPointCoordinates2)) {
+      cout << "testGetNextMultiple: Failed in getting 2 points\n";
+      return false;
+    }
   }
   return testResultSize && testResultPointCoordinates && testResultPointCoordinates2;
 }
@@ -61,20 +71,35 @@ bool testGetNextState() {
 
   vector<Point> result = pc->getNext(1, 3);
   bool testResultPointCoordinates = false;
-  cout<<"\nResult1 Size: "<<result.size();
+
   if(result.size() > 0) {
     vector<float> resultPointCoordinates = result[0].getCoordinates();
     testResultPointCoordinates = resultPointCoordinates[0] == 1 && resultPointCoordinates[1] == 2;
+    if(!testResultPointCoordinates) {
+      cout << "testGetNextState: First point retrieval failing\n";
+      return false;
+    }
   }
 
   result = pc->getNext(2, 3);
   bool testResultPointCoordinates2 = false;
-  cout<<"\nResult2 Size: "<<result.size();
+
   if(result.size() > 0) {
     vector<float> resultPointCoordinates2 = result[0].getCoordinates();
     testResultPointCoordinates2 = resultPointCoordinates2[0] == 3 && resultPointCoordinates2[1] == 4;
+    if(!testResultPointCoordinates2) {
+      cout << "testGetNextState: Second point retrieval failing. State not being maintained\n";
+      return false;
+    }
   }
   return testResultPointCoordinates && testResultPointCoordinates2;
+}
+
+bool testGetNext() {
+  bool result = testGetNextSingle() && testGetNextMultiple() && testGetNextState();
+  if(result) {
+    cout << "GetNext passing for all defined test cases\n";
+  }
 }
 
 int testAddVector() {
@@ -84,10 +109,6 @@ int testAddVector() {
   vector<Point> vecpnt = {*pnt1, *pnt2};
   pntCollection = new PointCollection("djdhd","djhdjh", 1, vecpnt);
   return pntCollection->getSize();
-}
-
-bool testGetNext() {
-  return testGetNextSingle() && testGetNextMultiple() && testGetNextState();
 }
 
 int callLoadDataBulk() {
@@ -161,11 +182,11 @@ void test_deleteData() {
 int main() {
     //loadData("mdd","ddd",1,"ddd",2);
     //return 0;
-    int status;
-    cout<<"Returned status:"<<testAddVector()<<endl;
+    //int status;
+    //cout<<"Returned status:"<<testAddVector()<<endl;
     //return 0;
 
-    //cout << "\n\nResult for getNext: " << testGetNext();
+    testGetNext();
 
   //loadData("data-storage","pointstable",TYPE_POINT, "pointsdata", 1);
 
