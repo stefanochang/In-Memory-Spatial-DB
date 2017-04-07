@@ -100,6 +100,22 @@ void GeometryCollection::appendFirst(ds_geometry *geom)
   count++;
 }
 
+void  GeometryCollection::append(ds_geometry *geom) {
+  switch(collectionStructure) {
+    case COLLECTION_STRUCT_UNSORTED:
+      appendLast(geom);
+      break;
+    case COLLECTION_STRUCT_SORTEDX:
+      appendSortedX(geom);
+      break;
+    case COLLECTION_STRUCT_SORTEDY:
+      appendSortedY(geom);
+      break;
+    default:
+      appendLast(geom);
+  }
+}
+
 void GeometryCollection::appendSortedX(ds_geometry *geom)
 {
   if(head == NULL)
@@ -714,7 +730,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       pnt->x = x;
       pnt->y = y;
       g->pnt = pnt;
-      pntcollection->appendLast(g);
+      pntcollection->append(g);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, (PointCollection *)pntcollection);
   }
@@ -730,7 +746,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       rct->bottom_x = x1;
       rct->bottom_y = y1;
       g->rec = rct;
-      rectanglecollection->appendLast(g);
+      rectanglecollection->append(g);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, (RectangleCollection *)rectanglecollection);
   }
@@ -753,7 +769,7 @@ bool insertData(GeometryCollection *pointsRepo, Point pointToInsert)
   g->pnt = pnt;
   g->pnt->x = pointToInsert.getCoordinates()[0];
   g->pnt->y = pointToInsert.getCoordinates()[1];
-  pointsRepo->appendLast(g);
+  pointsRepo->append(g);
   return true;
 }
 
@@ -769,7 +785,7 @@ bool insertData(GeometryCollection *rectanglesRepo, Rectangle rectangleToInsert)
   g->rec->top_y = rectangleToInsert.getCoordinates()[1];
   g->rec->bottom_x = rectangleToInsert.getCoordinates()[2];
   g->rec->bottom_y = rectangleToInsert.getCoordinates()[3];
-  rectanglesRepo->appendLast(g);
+  rectanglesRepo->append(g);
   return true;
 }
 
@@ -786,7 +802,7 @@ bool insertData(GeometryCollection *pointpointrepo, PointPoint pntpntToInsert)
   g->pntpnt->point1.y = pntpntToInsert.getCoordinates()[1];
   g->pntpnt->point2.x = pntpntToInsert.getCoordinates()[2];
   g->pntpnt->point2.y = pntpntToInsert.getCoordinates()[3];
-  pointpointrepo->appendLast(g);
+  pointpointrepo->append(g);
   return true;
 }
 
@@ -804,7 +820,7 @@ bool insertData(GeometryCollection *recpointrepo, PointRectangle pntrectangleToI
   g->pntrec->rec.top_y = pntrectangleToInsert.getCoordinates()[3];
   g->pntrec->rec.bottom_x = pntrectangleToInsert.getCoordinates()[4];
   g->pntrec->rec.bottom_y = pntrectangleToInsert.getCoordinates()[5];
-  recpointrepo->appendLast(g);
+  recpointrepo->append(g);
   return true;
 }
 
@@ -824,7 +840,7 @@ bool insertData(GeometryCollection *recrectanglesRepo, RectangleRectangle recrec
   g->recrec->rec2.top_y = recrectangleToInsert.getCoordinates()[5];
   g->recrec->rec2.bottom_x = recrectangleToInsert.getCoordinates()[6];
   g->recrec->rec2.bottom_y = recrectangleToInsert.getCoordinates()[7];
-  recrectanglesRepo->appendLast(g);
+  recrectanglesRepo->append(g);
   return true;
 }
 

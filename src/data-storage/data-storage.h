@@ -13,7 +13,7 @@ class GeometryCollection
 	ds_record* from;
 	short type;
 	int count;
-
+	int collectionStructure;
 public:
 	GeometryCollection();
 	GeometryCollection(int type);
@@ -25,6 +25,8 @@ public:
 	void appendLast(ds_geometry *geom);
 
 	void appendFirst(ds_geometry *geom);
+
+	void append(ds_geometry *geom);
 
 	void appendSortedX(ds_geometry *geom);
 
@@ -54,7 +56,6 @@ public:
 class PointCollection : public GeometryCollection {
     vector<Point> points;
     string name, databaseName;
-    int collectionStructure;
   public:
     PointCollection();
     PointCollection(string, string, int, vector<Point>);
@@ -71,7 +72,6 @@ class PointCollection : public GeometryCollection {
 class RectangleCollection : public GeometryCollection {
     vector<Rectangle> rectangles;
     string name, databaseName;
-    int collectionStructure;
   public:
     RectangleCollection();
     RectangleCollection(string, string, int, vector<Rectangle>);
@@ -88,7 +88,6 @@ class RectangleCollection : public GeometryCollection {
 class PointPointCollection : public GeometryCollection {
     vector<PointPoint> pointPoints;
     string name, databaseName;
-    int collectionStructure;
   public:
     PointPointCollection();
     PointPointCollection(string, string, int, vector<PointPoint>);
@@ -103,7 +102,6 @@ class PointPointCollection : public GeometryCollection {
 class PointRectangleCollection : public GeometryCollection {
     vector<PointRectangle> pointRectangles;
     string name, databaseName;
-    int collectionStructure;
   public:
     PointRectangleCollection();
     PointRectangleCollection(string, string, int, vector<PointRectangle>);
@@ -118,7 +116,6 @@ class PointRectangleCollection : public GeometryCollection {
 class RectangleRectangleCollection : public GeometryCollection {
     vector<RectangleRectangle> rectangleRectangles;
     string name, databaseName;
-    int collectionStructure;
   public:
     RectangleRectangleCollection();
     RectangleRectangleCollection(string, string, int, vector<RectangleRectangle>);
