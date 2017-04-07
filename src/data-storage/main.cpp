@@ -269,7 +269,7 @@ void testGetByUUID() {
 
 void test_insertDataSortedY() {
     PointCollection *pntcollection;
-    pntcollection = new PointCollection(COLLECTION_STRUCT_SORTEDY);
+    pntcollection = new PointCollection("", "", COLLECTION_STRUCT_SORTEDY, {});
 
     Point *p1;
     p1 = new Point(12.34, 10.34);
@@ -288,7 +288,7 @@ void test_insertDataSortedY() {
     pntcollection->insert(*p3);
     pntcollection->insert(*p4);
     cout << "Size: " << pntcollection->getSize() << "/n";
-    printData(*pntcollection);
+    printData(pntcollection);
 }
 
 int main() {
