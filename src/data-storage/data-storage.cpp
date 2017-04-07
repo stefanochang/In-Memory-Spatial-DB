@@ -9,16 +9,11 @@ using namespace std;
 map<int, ds_record *> getmap;
 
 GeometryCollection::GeometryCollection() {
-  curr_id = 0;
   initGeometryCollection();
-  head = NULL;
-  count = 0;
 }
 GeometryCollection::GeometryCollection(int type){
   initGeometryCollection();
-  head = NULL;
   this->type = type;
-  curr_id = 0;
 
 }
 GeometryCollection::~GeometryCollection()	{
@@ -36,7 +31,12 @@ GeometryCollection::~GeometryCollection()	{
   }*/
 }
 
-
+void GeometryCollection::initGeometryCollection(){
+  from = head = NULL;
+  curr_id = count = 0;
+  type = 0;
+  collectionStructure = 10;
+}
 ds_record * GeometryCollection::initRecord(int id, ds_geometry * geom, ds_record * next, ds_record * previous) {
   ds_record * newRecord = (ds_record *)malloc(sizeof(ds_record));
   newRecord->id = id;
@@ -76,9 +76,9 @@ void GeometryCollection::appendFirst(ds_geometry *geom)
   if(head == NULL)
   {
     head = initRecord(curr_id++, geom, head, head);
-    // 	head = (record *)malloc(sizeof(record));
     // 	head->next = head;
     // 	head->prev = head;
+    // 	head = (record *)malloc(sizeof(record));
     // 	head->id = curr_id++;
     // 	head->isDeleted = false;
     // 	head->inDegree = 0;
@@ -102,26 +102,32 @@ void GeometryCollection::appendFirst(ds_geometry *geom)
   count++;
 }
 
+void  GeometryCollection::append(ds_geometry *geom) {
+  switch(collectionStructure) {
+    case COLLECTION_STRUCT_UNSORTED:
+      appendLast(geom);
+      break;
+    case COLLECTION_STRUCT_SORTEDX:
+      appendSortedX(geom);
+      break;
+    case COLLECTION_STRUCT_SORTEDY:
+      appendSortedY(geom);
+      break;
+    default:
+      appendLast(geom);
+  }
+}
+
 void GeometryCollection::appendSortedX(ds_geometry *geom)
 {
   if(head == NULL)
   {
     head = initRecord(curr_id++, geom, head, head);
-    // head = (record *)malloc(sizeof(record));
-    // head->next = head;
-    // head->prev = head;
-    // head->id = curr_id++;
-    // head->geom = geom;
-    // head->isDeleted = false;
-    // head->inDegree = 0;
+    head->next = head;
+    head->prev = head;
   }
   else
   {
-    // record* newNode = (record *)malloc(sizeof(record));
-    // newNode->geom = geom;
-    // newNode->id = curr_id++;
-    // newNode->isDeleted = false;
-    // newNode->inDegree = 0;
     ds_record* newNode = initRecord(curr_id++, geom, NULL, NULL);
     ds_record* current = head;
     ds_record* previous = head->prev;
@@ -152,21 +158,11 @@ void GeometryCollection::appendSortedY(ds_geometry *geom)
   if(head == NULL)
   {
     head = initRecord(curr_id++, geom, head, head);
-    // head = (record *)malloc(sizeof(record));
-    // head->next = head;
-    // head->prev = head;
-    // head->id = curr_id++;
-    // head->geom = geom;
-    // head->isDeleted = false;
-    // head->inDegree = 0;
+    head->next = head;
+    head->prev = head;
   }
   else
   {
-    // record* newNode = (record *)malloc(sizeof(record));
-    // newNode->geom = geom;
-    // newNode->id = curr_id++;
-    // newNode->isDeleted = false;
-    // newNode->inDegree = 0;
     ds_record* newNode = initRecord(curr_id++, geom, NULL, NULL);
     ds_record* current = head;
     ds_record* previous = head->prev;
@@ -436,14 +432,8 @@ Point PointCollection::getById(int id) {
 vector<Point> PointCollection::getNext(int n, int transactionId) {
   vector<Point> points;
   Point *newPoint;
-  ds_record *from;
   int rdcnt=n;
-  if(getmap.find(transactionId) != getmap.end())
-  {
-    from = 	getmap.find(transactionId)->second;
-    from->inDegree--;
-  }
-  else
+  if(from == NULL)
   {
     from = head;
   }
@@ -457,8 +447,6 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
     from = from->next;
     rdcnt--;
   }while(from != head && rdcnt > 0);
-  getmap.erase(transactionId);
-  getmap.insert(std::pair<int,ds_record*>(transactionId,from));
   return points; // change name if wrapper function name changes
 }
 
@@ -507,14 +495,8 @@ Rectangle RectangleCollection::getById(int id) {
 vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   vector<Rectangle> rectangles;
   Rectangle *newRectangle;
-  ds_record *from;
   int rdcnt=n;
-  if(getmap.find(transactionId) != getmap.end())
-  {
-    from = 	getmap.find(transactionId)->second;
-    from->inDegree--;
-  }
-  else
+  if(from == NULL)
   {
     from = head;
   }
@@ -527,8 +509,6 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
     free(newRectangle);
     from = from->next;
   }while(from != head && rdcnt > 0);
-  getmap.erase(transactionId);
-  getmap.insert(std::pair<int,ds_record*>(transactionId,from));
   return rectangles; // change name if wrapper function name changes
 }
 
@@ -732,7 +712,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       pnt->x = x;
       pnt->y = y;
       g->pnt = pnt;
-      pntcollection->appendLast(g);
+      pntcollection->append(g);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, (PointCollection *)pntcollection);
   }
@@ -748,7 +728,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
       rct->bottom_x = x1;
       rct->bottom_y = y1;
       g->rec = rct;
-      rectanglecollection->appendLast(g);
+      rectanglecollection->append(g);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, (RectangleCollection *)rectanglecollection);
   }
@@ -771,7 +751,7 @@ bool insertData(GeometryCollection *pointsRepo, Point pointToInsert)
   g->pnt = pnt;
   g->pnt->x = pointToInsert.getCoordinates()[0];
   g->pnt->y = pointToInsert.getCoordinates()[1];
-  pointsRepo->appendLast(g);
+  pointsRepo->append(g);
   return true;
 }
 
@@ -787,7 +767,7 @@ bool insertData(GeometryCollection *rectanglesRepo, Rectangle rectangleToInsert)
   g->rec->top_y = rectangleToInsert.getCoordinates()[1];
   g->rec->bottom_x = rectangleToInsert.getCoordinates()[2];
   g->rec->bottom_y = rectangleToInsert.getCoordinates()[3];
-  rectanglesRepo->appendLast(g);
+  rectanglesRepo->append(g);
   return true;
 }
 
@@ -804,7 +784,7 @@ bool insertData(GeometryCollection *pointpointrepo, PointPoint pntpntToInsert)
   g->pntpnt->point1.y = pntpntToInsert.getCoordinates()[1];
   g->pntpnt->point2.x = pntpntToInsert.getCoordinates()[2];
   g->pntpnt->point2.y = pntpntToInsert.getCoordinates()[3];
-  pointpointrepo->appendLast(g);
+  pointpointrepo->append(g);
   return true;
 }
 
@@ -822,7 +802,7 @@ bool insertData(GeometryCollection *recpointrepo, PointRectangle pntrectangleToI
   g->pntrec->rec.top_y = pntrectangleToInsert.getCoordinates()[3];
   g->pntrec->rec.bottom_x = pntrectangleToInsert.getCoordinates()[4];
   g->pntrec->rec.bottom_y = pntrectangleToInsert.getCoordinates()[5];
-  recpointrepo->appendLast(g);
+  recpointrepo->append(g);
   return true;
 }
 
@@ -842,7 +822,7 @@ bool insertData(GeometryCollection *recrectanglesRepo, RectangleRectangle recrec
   g->recrec->rec2.top_y = recrectangleToInsert.getCoordinates()[5];
   g->recrec->rec2.bottom_x = recrectangleToInsert.getCoordinates()[6];
   g->recrec->rec2.bottom_y = recrectangleToInsert.getCoordinates()[7];
-  recrectanglesRepo->appendLast(g);
+  recrectanglesRepo->append(g);
   return true;
 }
 
