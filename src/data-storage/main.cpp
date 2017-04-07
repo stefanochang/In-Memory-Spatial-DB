@@ -5,6 +5,9 @@
 #ifndef DATASTORAGE_H
 #include "data-storage.h"
 #endif
+#ifndef CATALOG_H
+#include "../integration/catalog.h"
+#endif
 using namespace std;
 
 bool testGetNextSingle() {
@@ -138,6 +141,29 @@ void test_insertData() {
     cout << pntcollection->getSize();
 }
 
+void test_insertDataSortedX() {
+    PointCollection *pntcollection;
+    pntcollection = new PointCollection();
+
+    Point *p1;
+    p1 = new Point(12.34, 10.34);
+
+    Point *p2;
+    p2 = new Point(12.35, 10.34);
+
+    Point *p3;
+    p3 = new Point(12.36, 10.34);
+
+    Point *p4;
+    p4 = new Point(12.37, 10.34);
+
+    cout << pntcollection->insert(*p1);
+    cout << pntcollection->insert(*p2);
+    cout << pntcollection->insert(*p3);
+    cout << pntcollection->insert(*p4);
+    cout << pntcollection->getSize();
+}
+
 void test_deleteData() {
 
       PointCollection *pntcollection;
@@ -159,10 +185,15 @@ void test_deleteData() {
 }
 
 int main() {
-    //loadData("mdd","ddd",1,"ddd",2);
+    loadData("datastore","pointcollection",1,"pointsdata",12);
+    PointCollection *pointcollection = Catalog::Instance()->getPointCollectionByName("datastore", "pointcollection");
+    vector<Point> vpts =  pointcollection->getNext(pointcollection->getSize());
+    for(int i = 0; i < vpts.size(); i++) {
+      cout << vpts[i].getCoordinates().at(0) << " : " << vpts[i].getCoordinates().at(1) << endl;
+    }
     //return 0;
-    int status;
-    cout<<"Returned status:"<<testAddVector()<<endl;
+    //int status;
+    //cout<<"Returned status:"<<testAddVector()<<endl;
     //return 0;
 
     //cout << "\n\nResult for getNext: " << testGetNext();
