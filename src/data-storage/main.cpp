@@ -7,10 +7,6 @@
 #endif
 using namespace std;
 
-int callLoadData();
-int callLoadDataBulk();
-int callGetSize();
-
 bool testGetNextSingle() {
   PointCollection *pc = new PointCollection();
 
