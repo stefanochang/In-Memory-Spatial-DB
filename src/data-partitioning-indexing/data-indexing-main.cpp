@@ -1,11 +1,12 @@
 #include "rtree-implementation.cpp"
+#include <typeinfo>
 class DataIndexingWrapper:public SpatialIndexInterface{
 	
 	
 	public:
 		
 		PointSpatialIndexR P;
-		RectangleSpatialIndex R;
+		RectangleSpatialIndexR R;
 		
 		void createIndex(PointCollection points){
 			
@@ -25,14 +26,14 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 			
 			
 			cout<<"R Tree search point"<<endl;
-			PointCollection p = P.searchPoint(r);
+			PointCollection p=P.searchPoint(r);
 			return p;
 				
 		}
 		RectangleCollection searchRectangle(Rectangle r){
 			
 			cout<<"R Tree search rect"<<endl;
-			RectangleCollection rc = R.searchPoint(r);
+			RectangleCollection rc = R.searchRectangle(r);
 			return rc;
 		}
 		
@@ -55,3 +56,11 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 			return true;
 		}
 };
+
+int main(){
+
+	DataIndexingWrapper d;
+	
+
+	return 0;
+}

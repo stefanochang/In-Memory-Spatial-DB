@@ -1,15 +1,12 @@
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/box.hpp>
-
 #include <boost/geometry/index/rtree.hpp>
 
 // Header file for SpatialIndexInterface
-#include "spatial-index-interface.h"
-
+#include "../integration/spatial-index-interface.h"
 // to store queries results
 #include <vector>
-#include "data-storage.h"
 // just for output
 #include <iostream>
 #include <sstream>
@@ -21,51 +18,74 @@ using namespace std;
 namespace bg = boost::geometry;
 namespace bgi = boost::geometry::index;
 
-typedef bg::model::point<float, 2, bg::cs::cartesian> point;
-typedef bg::model::box<point> box;
-typedef std::pair<box, unsigned> value;
+typedef bg::model::point<float, 2, bg::cs::cartesian> boostpoint;
+typedef bg::model::box<boostpoint> boostbox;
+typedef std::pair<boostbox, unsigned> boostvalue;
+
 class PointSpatialIndexR{
 	private:
-		bgi::rtree< point, bgi::linear<16> > rtreeObj;
+		bgi::rtree< boostpoint, bgi::linear<16> > rtreeObj;
 	
 	
 	public:
-		PointSpatialIndex() {}
+		PointSpatialIndexR() {}
     	
     	void createIndex(PointCollection points){
         	
 			cout<<"create index point impl"<<endl;
-			bgi::rtree< point, bgi::linear<16> > rtree2;
+			bgi::rtree< boostpoint, bgi::linear<16> > rtreeinst;
 			
-			
-			Point p;
-			while((p=points.getNext(1))!=NULL){
+			vector<Point> p;
+		//	if(points!=NULL)
+				p = points.getNext();
+
+			for(int i=0;i<p.size();i++){
 				vector<float> vect;
 				
-				vect = p.getCoordinates();
-				rtree2.insert(point(vect.at(0),vect.at(1)));
+				vect = p.at(i).getCoordinates();
+				rtreeinst.insert(boostpoint(vect.at(0),vect.at(1)));
+			
 			}
-			rtreeObj = rtree2;
+
+			
+			cout<<"##################################"<<endl<<endl;
+			cout<<"Indexed "<<rtreeinst.size()<<endl;
+			rtreeObj = rtreeinst;
 			
 		
 		}
 		bool deleteIndex(){
+			rtreeObj.clear();
 			return true;
 		}
 		PointCollection searchPoint(Rectangle r){
 			
-			std::vector<point> query_result;
-			vect<float> vect = r.getCoordinates();
-			
-			rtreeObj.query(bgi::intersects(box(point(vect.at(0),vect.at(1)),point(vect.at(2),vect.at(3)))), std::back_inserter(query_result));
-			
-			for(int x=0;x<query_result.size();x++){
+			std::vector<boostpoint> query_result;
 
-				cout<<query_result.at(x).get<0>()<<" , "<<query_result.at(x).get<1>()<<endl;
-		
+			cout<<"In search point"<<endl;
+		vector<float> vect = r.getCoordinates();
+
+			
+			rtreeObj.query(bgi::intersects(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(query_result));
+			float x1,y1;
+			vector<Point> returning;
+
+			//    std::cout << bg::wkt<point>(point(0, 0)) << std::endl;
+			//PointCollection points;
+			    
+			for(int x=0;x<query_result.size();x++){
+				x1 = query_result.at(x).get<0>();
+				y1 = query_result.at(x).get<1>();
+				
+			
+
+				Point temp(x1,y1);
+				returning.push_back(temp);
+
 			}
-			PointCollection p ;
-			return p;
+
+			PointCollection points(" "," ",0,returning);
+			return points;
 		}
 		
 		bool update(PointCollection points){
@@ -81,7 +101,7 @@ class PointSpatialIndexR{
 class RectangleSpatialIndexR{
 
 	private:
-		bgi::rtree< value, bgi::quadratic<16> > rtreeObj;
+		bgi::rtree< boostvalue, bgi::quadratic<16> > rtreeObj;
 	
 	
 	public:
@@ -92,40 +112,64 @@ class RectangleSpatialIndexR{
 			
 			
 			cout<<"create index rect impl"<<endl;
-			bgi::rtree< value, bgi::quadratic<16> > rtree;
+			bgi::rtree< boostvalue, bgi::quadratic<16> > rtreeinst;
 			
-			Rectangle r;
-			while((r=rects.getNext())!=NULL){
+			vector<Rectangle> r;
+			//if(rects!=NULL)
+				r = rects.getNext();
+			
+			for(int i=0;i<r.size();i++){
 				vector<float> vect;
 				
-				vect = r.getCoordinates();
+				vect = r.at(i).getCoordinates();
 				
-				box b(point(vect.at(0), vect.at(1)), point(vect.at(2),vect.at(3)));
+				boostbox b(boostpoint(vect.at(0), vect.at(1)), boostpoint(vect.at(2),vect.at(3)));
 
-        		rtree.insert(std::make_pair(b, i));	
+        		rtreeinst.insert(std::make_pair(b, i));	
 				
 			}
-			
-			rtreeObj = rtee;
+			cout<<"##################################"<<endl<<endl;
+			cout<<"Inserted "<<rtreeinst.size()<<" rectangles in R tree"<<endl;
+			rtreeObj = rtreeinst;
 			
 		}
+		
 		bool deleteIndex(){
+			rtreeObj.clear();
 			return true;
 		}
-		RectangleCollection searchPoint(Rectangle r){
+		
+		
+		RectangleCollection searchRectangle(Rectangle r){
 			
-			Rectangle Collection rc;
-			vect<float> vect = r.getCoordinates();
+			//RectangleCollection rc;
+			vector<float> vect = r.getCoordinates();
 			
-			std::vector<value> result_s;
-    		rtreeObj.query(bgi::intersects(box(point(vect.at(0),vect.at(1)),point(vect.at(2),vect.at(3)))), std::back_inserter(result_s));
+			std::vector<boostvalue> result_s;
+    		rtreeObj.query(bgi::intersects(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(result_s));
 
-			std::cout << "spatial query result:" << std::endl;
+    		std::vector<Rectangle> rects;
 			
-    		BOOST_FOREACH(value const& v, result_s)
-        	std::cout << bg::wkt<box>(v.first) << " - " << v.second << std::endl;
+    		BOOST_FOREACH(boostvalue const& v, result_s){
+				float x1 = bg::get<bg::min_corner,0>(v.first); 
+    			float y1 = bg::get<bg::min_corner,1>(v.first);
+    			float x2 = v.first.max_corner().get<0>();
+    			float y2 = v.first.max_corner().get<1>();
+    		
+    			Rectangle temp(x1,y1,x2,y2);
+				rects.push_back(temp);
+
+			//	points.insert(temp);
+				//temp.printpoints();
+
+
+			}
+			RectangleCollection rc(" "," ",0, rects);
+	//		RectangleCollection rc;
 			return rc;
 		}
+		
+		
 		bool update(RectangleCollection rects){
 			bool r = deleteIndex();
 			createIndex(rects);
@@ -133,5 +177,3 @@ class RectangleSpatialIndexR{
 		}
 
 };
-
-
