@@ -13,6 +13,7 @@ Point * getPointObjectFromStruct(ds_record * pointStruct) {
   float x = pointStruct->geom->pnt->x;
   float y = pointStruct->geom->pnt->y;
   Point* pt = new Point(x, y);
+  pt->setId(pointStruct->id);
   return pt;
 }
 
@@ -22,6 +23,7 @@ Rectangle * getRectangleObjectFromStruct(ds_record * rectangleStruct) {
   float x2 = rectangleStruct->geom->rec->bottom_x;
   float y2 = rectangleStruct->geom->rec->bottom_y;
   Rectangle* rec = new Rectangle(x1, y1, x2, y2);
+  rec->setId(rectangleStruct->id);
   return rec;
 }
 
@@ -260,6 +262,8 @@ int GeometryCollection::deleteByUUID(int id)
         if(current->inDegree <= 0)
         {
           temp = current;
+          if(current == head)
+            head = head->next;
           previous->next = current->next;
           current = current->next;
           current->prev = previous;
@@ -411,6 +415,7 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
     if(from->isDeleted)
       continue;
     newPoint = new Point(from->geom->pnt->x, from->geom->pnt->y);
+    newPoint->setId(from->id);
     points.push_back(*newPoint);
     free(newPoint);
     from = from->next;
@@ -474,6 +479,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
     if(from->isDeleted)
      continue;
     newRectangle = new Rectangle(from->geom->rec->top_x, from->geom->rec->top_y,from->geom->rec->bottom_x, from->geom->rec->bottom_y);
+    newRectangle->setId(from->id);
     rectangles.push_back(*newRectangle);
     free(newRectangle);
     from = from->next;
