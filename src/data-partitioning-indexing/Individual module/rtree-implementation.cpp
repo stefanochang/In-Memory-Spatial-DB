@@ -4,7 +4,7 @@
 #include <boost/geometry/index/rtree.hpp>
 
 // Header file for SpatialIndexInterface
-#include "../integration/spatial-index-interface.h"
+#include "spatial-index-interface.h"
 // to store queries results
 #include <vector>
 // just for output
@@ -44,11 +44,9 @@ class PointSpatialIndexR{
 				
 				vect = p.at(i).getCoordinates();
 				rtreeinst.insert(boostpoint(vect.at(0),vect.at(1)));
-			
+			//	cout<<rtreeinst.size()<<endl;
 			}
 
-			
-			cout<<"##################################"<<endl<<endl;
 			cout<<"Indexed "<<rtreeinst.size()<<endl;
 			rtreeObj = rtreeinst;
 			
@@ -81,10 +79,12 @@ class PointSpatialIndexR{
 
 				Point temp(x1,y1);
 				returning.push_back(temp);
+			//	points.insert(temp);
+				temp.printpoints();
+
 
 			}
-
-			PointCollection points(" "," ",0,returning);
+			PointCollection points(returning);
 			return points;
 		}
 		
@@ -128,7 +128,6 @@ class RectangleSpatialIndexR{
         		rtreeinst.insert(std::make_pair(b, i));	
 				
 			}
-			cout<<"##################################"<<endl<<endl;
 			cout<<"Inserted "<<rtreeinst.size()<<" rectangles in R tree"<<endl;
 			rtreeObj = rtreeinst;
 			
@@ -164,8 +163,9 @@ class RectangleSpatialIndexR{
 
 
 			}
-			RectangleCollection rc(" "," ",0, rects);
-	//		RectangleCollection rc;
+			RectangleCollection rc(rects);
+			rc.printcollection();
+	
 			return rc;
 		}
 		
