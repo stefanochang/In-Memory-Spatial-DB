@@ -5,59 +5,11 @@
 #include "ds_constants.h"
 #include "../integration/geometry.h"
 
-class GeometryCollection
-{
-	protected:
-	int curr_id;
-	ds_record* head;
-	ds_record* from;
-	short type;
-	int count;
-	int collectionStructure;
-public:
-	GeometryCollection();
-	GeometryCollection(int type);
-	~GeometryCollection();
-
-	void initGeometryCollection();
-	ds_record * initRecord(int id, ds_geometry * geom, ds_record * next, ds_record * previous);
-
-	void appendLast(ds_geometry *geom);
-
-	void appendFirst(ds_geometry *geom);
-
-	void append(ds_geometry *geom);
-
-	void appendSortedX(ds_geometry *geom);
-
-	void appendSortedY(ds_geometry *geom);
-
-	int deleteByUUID(int id);
-
-	ds_record * getRecordByUUID(int);
-
-	Point* getPointByUUID(string table_name, int objectId);
-
-	Rectangle* getRectangleByUUID(string table_name, int objectId);
-
-	PointPoint* getPointPointByUUID(string table_name, int objectId);
-
-	PointRectangle* getPointRectangleByUUID(string table_name, int objectId);
-
-	RectangleRectangle* getRectangleRectangleByUUID(string table_name, int objectId);
-
-	ds_record * getHead();
-
-	short getType();
-
-	int getSize();
-
-	bool isEmpty();
-};
-
-class PointCollection : public GeometryCollection {
-    vector<Point> points;
+class PointCollection{
+    vector<ds_point> points;
     string name, databaseName;
+		int recordId;
+		int getNextAt;
   public:
     PointCollection();
     PointCollection(string, string, int, vector<Point>);
@@ -65,20 +17,26 @@ class PointCollection : public GeometryCollection {
     vector<Point> getNext(int n=1, int transaction_id=1);
     int insert(Point);
     int insertBulk(PointCollection);
+		bool isEmpty();
+		int getSize();
     int remove(Point);
     int removeById(int);  // size of PointCollection
     string getDBName();
     string getTableName();
 };
 
-class RectangleCollection : public GeometryCollection {
-    vector<Rectangle> rectangles;
+class RectangleCollection {
+    vector<ds_rectangle> rectangles;
     string name, databaseName;
+		int recordId;
+		int getNextAt;
   public:
     RectangleCollection();
     RectangleCollection(string, string, int, vector<Rectangle>);
     Rectangle getById(int);
     vector<Rectangle> getNext(int n=1, int transaction_id=1);
+		bool isEmpty();
+		int getSize();
     int insert(Rectangle);
     int insertBulk(RectangleCollection);
     int remove(Rectangle);
@@ -86,9 +44,9 @@ class RectangleCollection : public GeometryCollection {
     string getDBName();
     string getTableName();
 };
-
+/*
 class PointPointCollection : public GeometryCollection {
-    vector<PointPoint> pointPoints;
+    vector<ds_pointpoint> pointPoints;
     string name, databaseName;
   public:
     PointPointCollection();
@@ -97,12 +55,13 @@ class PointPointCollection : public GeometryCollection {
     vector<PointPoint> getNext(int n=1, int transaction_id=1);
     int insert(PointPoint);
     int insertBulk(PointPointCollection);
+		bool isEmpty();
     string getDBName();
     string getTableName();
 };
 
 class PointRectangleCollection : public GeometryCollection {
-    vector<PointRectangle> pointRectangles;
+    vector<ds_pointrectangle> pointRectangles;
     string name, databaseName;
   public:
     PointRectangleCollection();
@@ -111,12 +70,13 @@ class PointRectangleCollection : public GeometryCollection {
     vector<PointRectangle> getNext(int n=1, int transaction_id=1);
     int insert(PointRectangle);
     int insertBulk(PointRectangleCollection);
+		bool isEmpty();
     string getDBName();
     string getTableName();
 };
 
 class RectangleRectangleCollection : public GeometryCollection {
-    vector<RectangleRectangle> rectangleRectangles;
+    vector<ds_rectanglerectangle> rectangleRectangles;
     string name, databaseName;
   public:
     RectangleRectangleCollection();
@@ -125,6 +85,7 @@ class RectangleRectangleCollection : public GeometryCollection {
     vector<RectangleRectangle> getNext(int n=1,int transaction_id=1);
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
+		bool isEmpty();
     string getDBName();
     string getTableName();
 };
@@ -155,5 +116,5 @@ bool insertDataBulk(GeometryCollection *repo, GeometryCollection geometryToInser
 
 //delete item with id equals geomid
 bool deleteData(GeometryCollection repo, int geomId);
-
+*/
 #endif
