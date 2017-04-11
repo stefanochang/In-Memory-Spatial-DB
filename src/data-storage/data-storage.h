@@ -100,10 +100,16 @@ class PointRectangleCollection {
     string getDBName();
     string getTableName();
 };
-/*
-class RectangleRectangleCollection : public GeometryCollection {
+
+class RectangleRectangleCollection {
     vector<ds_rectanglerectangle> rectangleRectangles;
     string name, databaseName;
+    int recordId;
+		int getNextAt;
+
+    RectangleRectangle convertStructToObj(ds_rectanglerectangle);
+    ds_rectanglerectangle * convertObjToStruct(RectangleRectangle);
+    int insertBulk(vector<RectangleRectangle>);
   public:
     RectangleRectangleCollection();
     RectangleRectangleCollection(string, string, int, vector<RectangleRectangle>);
@@ -112,10 +118,13 @@ class RectangleRectangleCollection : public GeometryCollection {
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
 		bool isEmpty();
+    int getSize();
+    int remove(RectangleRectangle);
+    int removeById(int);
     string getDBName();
     string getTableName();
 };
-
+/*
 //Initial data load supported for Points and Rectangles
 int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct);
 
