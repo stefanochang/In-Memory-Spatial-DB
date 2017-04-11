@@ -34,7 +34,7 @@ Point PointCollection::convertStructToObj(ds_point pointStruct) {
 
 ds_point * PointCollection::convertObjToStruct(Point point) {
   ds_point *newPoint = (ds_point *)malloc(sizeof(ds_point));
-  newPoint->id = recordId++;
+
   vector<float> coordinates = point.getCoordinates();
   newPoint->x = coordinates[0];
   newPoint->y = coordinates[1];
@@ -78,7 +78,9 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
 }
 
 int PointCollection::insert(Point pnt) {
-  ds_point *newPoint = convertObjToStruct(pnt); /*(ds_point *)malloc(sizeof(ds_point));
+  ds_point *newPoint = convertObjToStruct(pnt);
+  newPoint->id = recordId++;
+  /*(ds_point *)malloc(sizeof(ds_point));
   newPoint->id = recordId;
   newPoint->x = pnt.getCoordinates()[0];
   newPoint->y = pnt.getCoordinates()[1];*/
@@ -174,7 +176,7 @@ Rectangle RectangleCollection::convertStructToObj(ds_rectangle recStruct) {
 
 ds_rectangle * RectangleCollection::convertObjToStruct(Rectangle rectangle) {
   ds_rectangle *newRectangle = (ds_rectangle *)malloc(sizeof(ds_rectangle));
-  newRectangle->id = recordId++;
+
   vector<float> coordinates = rectangle.getCoordinates();
 
   newRectangle->top_x = coordinates[0];
@@ -216,6 +218,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
 
 int RectangleCollection::insert(Rectangle rec) {
   ds_rectangle *newRec = convertObjToStruct(rec);
+  newRec->id = recordId++;
   rectangles.push_back(*newRec);
   free(newRec);
   return 1;
@@ -296,7 +299,7 @@ PointPoint PointPointCollection::convertStructToObj(ds_pointpoint recStruct) {
 
 ds_pointpoint * PointPointCollection::convertObjToStruct(PointPoint pointPoint) {
   ds_pointpoint *newPointPoint = (ds_pointpoint *)malloc(sizeof(ds_pointpoint));
-  newPointPoint->id = recordId++;
+
   vector<float> coordinates = pointPoint.getCoordinates();
 
   newPointPoint->point1.x = coordinates[0];
@@ -336,9 +339,10 @@ vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
 }
 
 int PointPointCollection::insert(PointPoint rec) {
-  ds_pointpoint *newRec = convertObjToStruct(rec);
-  pointPoints.push_back(*newRec);
-  free(newRec);
+  ds_pointpoint *newPointPoint = convertObjToStruct(rec);
+  newPointPoint->id = recordId++;
+  pointPoints.push_back(*newPointPoint);
+  free(newPointPoint);
   return 1;
 }
 
@@ -424,7 +428,7 @@ RectangleRectangle RectangleRectangleCollection::convertStructToObj(ds_rectangle
 
 ds_rectanglerectangle * RectangleRectangleCollection::convertObjToStruct(RectangleRectangle rectangleRectangle) {
   ds_rectanglerectangle *newRectangleRectangle = (ds_rectanglerectangle *)malloc(sizeof(ds_rectanglerectangle));
-  newRectangleRectangle->id = recordId++;
+
   vector<float> coordinates = rectangleRectangle.getCoordinates();
 
   newRectangleRectangle->rec1.top_x = coordinates[0];
@@ -469,9 +473,10 @@ vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int tran
 }
 
 int RectangleRectangleCollection::insert(RectangleRectangle rec) {
-  ds_rectanglerectangle *newRec = convertObjToStruct(rec);
-  rectangleRectangles.push_back(*newRec);
-  free(newRec);
+  ds_rectanglerectangle *newRecRec = convertObjToStruct(rec);
+  newRecRec->id = recordId++;
+  rectangleRectangles.push_back(*newRecRec);
+  free(newRecRec);
   return 1;
 }
 
@@ -551,7 +556,7 @@ PointRectangle PointRectangleCollection::convertStructToObj(ds_pointrectangle po
 
 ds_pointrectangle * PointRectangleCollection::convertObjToStruct(PointRectangle pointRectangle) {
   ds_pointrectangle *newPointRectangle = (ds_pointrectangle *)malloc(sizeof(ds_pointrectangle));
-  newPointRectangle->id = recordId++;
+
   vector<float> coordinates = pointRectangle.getCoordinates();
 
   newPointRectangle->point.x = coordinates[0];
@@ -593,9 +598,10 @@ vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionI
 }
 
 int PointRectangleCollection::insert(PointRectangle rec) {
-  ds_pointrectangle *newRec = convertObjToStruct(rec);
-  pointRectangles.push_back(*newRec);
-  free(newRec);
+  ds_pointrectangle *newPointRec = convertObjToStruct(rec);
+  newPointRec->id = recordId++;
+  pointRectangles.push_back(*newPointRec);
+  free(newPointRec);
   return 1;
 }
 
