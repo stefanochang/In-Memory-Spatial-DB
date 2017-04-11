@@ -39,17 +39,17 @@ private:
     }
 public:
     RectangleSpatialIndex() {}
-    PointCollection search(Rectangle,PointCollection){
+    PointCollection search(Rectangle,PointCollection*){
         throw "Method Not Supported";
     }
-    RectangleCollection search(Rectangle bounds,RectangleCollection rectangleCollection){
+    RectangleCollection search(Rectangle bounds,RectangleCollection *rectangleCollection){
         RectangleCollection *result;
         float *queryBounds = computeBounds(bounds);
         vector<qBoundingBox> iBoxes = mxCifTree->queryRange(queryBounds[0],queryBounds[1],queryBounds[2],queryBounds[3]);
         vector<Rectangle> rectangles;
         int i=0;
         for(qBoundingBox box : iBoxes) {
-            rectangles.push_back(rectangleCollection.getById(box.getId()));
+            rectangles.push_back(rectangleCollection->getById(box.getId()));
         }
         result = new RectangleCollection("RectangleCollection","Rectangle",TYPE_RECTANGLE,rectangles);
         delete iBoxes;

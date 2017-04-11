@@ -20,7 +20,7 @@ private:
     }
 public:
     PointSpatialIndex() {}
-    PointCollection search(Rectangle bounds, PointCollection pointCollection){
+    PointCollection search(Rectangle bounds, PointCollection *pointCollection){
         PointCollection *result;
         float x1 = bounds.getCoordinates()[0];
         float y1 = bounds.getCoordinates()[1];
@@ -36,14 +36,14 @@ public:
         vector<Point> points;
         int i=0;
         for(qPoint point : iPoints) {
-            points.push_back(pointCollection.getById(point.getId()));
+            points.push_back(pointCollection->getById(point.getId()));
         }
         result = new PointCollection("PointIndexCollection","Point",TYPE_POINT,points);
         delete points;
         delete iPoints;
         return *result;
     }
-    RectangleCollection search(Rectangle,RectangleCollection){
+    RectangleCollection search(Rectangle,RectangleCollection*){
         throw "Method Not Supported";
     }
     void createIndex(PointCollection points){
