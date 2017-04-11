@@ -7,11 +7,9 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINT COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 PointCollection::PointCollection(){
   recordId = 0;
   getNextAt = 0;
-
 }
 
 PointCollection::PointCollection(string name, string databaseName, int collectionStructure, vector<Point> pointsToInsert)
@@ -21,41 +19,55 @@ PointCollection::PointCollection(string name, string databaseName, int collectio
   this->databaseName = databaseName;
   recordId = 0;
   vector<Point>::iterator it;
-  ds_point *newPoint;
+  //ds_point *newPoint;
   for(it=pointsToInsert.begin() ; it < pointsToInsert.end(); it++ ) {
-    newPoint = (ds_point *)malloc(sizeof(ds_point));
-    newPoint->id = recordId++;
-    newPoint->x = it->getCoordinates()[0];
-    newPoint->y = it->getCoordinates()[1];
-    points.push_back(*newPoint);
-    free(newPoint);
+    insert(*it);
   }
 }
 
+Point PointCollection::convertStructToPointObj(ds_point pointStruct) {
+  float x = pointStruct.x;
+  float y = pointStruct.y;
+  Point point = Point(x, y);
+  point.setId(pointStruct.id);
+  return point;
+}
+
+ds_point * PointCollection::convertPointObjToStruct(Point point) {
+  ds_point *newPoint = (ds_point *)malloc(sizeof(ds_point));
+  newPoint->id = recordId++;
+  vector<float> coordinates = point.getCoordinates();
+  newPoint->x = coordinates[0];
+  newPoint->y = coordinates[1];
+
+  return newPoint;
+}
+
 Point PointCollection::getById(int findId) {
-  Point *pnt;
+  //Point *pnt;
   vector<ds_point>::iterator it;
   for(it=points.begin() ; it < points.end(); it++ )
   {
     if(it->id == findId)
     {
-      pnt = new Point(it->x, it->y);
+      /*pnt = new Point(it->x, it->y);
       pnt->setId(it->id);
-      return *pnt;
+      return *pnt;*/
+      return convertStructToPointObj(*it);
     }
   }
 }
 
 vector<Point> PointCollection::getNext(int n, int transactionId) {
   vector<Point> pointsReturned;
-  Point *newPoint;
+  //Point *newPoint;
   int rdcnt=n;
   while( (getNextAt < points.size()) && (rdcnt > 0) )
   {
-    newPoint = new Point(points.at(getNextAt).x, points.at(getNextAt).y);
-    newPoint->setId(points.at(getNextAt).id);
-    pointsReturned.push_back(*newPoint);
-    free(newPoint);
+    //newPoint = new Point(points.at(getNextAt).x, points.at(getNextAt).y);
+    //newPoint->setId(points.at(getNextAt).id);
+    Point newPoint = convertStructToPointObj(points.at(getNextAt));
+    pointsReturned.push_back(newPoint);
     getNextAt++;
     rdcnt--;
   }
@@ -67,10 +79,10 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
 }
 
 int PointCollection::insert(Point pnt) {
-  ds_point *newPoint = (ds_point *)malloc(sizeof(ds_point));
+  ds_point *newPoint = convertPointObjToStruct(pnt); /*(ds_point *)malloc(sizeof(ds_point));
   newPoint->id = recordId;
   newPoint->x = pnt.getCoordinates()[0];
-  newPoint->y = pnt.getCoordinates()[1];
+  newPoint->y = pnt.getCoordinates()[1];*/
   points.push_back(*newPoint);
   free(newPoint);
   return 1;
@@ -78,16 +90,28 @@ int PointCollection::insert(Point pnt) {
 
 int PointCollection::insertBulk(PointCollection collection) {
   vector<Point> pointsToInsert = collection.getNext(collection.getSize());
-  vector<Point>::iterator it;
+  return insertBulk(pointsToInsert);
+  /*vector<Point>::iterator it;
   ds_point *newPoint;
   for(it=pointsToInsert.begin() ; it < pointsToInsert.end(); it++ ) {
+    insert(*it);
     newPoint = (ds_point *)malloc(sizeof(ds_point));
     newPoint->id = recordId++;
     newPoint->x = it->getCoordinates()[0];
     newPoint->y = it->getCoordinates()[1];
+    ds_point *newPoint = convertPointObjToStruct(*it);
     points.push_back(*newPoint);
     free(newPoint);
+  }*/
+}
+
+int PointCollection::insertBulk(vector<Point> ptsToInsert) {
+  vector<Point>::iterator it;
+  for(it=ptsToInsert.begin() ; it < ptsToInsert.end(); it++ ) {
+    insert(*it);
   }
+
+  return 1;
 }
 
 int PointCollection::remove(Point point) {
@@ -106,23 +130,19 @@ int PointCollection::removeById(int deleteId) {
   return 0;
 }
 
-bool PointCollection::isEmpty()
-{
+bool PointCollection::isEmpty() {
   return points.size()==0;
 }
 
-string PointCollection::getDBName()
-{
+string PointCollection::getDBName() {
   return databaseName;
 }
 
-string PointCollection::getTableName()
-{
+string PointCollection::getTableName() {
   return name;
 }
 
-int PointCollection::getSize()
-{
+int PointCollection::getSize() {
   return points.size();
 }
 
@@ -134,7 +154,6 @@ int PointCollection::getSize()
 RectangleCollection::RectangleCollection(){
   recordId = 0;
   getNextAt = 0;
-
 }
 
 RectangleCollection::RectangleCollection(string name, string databaseName, int collectionStructure, vector<Rectangle> recsToInsert)
@@ -143,44 +162,51 @@ RectangleCollection::RectangleCollection(string name, string databaseName, int c
   this->name = name;
   this->databaseName = databaseName;
   recordId = 0;
-  vector<Rectangle>::iterator it;
-  ds_rectangle *newRec;
-  for(it=recsToInsert.begin() ; it < recsToInsert.end(); it++ ) {
-    newRec = (ds_rectangle *)malloc(sizeof(ds_rectangle));
-    newRec->id = recordId++;
-    newRec->top_x = it->getCoordinates()[0];
-    newRec->top_y = it->getCoordinates()[1];
-    newRec->bottom_x = it->getCoordinates()[2];
-    newRec->bottom_y = it->getCoordinates()[3];
-    rectangles.push_back(*newRec);
-    free(newRec);
-  }
+  insertBulk(recsToInsert);
+}
+
+Rectangle RectangleCollection::convertStructToRectangleObj(ds_rectangle recStruct) {
+  float top_x = recStruct.top_x;
+  float top_y = recStruct.top_y;
+  float bottom_x = recStruct.bottom_x;
+  float bottom_y = recStruct.bottom_y;
+  Rectangle rectangle = Rectangle(top_x, top_y, bottom_x, bottom_y);
+  rectangle.setId(recStruct.id);
+  return rectangle;
+}
+
+ds_rectangle * RectangleCollection::convertRectangleObjToStruct(Rectangle rectangle) {
+  ds_rectangle *newRectangle = (ds_rectangle *)malloc(sizeof(ds_point));
+  newRectangle->id = recordId++;
+  vector<float> coordinates = rectangle.getCoordinates();
+
+  newRectangle->top_x = coordinates[0];
+  newRectangle->top_y = coordinates[1];
+  newRectangle->bottom_x = coordinates[2];
+  newRectangle->bottom_y = coordinates[3];
+
+  return newRectangle;
 }
 
 Rectangle RectangleCollection::getById(int findId) {
-  Rectangle *rec;
   vector<ds_rectangle>::iterator it;
   for(it=rectangles.begin() ; it < rectangles.end(); it++ )
   {
     if(it->id == findId)
     {
-      rec = new Rectangle(it->top_x, it->top_y, it->bottom_x, it->bottom_y);
-      rec->setId(it->id);
-      return *rec;
+      return convertStructToRectangleObj(*it);
     }
   }
 }
 
 vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   vector<Rectangle> recsReturned;
-  Rectangle *newRec;
+  //Rectangle *newRec;
   int rdcnt=n;
   while( (getNextAt < rectangles.size()) && (rdcnt > 0) )
   {
-    newRec = new Rectangle(rectangles.at(getNextAt).top_x, rectangles.at(getNextAt).top_y, rectangles.at(getNextAt).bottom_x, rectangles.at(getNextAt).bottom_y);
-    newRec->setId(rectangles.at(getNextAt).id);
-    recsReturned.push_back(*newRec);
-    free(newRec);
+    Rectangle newRectangle = convertStructToRectangleObj(rectangles.at(getNextAt));
+    recsReturned.push_back(newRectangle);
     getNextAt++;
     rdcnt--;
   }
@@ -192,12 +218,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
 }
 
 int RectangleCollection::insert(Rectangle rec) {
-  ds_rectangle *newRec = (ds_rectangle *)malloc(sizeof(ds_rectangle));
-  newRec->id = recordId++;
-  newRec->top_x = rec.getCoordinates()[0];
-  newRec->top_y = rec.getCoordinates()[1];
-  newRec->bottom_x = rec.getCoordinates()[2];
-  newRec->bottom_y = rec.getCoordinates()[3];
+  ds_rectangle *newRec = convertRectangleObjToStruct(rec);
   rectangles.push_back(*newRec);
   free(newRec);
   return 1;
@@ -205,18 +226,15 @@ int RectangleCollection::insert(Rectangle rec) {
 
 int RectangleCollection::insertBulk(RectangleCollection collection) {
   vector<Rectangle> recsToInsert = collection.getNext(collection.getSize());
+  return insertBulk(recsToInsert);
+}
+
+int RectangleCollection::insertBulk(vector<Rectangle> recsToInsert) {
   vector<Rectangle>::iterator it;
-  ds_rectangle *newRec;
   for(it=recsToInsert.begin() ; it < recsToInsert.end(); it++ ) {
-    newRec = (ds_rectangle *)malloc(sizeof(ds_rectangle));
-    newRec->id = recordId++;
-    newRec->top_x = it->getCoordinates()[0];
-    newRec->top_y = it->getCoordinates()[1];
-    newRec->bottom_x = it->getCoordinates()[2];
-    newRec->bottom_y = it->getCoordinates()[3];
-    rectangles.push_back(*newRec);
-    free(newRec);
+    insert(*it);
   }
+
   return 1;
 }
 

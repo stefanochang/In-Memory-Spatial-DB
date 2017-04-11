@@ -10,6 +10,10 @@ class PointCollection{
     string name, databaseName;
 		int recordId;
 		int getNextAt;
+
+    Point convertStructToPointObj(ds_point);
+    ds_point * convertPointObjToStruct(Point);
+    int insertBulk(vector<Point>);
   public:
     PointCollection();
     PointCollection(string, string, int, vector<Point>);
@@ -30,6 +34,10 @@ class RectangleCollection {
     string name, databaseName;
 		int recordId;
 		int getNextAt;
+
+    Rectangle convertStructToRectangleObj(ds_rectangle);
+    ds_rectangle * convertRectangleObjToStruct(Rectangle);
+    int insertBulk(vector<Rectangle>);
   public:
     RectangleCollection();
     RectangleCollection(string, string, int, vector<Rectangle>);
