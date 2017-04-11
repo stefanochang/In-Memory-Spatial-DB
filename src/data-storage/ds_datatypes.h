@@ -17,6 +17,7 @@ struct ds_rectangle{
 typedef struct ds_rectangle ds_rectangle;
 
 struct ds_pointpoint{
+	int id;
 	ds_point point1;
 	ds_point point2;
 };

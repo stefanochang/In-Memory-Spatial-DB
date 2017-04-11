@@ -25,7 +25,7 @@ PointCollection::PointCollection(string name, string databaseName, int collectio
   }
 }
 
-Point PointCollection::convertStructToPointObj(ds_point pointStruct) {
+Point PointCollection::convertStructToObj(ds_point pointStruct) {
   float x = pointStruct.x;
   float y = pointStruct.y;
   Point point = Point(x, y);
@@ -33,7 +33,7 @@ Point PointCollection::convertStructToPointObj(ds_point pointStruct) {
   return point;
 }
 
-ds_point * PointCollection::convertPointObjToStruct(Point point) {
+ds_point * PointCollection::convertObjToStruct(Point point) {
   ds_point *newPoint = (ds_point *)malloc(sizeof(ds_point));
   newPoint->id = recordId++;
   vector<float> coordinates = point.getCoordinates();
@@ -53,7 +53,7 @@ Point PointCollection::getById(int findId) {
       /*pnt = new Point(it->x, it->y);
       pnt->setId(it->id);
       return *pnt;*/
-      return convertStructToPointObj(*it);
+      return convertStructToObj(*it);
     }
   }
 }
@@ -66,7 +66,7 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
   {
     //newPoint = new Point(points.at(getNextAt).x, points.at(getNextAt).y);
     //newPoint->setId(points.at(getNextAt).id);
-    Point newPoint = convertStructToPointObj(points.at(getNextAt));
+    Point newPoint = convertStructToObj(points.at(getNextAt));
     pointsReturned.push_back(newPoint);
     getNextAt++;
     rdcnt--;
@@ -79,7 +79,7 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
 }
 
 int PointCollection::insert(Point pnt) {
-  ds_point *newPoint = convertPointObjToStruct(pnt); /*(ds_point *)malloc(sizeof(ds_point));
+  ds_point *newPoint = convertObjToStruct(pnt); /*(ds_point *)malloc(sizeof(ds_point));
   newPoint->id = recordId;
   newPoint->x = pnt.getCoordinates()[0];
   newPoint->y = pnt.getCoordinates()[1];*/
@@ -99,7 +99,7 @@ int PointCollection::insertBulk(PointCollection collection) {
     newPoint->id = recordId++;
     newPoint->x = it->getCoordinates()[0];
     newPoint->y = it->getCoordinates()[1];
-    ds_point *newPoint = convertPointObjToStruct(*it);
+    ds_point *newPoint = convertObjToStruct(*it);
     points.push_back(*newPoint);
     free(newPoint);
   }*/
@@ -150,7 +150,6 @@ int PointCollection::getSize() {
 // RECTANGLE COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 RectangleCollection::RectangleCollection(){
   recordId = 0;
   getNextAt = 0;
@@ -165,7 +164,7 @@ RectangleCollection::RectangleCollection(string name, string databaseName, int c
   insertBulk(recsToInsert);
 }
 
-Rectangle RectangleCollection::convertStructToRectangleObj(ds_rectangle recStruct) {
+Rectangle RectangleCollection::convertStructToObj(ds_rectangle recStruct) {
   float top_x = recStruct.top_x;
   float top_y = recStruct.top_y;
   float bottom_x = recStruct.bottom_x;
@@ -175,8 +174,8 @@ Rectangle RectangleCollection::convertStructToRectangleObj(ds_rectangle recStruc
   return rectangle;
 }
 
-ds_rectangle * RectangleCollection::convertRectangleObjToStruct(Rectangle rectangle) {
-  ds_rectangle *newRectangle = (ds_rectangle *)malloc(sizeof(ds_point));
+ds_rectangle * RectangleCollection::convertObjToStruct(Rectangle rectangle) {
+  ds_rectangle *newRectangle = (ds_rectangle *)malloc(sizeof(ds_rectangle));
   newRectangle->id = recordId++;
   vector<float> coordinates = rectangle.getCoordinates();
 
@@ -194,7 +193,7 @@ Rectangle RectangleCollection::getById(int findId) {
   {
     if(it->id == findId)
     {
-      return convertStructToRectangleObj(*it);
+      return convertStructToObj(*it);
     }
   }
 }
@@ -205,7 +204,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   int rdcnt=n;
   while( (getNextAt < rectangles.size()) && (rdcnt > 0) )
   {
-    Rectangle newRectangle = convertStructToRectangleObj(rectangles.at(getNextAt));
+    Rectangle newRectangle = convertStructToObj(rectangles.at(getNextAt));
     recsReturned.push_back(newRectangle);
     getNextAt++;
     rdcnt--;
@@ -218,7 +217,7 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
 }
 
 int RectangleCollection::insert(Rectangle rec) {
-  ds_rectangle *newRec = convertRectangleObjToStruct(rec);
+  ds_rectangle *newRec = convertObjToStruct(rec);
   rectangles.push_back(*newRec);
   free(newRec);
   return 1;
@@ -277,54 +276,129 @@ int RectangleCollection::getSize()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINTPOINT COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-PointPointCollection::PointPointCollection()
-: GeometryCollection(TYPE_POINTPOINT) {}
 
-PointPointCollection::PointPointCollection(string name, string databaseName, int collectionStructure, vector<PointPoint> pointpoints)
-: GeometryCollection(TYPE_POINTPOINT) {
+PointPointCollection::PointPointCollection(){
+  recordId = 0;
+  getNextAt = 0;
+}
+
+PointPointCollection::PointPointCollection(string name, string databaseName, int collectionStructure, vector<PointPoint> recsToInsert)
+:PointPointCollection()
+{
   this->name = name;
   this->databaseName = databaseName;
-  this->collectionStructure = collectionStructure;
+  recordId = 0;
+  insertBulk(recsToInsert);
 }
 
-PointPoint PointPointCollection::getById(int id) {
-  PointPoint *pntpnt = getPointPointByUUID(this->name, id);
-  return *pntpnt;
+PointPoint PointPointCollection::convertStructToObj(ds_pointpoint recStruct) {
+  float x1 = recStruct.point1.x;
+  float y1 = recStruct.point1.y;
+  float x2 = recStruct.point2.x;
+  float y2 = recStruct.point2.y;
+  PointPoint pointPoint = PointPoint(x1, y1, x2, y2);
+  pointPoint.setId(recStruct.id);
+  return pointPoint;
 }
 
-int PointPointCollection::insert(PointPoint pntpnt) {
-  return insertData(this,pntpnt);
+ds_pointpoint * PointPointCollection::convertObjToStruct(PointPoint pointPoint) {
+  ds_pointpoint *newPointPoint = (ds_pointpoint *)malloc(sizeof(ds_pointpoint));
+  newPointPoint->id = recordId++;
+  vector<float> coordinates = pointPoint.getCoordinates();
+
+  newPointPoint->point1.x = coordinates[0];
+  newPointPoint->point1.y = coordinates[1];
+  newPointPoint->point2.x = coordinates[2];
+  newPointPoint->point2.y = coordinates[3];
+
+  return newPointPoint;
 }
 
-int PointPointCollection::insertBulk(PointPointCollection collection) {
-  return insertDataBulk(this, collection);
+PointPoint PointPointCollection::getById(int findId) {
+  vector<ds_pointpoint>::iterator it;
+  for(it=pointPoints.begin() ; it < pointPoints.end(); it++ )
+  {
+    if(it->id == findId)
+    {
+      return convertStructToObj(*it);
+    }
+  }
 }
 
 vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
-  vector<PointPoint> points;
-  PointPoint *newPoint;
-  ds_record *from;
-  int rdcnt=0;
-  if(getmap.find(transactionId) != getmap.end())
+  vector<PointPoint> recsReturned;
+  int rdcnt=n;
+  while( (getNextAt < pointPoints.size()) && (rdcnt > 0) )
   {
-    from = 	getmap.find(transactionId)->second;
-    from->inDegree--;
+    PointPoint newPointPoint = convertStructToObj(pointPoints.at(getNextAt));
+    recsReturned.push_back(newPointPoint);
+    getNextAt++;
+    rdcnt--;
   }
-  else
+  if(getNextAt >= pointPoints.size())
   {
-    from = head;
+    getNextAt = 0;
   }
-  while(rdcnt < n and from != head->prev)
-  {
-    if(from->isDeleted)
-    continue;
-    newPoint = new PointPoint(from->geom->pntpnt->point1.x, from->geom->pntpnt->point1.y, from->geom->pntpnt->point2.x, from->geom->pntpnt->point2.y);
-    points.push_back(*newPoint);
-    free(newPoint);
-  }
-  return points; // change name if wrapper function name changes
+  return recsReturned; // change name if wrapper function name changes
 }
+
+int PointPointCollection::insert(PointPoint rec) {
+  ds_pointpoint *newRec = convertObjToStruct(rec);
+  pointPoints.push_back(*newRec);
+  free(newRec);
+  return 1;
+}
+
+int PointPointCollection::insertBulk(PointPointCollection collection) {
+  vector<PointPoint> recsToInsert = collection.getNext(collection.getSize());
+  return insertBulk(recsToInsert);
+}
+
+int PointPointCollection::insertBulk(vector<PointPoint> recsToInsert) {
+  vector<PointPoint>::iterator it;
+  for(it=recsToInsert.begin() ; it < recsToInsert.end(); it++ ) {
+    insert(*it);
+  }
+
+  return 1;
+}
+
+int PointPointCollection::remove(PointPoint rec) {
+  return removeById(rec.getId());
+}
+
+int PointPointCollection::removeById(int deleteId) {
+  vector<ds_pointpoint>::iterator it;
+  for(it=pointPoints.begin() ; it < pointPoints.end(); it++ ) {
+    if(it->id == deleteId)
+    {
+      pointPoints.erase(it);
+      return 1;
+    }
+  }
+  return 0;
+}
+
+bool PointPointCollection::isEmpty()
+{
+  return pointPoints.size()==0;
+}
+
+string PointPointCollection::getDBName()
+{
+  return databaseName;
+}
+
+string PointPointCollection::getTableName()
+{
+  return name;
+}
+
+int PointPointCollection::getSize()
+{
+  return pointPoints.size();
+}
+/*
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RECTANGLERECTANGLE COLLECTION
