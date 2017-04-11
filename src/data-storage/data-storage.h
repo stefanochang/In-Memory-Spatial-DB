@@ -124,10 +124,10 @@ class RectangleRectangleCollection {
     string getDBName();
     string getTableName();
 };
-/*
+
 //Initial data load supported for Points and Rectangles
 int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct);
-
+/*
 // Insert a single point
 bool insertData(GeometryCollection *pointsRepo, Point pointToInsert);
 
