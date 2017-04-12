@@ -4,12 +4,31 @@
 #ifndef CATALOG_H
 #include "../integration/catalog.h"
 #endif
+#include <algorithm>
 using namespace std;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINT COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class XCompare
+{
+public:
+    bool operator()(const ds_point &first, const ds_point &second) const
+    {
+        return first.x < second.x;
+    }
+};
+
+class YCompare
+{
+public:
+    bool operator()(const ds_point &first, const ds_point &second) const
+    {
+        return first.y < second.y;
+    }
+};
+
 PointCollection::PointCollection(){
   recordId = 0;
   getNextAt = 0;
@@ -19,6 +38,7 @@ PointCollection::PointCollection(string name, string databaseName, int collectio
 :PointCollection() {
   this->name = name;
   this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
   recordId = 0;
   vector<Point>::iterator it;
   //ds_point *newPoint;
@@ -86,10 +106,37 @@ int PointCollection::insert(Point pnt) {
   newPoint->id = recordId;
   newPoint->x = pnt.getCoordinates()[0];
   newPoint->y = pnt.getCoordinates()[1];*/
-  points.push_back(*newPoint);
-  free(newPoint);
+  if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
+    points.push_back(*newPoint);
+    free(newPoint);
+    return 1;
+  }
+  else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
+    insertSortedX(*newPoint);
+    return 1;
+  }
+  else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
+    insertSortedY(*newPoint);
+    return 1;
+  }
+}
+
+
+int PointCollection::insertSortedX(ds_point point) {
+  auto it = std::lower_bound( points.begin(), points.end(), point, XCompare()); 
+  points.insert( it, point);
   return 1;
 }
+
+int PointCollection::insertSortedY(ds_point point) {
+  auto it = std::lower_bound( points.begin(), points.end(), point, YCompare()); 
+  points.insert( it, point);
+return 1;
+
+}
+
+
+
 
 int PointCollection::insertBulk(PointCollection collection) {
   vector<Point> pointsToInsert = collection.getNext(collection.getSize());

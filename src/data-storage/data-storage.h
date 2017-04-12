@@ -10,7 +10,7 @@ class PointCollection{
     string name, databaseName;
 		int recordId;
 		int getNextAt;
-
+                int collectionStructure;
     Point convertStructToObj(ds_point);
     ds_point * convertObjToStruct(Point);
     int insertBulk(vector<Point>);
@@ -20,6 +20,8 @@ class PointCollection{
     Point getById(int);
     vector<Point> getNext(int n=1, int transaction_id=1);
     int insert(Point);
+    int insertSortedX(ds_point);
+    int insertSortedY(ds_point);
     int insertBulk(PointCollection);
 		bool isEmpty();
 		int getSize();
@@ -124,6 +126,8 @@ class RectangleRectangleCollection {
     string getDBName();
     string getTableName();
 };
+
+
 
 //Initial data load supported for Points and Rectangles
 int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct);
