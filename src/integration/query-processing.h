@@ -19,14 +19,43 @@
 #define RECTANGLERECTANGLE "RECTANGLERECTANGLE"
 #define DB_NAME ""
 
+#define NO_JOIN 1
+#define RANGE_JOIN 2
+#define KNN_JOIN 3
+#define DISTANCE_JOIN 4
+
+#define FILTER_BY_AREA_LT 1
+#define FILTER_BY_AREA_LE 2
+#define FILTER_BY_AREA_EQ 3
+#define FILTER_BY_AREA_GT 4
+#define FILTER_BY_AREA_GE 5
+
+#define FILTER_BY_DISTANCE_LT 6
+#define FILTER_BY_DISTANCE_LE 7
+#define FILTER_BY_DISTANCE_EQ 8
+#define FILTER_BY_DISTANCE_GT 9
+#define FILTER_BY_DISTANCE_GE 10
+
+#define KNN 11
+#define OBJECTS_IN_RANGE 12
+
 using namespace std;
 
+class Filter {
+public:
+	Filter();
+	Filter(char& filterType, vector<float>& inputParams);
+	char filterType;
+	vector<float> inputParams;
+};
+
 class QueryTree {
-    vector<string> root;
-    vector<vector<string> > leftBranch;
+    char rootType;
+    float rootParam;
+    vector<Filter> leftBranch;
     PointCollection leftDataPoint;
     RectangleCollection leftDataRect;
-    vector<vector<string> > rightBranch;
+    vector<Filter> rightBranch;
     PointCollection rightDataPoint;
     RectangleCollection rightDataRect;
 //    SpatialIndexInterface rightIndexedObject;
@@ -34,24 +63,26 @@ class QueryTree {
 
 public:
     QueryTree();
-    void setRoot(vector<string>);
-    void setLeftFilter(vector<vector<string> >);
+    void setRootType(char);
+    void setRootParam(float);
+    void setLeftFilter(vector<Filter>);
     void setLeftPoints(PointCollection);
     void setLeftRectangles(RectangleCollection);
 //    void setLeftIndexedObject(SpatialIndexInterface);
-    void setRightFilter(vector<vector<string> >);
+    void setRightFilter(vector<Filter>);
     void setRightPoints(PointCollection);
     void setRightRectangles(RectangleCollection);
 //    void setRightIndexedObject(SpatialIndexInterface);
-	const vector<vector<string> >& getLeftBranch() const;
+	const vector<Filter>& getLeftBranch() const;
 	const PointCollection& getLeftDataPoint() const;
 	const RectangleCollection& getLeftDataRect() const;
 //	  SpatialIndexInterface getLeftIndexedObject() const;
-	const vector<vector<string> >& getRightBranch() const;
+	const vector<Filter>& getRightBranch() const;
 	const PointCollection& getRightDataPoint() const;
 	const RectangleCollection& getRightDataRect() const;
 //	 SpatialIndexInterface getRightIndexedObject() const;
-	const vector<string>& getRoot() const;
+	const char& getRootType() const;
+	const float& getRootParam() const;
 };
 
 class QueryResult {
@@ -107,10 +138,12 @@ public:
 
 class OperatorDictionary {
 public:
-	bool applyFilterBy (vector<string> filterDetails, Point inputPoint);
-	bool applyFilterBy (vector<string> filterDetails, Rectangle inputRect);
-	bool applyOperator (vector<string> filterDetails, Point inputPoint);
-	bool applyOperator (vector<string> filterDetails, Rectangle inputRect);
+	bool applyFilterBy (Filter filterDetails, Point inputPoint);
+	bool applyFilterBy (Filter filterDetails, Rectangle inputRect);
+	bool checkIfInRange(Filter rangeFilter, Point inputPoint);
+	bool checkIfInRange(Filter rangeFilter, Rectangle inputRect);
+	bool applyOperator (Filter filterDetails, Point inputPoint);
+	bool applyOperator (Filter filterDetails, Rectangle inputRect);
 };
 
 class QueryProcessing {
@@ -122,35 +155,46 @@ public:
 
 	QueryResult processQuery (QueryTree qTree);
 
-	PointCollection materializeBranch (vector<vector<string> > filter, PointCollection data);
+	PointCollection materializeBranch (vector<Filter> filter, PointCollection data);
 
-	RectangleCollection materializeBranch (vector<vector<string> > filter, RectangleCollection data);
+	RectangleCollection materializeBranch (vector<Filter> filter, RectangleCollection data);
 
-	PointPointCollection rangeJoin (PointCollection leftData, vector<vector<string> > filter, PointCollection rightData);
+	PointPointCollection rangeJoin (PointCollection leftData, vector<Filter> filter, PointCollection rightData);
 
 	RectangleRectangleCollection rangeJoin (
-			RectangleCollection leftData, vector<vector<string> > filter, RectangleCollection rightData);
+			RectangleCollection leftData, vector<Filter> filter, RectangleCollection rightData);
 
 	PointRectangleCollection rangeJoin (
-			PointCollection leftData, vector<vector<string> > filter, RectangleCollection rightData);
+			PointCollection leftData, vector<Filter> filter, RectangleCollection rightData);
 
 	PointPointCollection knnJoin (
-			vector<string> root, PointCollection leftData, vector<vector<string> > filter, PointCollection rightData);
+			float k, PointCollection leftData, vector<Filter> filter, PointCollection rightData);
 
 	RectangleRectangleCollection knnJoin (
-			vector<string> root, RectangleCollection leftData, vector<vector<string> > filter, RectangleCollection rightData);
+			float k, RectangleCollection leftData, vector<Filter> filter, RectangleCollection rightData);
 
 	PointRectangleCollection knnJoin (
-			vector<string> root, PointCollection leftData, vector<vector<string> > filter, RectangleCollection rightData);
+			float k, PointCollection leftData, vector<Filter> filter, RectangleCollection rightData);
 
-	PointPointCollection distanceJoin (vector<string> root, PointCollection leftData,
-			vector<vector<string> > filter, PointCollection rightData);
+	PointRectangleCollection knnJoin (
+				float k, RectangleCollection leftData, vector<Filter> filter, PointCollection rightData);
 
-	RectangleRectangleCollection distanceJoin (vector<string> root, RectangleCollection leftData,
-			vector<vector<string> > filter, RectangleCollection rightData);
+	PointPointCollection distanceJoin (float distThresh, PointCollection leftData,
+			vector<Filter> filter, PointCollection rightData);
 
-	PointRectangleCollection distanceJoin (vector<string> root, PointCollection leftData,
-			vector<vector<string> > filter, RectangleCollection rightData);
+	RectangleRectangleCollection distanceJoin (float distThresh, RectangleCollection leftData,
+			vector<Filter> filter, RectangleCollection rightData);
+
+	PointRectangleCollection distanceJoin (float distThresh, PointCollection leftData,
+			vector<Filter> filter, RectangleCollection rightData);
+
+	vector<Point> getKnnPointsFromPoint (int k, Point inputPoint, vector<Point> inputPoints);
+
+	vector<Point> getKnnPointsFromRectangle (int k, Rectangle inputRect, vector<Point> inputPoints);
+
+	vector<Rectangle> getKnnRectanglesFromPoint (int k, Point inputPoint, vector<Rectangle> inputRectangles);
+
+	vector<Rectangle> getKnnRectanglesFromRectangle (int k, Rectangle inputRect, vector<Rectangle> inputRectangles);
 
 };
 

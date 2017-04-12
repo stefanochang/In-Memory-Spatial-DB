@@ -1,6 +1,15 @@
 #include "../integration/query-processing.h"
 
-QueryTree::QueryTree(){
+Filter::Filter() {
+
+}
+
+Filter::Filter(char& filterType, vector<float>& inputParams) {
+	this->filterType = filterType;
+	this->inputParams = inputParams;
+}
+
+QueryTree::QueryTree() {
 
 }
 
@@ -16,12 +25,16 @@ void QueryTree::setLeftRectangles(RectangleCollection leftRects) {
 	this->leftIndexedObject = leftIndexedObject;
 }*/
 
-void QueryTree::setLeftFilter(vector<vector<string> > leftBranch) {
+void QueryTree::setLeftFilter(vector<Filter> leftBranch) {
 	this->leftBranch = leftBranch;
 }
 
-void QueryTree::setRoot(vector<string> root) {
-	this->root = root;
+void QueryTree::setRootType(char rootType) {
+	this->rootType = rootType;
+}
+
+void QueryTree::setRootParam(float rootParam) {
+	this->rootParam = rootParam;
 }
 
 void QueryTree::setRightPoints(PointCollection rightPoints) {
@@ -32,7 +45,7 @@ void QueryTree::setRightRectangles(RectangleCollection rightRects) {
 	this->rightDataRect = rightRects;
 }
 
-const vector<vector<string> >& QueryTree::getLeftBranch() const {
+const vector<Filter>& QueryTree::getLeftBranch() const {
 	return leftBranch;
 }
 
@@ -48,7 +61,7 @@ const RectangleCollection& QueryTree::getLeftDataRect() const {
 	return leftIndexedObject;
 }*/
 
-const vector<vector<string> >& QueryTree::getRightBranch() const {
+const vector<Filter>& QueryTree::getRightBranch() const {
 	return rightBranch;
 }
 
@@ -64,14 +77,18 @@ const RectangleCollection& QueryTree::getRightDataRect() const {
 	return rightIndexedObject;
 }*/
 
-const vector<string>& QueryTree::getRoot() const {
-	return root;
+const char& QueryTree::getRootType() const {
+	return rootType;
+}
+
+const float& QueryTree::getRootParam() const {
+	return rootParam;
 }
 
 /*void QueryTree::setRightIndexedObject(SpatialIndexInterface rightIndexedObject) {
 	this->rightIndexedObject = rightIndexedObject;
 }*/
 
-void QueryTree::setRightFilter(vector<vector<string> > rightBranch) {
+void QueryTree::setRightFilter(vector<Filter> rightBranch) {
 	this->rightBranch = rightBranch;
 }
