@@ -19,22 +19,22 @@
 #define RECTANGLERECTANGLE "RECTANGLERECTANGLE"
 #define DB_NAME ""
 
-#define NO_JOIN 1
-#define RANGE_JOIN 2
-#define KNN_JOIN 3
-#define DISTANCE_JOIN 4
+#define NO_JOIN '1'
+#define RANGE_JOIN '2'
+#define KNN_JOIN '3'
+#define DISTANCE_JOIN '4'
 
-#define FILTER_BY_AREA_LT 1
-#define FILTER_BY_AREA_LE 2
-#define FILTER_BY_AREA_EQ 3
-#define FILTER_BY_AREA_GT 4
-#define FILTER_BY_AREA_GE 5
+#define FILTER_BY_AREA_LT 'a'
+#define FILTER_BY_AREA_LE 'b'
+#define FILTER_BY_AREA_EQ 'c'
+#define FILTER_BY_AREA_GT 'd'
+#define FILTER_BY_AREA_GE 'e'
 
-#define FILTER_BY_DISTANCE_LT 6
-#define FILTER_BY_DISTANCE_LE 7
-#define FILTER_BY_DISTANCE_EQ 8
-#define FILTER_BY_DISTANCE_GT 9
-#define FILTER_BY_DISTANCE_GE 10
+#define FILTER_BY_DISTANCE_LT 'f'
+#define FILTER_BY_DISTANCE_LE 'g'
+#define FILTER_BY_DISTANCE_EQ 'h'
+#define FILTER_BY_DISTANCE_GT 'i'
+#define FILTER_BY_DISTANCE_GE 'j'
 
 #define KNN 11
 #define OBJECTS_IN_RANGE 12
