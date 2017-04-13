@@ -35,8 +35,12 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 		else {
 			// right data is points
 			if (!rightDataPoint.isEmpty() && rightDataRect.isEmpty()) {
+				cout << "\nLeft & Right are Points\n";
 				PointCollection rightResult = materializeBranch(rightFilter, rightDataPoint);
 				if (rootType == KNN_JOIN) {
+					cout << "\nPerforming KNN Join \n";
+					cout << "\nRight Data Size : " << rightResult.getSize() << endl;
+					cout << "\nLeft Data Size : " << leftResult.getSize() << endl;
 					PointPointCollection distanceJoinResult =
 							knnJoin(qTree.getRootParam(), leftResult, rightFilter, rightResult);
 					queryResult.setResultType(TYPE_POINTPOINT);
@@ -212,6 +216,7 @@ vector<Point> QueryProcessing::getKnnPointsFromPoint (int k, Point inputPoint, v
 				if (distance < PointOperations::getDistance(inputPoint, knnPoints[j])) {
 					knnPoints.erase(knnPoints.begin() + j);
 					knnPoints.push_back(inputPoints[i]);
+					break;
 				}
 			}
 		}
@@ -271,6 +276,7 @@ vector<Rectangle> QueryProcessing::getKnnRectanglesFromRectangle (int k, Rectang
 				if (distance < RectangleOperations::getDistance(knnRectangles[j], inputRect)) {
 					knnRectangles.erase(knnRectangles.begin() + j);
 					knnRectangles.push_back(inputRectangles[i]);
+					break;
 				}
 			}
 		}
@@ -353,6 +359,9 @@ PointPointCollection QueryProcessing::knnJoin (float k, PointCollection leftData
 	vector<PointPoint> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
 	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
+	cout << "\nInside KNN Join \n";
+	cout << "\nRight Data Size : " << leftPoints.size();
+	cout << "\nLeft Data Size : " << rightPoints.size();
 	for (int i=0;i<leftPoints.size();i++) {
 		vector<Point> rightKnnPoints = getKnnPointsFromPoint((int)k, leftPoints[i], rightPoints);
 		for (int j=0;j<rightKnnPoints.size();j++) {
@@ -361,6 +370,7 @@ PointPointCollection QueryProcessing::knnJoin (float k, PointCollection leftData
 			joinResultVector.insert(joinResultVector.end(),pp);
 		}
 	}
+	cout << " ** " << joinResultVector.size();
 	PointPointCollection distanceJoinResult(POINTPOINT,DB_NAME,TYPE_POINTPOINT,joinResultVector);
 	return distanceJoinResult;
 }
