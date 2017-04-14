@@ -1,4 +1,4 @@
-#include "rtree-implementation.h"
+#include "r-tree-implementation.h"
 #include <typeinfo>
 class DataIndexingWrapper:public SpatialIndexInterface{
 	
