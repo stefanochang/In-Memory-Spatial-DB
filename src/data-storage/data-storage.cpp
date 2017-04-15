@@ -29,12 +29,30 @@ public:
     }
 };
 
+class XRectCompare
+{
+public:
+    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+    {
+        return (first.top_x + first.bottom_x) < (second.top_x + second.bottom_x);
+    }
+};
+
+class YRectCompare
+{
+public:
+    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+    {
+        return (first.top_y + first.bottom_y) < (second.top_y + second.bottom_y);
+    }
+};
+
 PointCollection::PointCollection(){
   recordId = 0;
   getNextAt = 0;
 }
 
-PointCollection::PointCollection(string name, string databaseName, int collectionStructure, vector<Point> pointsToInsert)
+PointCollection::PointCollection(string name, string databaseName, char collectionStructure, vector<Point> pointsToInsert)
 :PointCollection() {
   this->name = name;
   this->databaseName = databaseName;
@@ -99,6 +117,10 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
   return pointsReturned; // change name if wrapper function name changes
 }
 
+char PointCollection::getCollectionStructure() {
+  return collectionStructure;
+}
+
 int PointCollection::insert(Point pnt) {
   ds_point *newPoint = convertObjToStruct(pnt);
   newPoint->id = recordId++;
@@ -113,23 +135,25 @@ int PointCollection::insert(Point pnt) {
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
     insertSortedX(*newPoint);
+    free(newPoint);
     return 1;
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
     insertSortedY(*newPoint);
+    free(newPoint);
     return 1;
   }
 }
 
 
 int PointCollection::insertSortedX(ds_point point) {
-  auto it = std::lower_bound( points.begin(), points.end(), point, XCompare()); 
+  auto it = std::lower_bound( points.begin(), points.end(), point, XCompare());
   points.insert( it, point);
   return 1;
 }
 
 int PointCollection::insertSortedY(ds_point point) {
-  auto it = std::lower_bound( points.begin(), points.end(), point, YCompare()); 
+  auto it = std::lower_bound( points.begin(), points.end(), point, YCompare());
   points.insert( it, point);
 return 1;
 
@@ -205,10 +229,11 @@ RectangleCollection::RectangleCollection(){
   getNextAt = 0;
 }
 
-RectangleCollection::RectangleCollection(string name, string databaseName, int collectionStructure, vector<Rectangle> recsToInsert)
+RectangleCollection::RectangleCollection(string name, string databaseName, char collectionStructure, vector<Rectangle> recsToInsert)
 :RectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
   recordId = 0;
   insertBulk(recsToInsert);
 }
@@ -265,12 +290,40 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
   return recsReturned; // change name if wrapper function name changes
 }
 
+char RectangleCollection::getCollectionStructure() {
+  return collectionStructure;
+}
+
 int RectangleCollection::insert(Rectangle rec) {
   ds_rectangle *newRec = convertObjToStruct(rec);
   newRec->id = recordId++;
-  rectangles.push_back(*newRec);
-  free(newRec);
+  if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
+    rectangles.push_back(*newRec);
+    free(newRec);
+    return 1;
+  }
+  else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
+    insertSortedX(*newRec);
+    return 1;
+  }
+  else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
+    insertSortedY(*newRec);
+    return 1;
+  }
+}
+
+
+int RectangleCollection::insertSortedX(ds_rectangle rectangle) {
+  auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, XRectCompare());
+  rectangles.insert( it, rectangle);
   return 1;
+}
+
+int RectangleCollection::insertSortedY(ds_rectangle rectangle) {
+  auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, YRectCompare());
+  rectangles.insert( it, rectangle);
+  return 1;
+
 }
 
 int RectangleCollection::insertBulk(RectangleCollection collection) {
@@ -328,7 +381,7 @@ PointPointCollection::PointPointCollection(){
   getNextAt = 0;
 }
 
-PointPointCollection::PointPointCollection(string name, string databaseName, int collectionStructure, vector<PointPoint> recsToInsert)
+PointPointCollection::PointPointCollection(string name, string databaseName, char collectionStructure, vector<PointPoint> recsToInsert)
 :PointPointCollection() {
   this->name = name;
   this->databaseName = databaseName;
@@ -385,6 +438,10 @@ vector<PointPoint> PointPointCollection::getNext(int n, int transactionId) {
     getNextAt = 0;
   }
   return recsReturned; // change name if wrapper function name changes
+}
+
+char PointPointCollection::getCollectionStructure() {
+  return collectionStructure;
 }
 
 int PointPointCollection::insert(PointPoint rec) {
@@ -451,7 +508,7 @@ RectangleRectangleCollection::RectangleRectangleCollection(){
   getNextAt = 0;
 }
 
-RectangleRectangleCollection::RectangleRectangleCollection(string name, string databaseName, int collectionStructure, vector<RectangleRectangle> recsToInsert)
+RectangleRectangleCollection::RectangleRectangleCollection(string name, string databaseName, char collectionStructure, vector<RectangleRectangle> recsToInsert)
 :RectangleRectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
@@ -521,6 +578,10 @@ vector<RectangleRectangle> RectangleRectangleCollection::getNext(int n, int tran
   return recsReturned; // change name if wrapper function name changes
 }
 
+char RectangleRectangleCollection::getCollectionStructure() {
+  return collectionStructure;
+}
+
 int RectangleRectangleCollection::insert(RectangleRectangle rec) {
   ds_rectanglerectangle *newRecRec = convertObjToStruct(rec);
   newRecRec->id = recordId++;
@@ -583,7 +644,7 @@ PointRectangleCollection::PointRectangleCollection(){
   getNextAt = 0;
 }
 
-PointRectangleCollection::PointRectangleCollection(string name, string databaseName, int collectionStructure, vector<PointRectangle> recsToInsert)
+PointRectangleCollection::PointRectangleCollection(string name, string databaseName, char collectionStructure, vector<PointRectangle> recsToInsert)
 :PointRectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
@@ -646,6 +707,10 @@ vector<PointRectangle> PointRectangleCollection::getNext(int n, int transactionI
   return recsReturned; // change name if wrapper function name changes
 }
 
+char PointRectangleCollection::getCollectionStructure() {
+  return collectionStructure;
+}
+
 int PointRectangleCollection::insert(PointRectangle rec) {
   ds_pointrectangle *newPointRec = convertObjToStruct(rec);
   newPointRec->id = recordId++;
@@ -704,7 +769,7 @@ int PointRectangleCollection::getSize() {
 // FUNCTIONS OUTSIDE COLLECTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct) {
+int loadData(string dbName, string tableName, int geomtype, string filepath, char collectionStruct) {
   FILE *fp;
   CatalogItem *catItem;
   fp = fopen(filepath.c_str(), "r");
@@ -723,38 +788,38 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_RECTANGLE) {
     float x1, y1, x2, y2;
-    RectangleCollection * collection = RectangleCollection(dbName, tableName, collectionStruct, vector<Rectangle>());
+    RectangleCollection * collection = new RectangleCollection(dbName, tableName, collectionStruct, vector<Rectangle>());
     while(fscanf(fp, "%f,%f,%f,%f\n", &x1, &y1, &x2, &y2) == 4)
     {
       Rectangle rectangle = Rectangle(x1, y1, x2, y2);
-      collection.insert(rectangle);
+      collection->insert(rectangle);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_POINTPOINT) {
     float x1, y1, x2, y2;
-    PointPointCollection * collection = PointPointCollection(dbName, tableName, collectionStruct, vector<PointPoint>());
+    PointPointCollection * collection = new PointPointCollection(dbName, tableName, collectionStruct, vector<PointPoint>());
     while(fscanf(fp, "%f,%f,%f,%f\n", &x1, &y1, &x2, &y2) == 4)
     {
       PointPoint pointPoint = PointPoint(x1, y1, x2, y2);
-      collection.insert(pointPoint);
+      collection->insert(pointPoint);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_POINTRECTANGLE) {
     float x1, y1, x2, y2, x3, y3;
-    PointRectangleCollection  * collection = PointRectangleCollection(dbName, tableName, collectionStruct, vector<PointRectangle>());
+    PointRectangleCollection  * collection = new PointRectangleCollection(dbName, tableName, collectionStruct, vector<PointRectangle>());
     while(fscanf(fp, "%f,%f,%f,%f,%f,%f\n", &x1, &y1, &x2, &y2, &x3, &y3) == 6)
     {
       PointRectangle pointRectangle = PointRectangle(x1, y1, x2, y2, x3, y3);
-      collection.insert(pointRectangle);
+      collection->insert(pointRectangle);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_RECTANGLERECTANGLE) {
     float x1, y1, x2, y2, x3, y3, x4, y4;
-    RectangleRectangleCollection * collection = RectangleRectangleCollection(dbName, tableName, collectionStruct, vector<RectangleRectangle>());
+    RectangleRectangleCollection * collection = new RectangleRectangleCollection(dbName, tableName, collectionStruct, vector<RectangleRectangle>());
     while(fscanf(fp, "%f,%f,%f,%f,%f,%f,%f,%f\n", &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4) == 8)
     {
       RectangleRectangle rectangleRectangle = RectangleRectangle(x1, y1, x2, y2, x3, y3, x4, y4);
-      collection.insert(rectangleRectangle);
+      collection->insert(rectangleRectangle);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else {
