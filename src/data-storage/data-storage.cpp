@@ -29,6 +29,24 @@ public:
     }
 };
 
+class XRectCompare
+{
+public:
+    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+    {
+        return (first.top_x + first.bottom_x) < (second.top_x + second.bottom_x);
+    }
+};
+
+class YRectCompare
+{
+public:
+    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+    {
+        return (first.top_y + first.bottom_y) < (second.top_y + second.bottom_y);
+    }
+};
+
 PointCollection::PointCollection(){
   recordId = 0;
   getNextAt = 0;
@@ -113,10 +131,12 @@ int PointCollection::insert(Point pnt) {
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
     insertSortedX(*newPoint);
+    free(newPoint);
     return 1;
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
     insertSortedY(*newPoint);
+    free(newPoint);
     return 1;
   }
 }
@@ -209,6 +229,7 @@ RectangleCollection::RectangleCollection(string name, string databaseName, int c
 :RectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
   recordId = 0;
   insertBulk(recsToInsert);
 }
@@ -268,9 +289,33 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
 int RectangleCollection::insert(Rectangle rec) {
   ds_rectangle *newRec = convertObjToStruct(rec);
   newRec->id = recordId++;
-  rectangles.push_back(*newRec);
-  free(newRec);
+  if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
+    rectangles.push_back(*newRec);
+    free(newRec);
+    return 1;
+  }
+  else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
+    insertSortedX(*newRec);
+    return 1;
+  }
+  else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
+    insertSortedY(*newRec);
+    return 1;
+  }
+}
+
+
+int RectangleCollection::insertSortedX(ds_rectangle rectangle) {
+  auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, XRectCompare()); 
+  rectangles.insert( it, rectangle);
   return 1;
+}
+
+int RectangleCollection::insertSortedY(ds_rectangle rectangle) {
+  auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, YRectCompare()); 
+  rectangles.insert( it, rectangle);
+  return 1;
+
 }
 
 int RectangleCollection::insertBulk(RectangleCollection collection) {
