@@ -123,13 +123,13 @@ int PointCollection::insert(Point pnt) {
 
 
 int PointCollection::insertSortedX(ds_point point) {
-  auto it = std::lower_bound( points.begin(), points.end(), point, XCompare()); 
+  auto it = std::lower_bound( points.begin(), points.end(), point, XCompare());
   points.insert( it, point);
   return 1;
 }
 
 int PointCollection::insertSortedY(ds_point point) {
-  auto it = std::lower_bound( points.begin(), points.end(), point, YCompare()); 
+  auto it = std::lower_bound( points.begin(), points.end(), point, YCompare());
   points.insert( it, point);
 return 1;
 
@@ -723,38 +723,38 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, int
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_RECTANGLE) {
     float x1, y1, x2, y2;
-    RectangleCollection * collection = RectangleCollection(dbName, tableName, collectionStruct, vector<Rectangle>());
+    RectangleCollection * collection = new RectangleCollection(dbName, tableName, collectionStruct, vector<Rectangle>());
     while(fscanf(fp, "%f,%f,%f,%f\n", &x1, &y1, &x2, &y2) == 4)
     {
       Rectangle rectangle = Rectangle(x1, y1, x2, y2);
-      collection.insert(rectangle);
+      collection->insert(rectangle);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_POINTPOINT) {
     float x1, y1, x2, y2;
-    PointPointCollection * collection = PointPointCollection(dbName, tableName, collectionStruct, vector<PointPoint>());
+    PointPointCollection * collection = new PointPointCollection(dbName, tableName, collectionStruct, vector<PointPoint>());
     while(fscanf(fp, "%f,%f,%f,%f\n", &x1, &y1, &x2, &y2) == 4)
     {
       PointPoint pointPoint = PointPoint(x1, y1, x2, y2);
-      collection.insert(pointPoint);
+      collection->insert(pointPoint);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_POINTRECTANGLE) {
     float x1, y1, x2, y2, x3, y3;
-    PointRectangleCollection  * collection = PointRectangleCollection(dbName, tableName, collectionStruct, vector<PointRectangle>());
+    PointRectangleCollection  * collection = new PointRectangleCollection(dbName, tableName, collectionStruct, vector<PointRectangle>());
     while(fscanf(fp, "%f,%f,%f,%f,%f,%f\n", &x1, &y1, &x2, &y2, &x3, &y3) == 6)
     {
       PointRectangle pointRectangle = PointRectangle(x1, y1, x2, y2, x3, y3);
-      collection.insert(pointRectangle);
+      collection->insert(pointRectangle);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_RECTANGLERECTANGLE) {
     float x1, y1, x2, y2, x3, y3, x4, y4;
-    RectangleRectangleCollection * collection = RectangleRectangleCollection(dbName, tableName, collectionStruct, vector<RectangleRectangle>());
+    RectangleRectangleCollection * collection = new RectangleRectangleCollection(dbName, tableName, collectionStruct, vector<RectangleRectangle>());
     while(fscanf(fp, "%f,%f,%f,%f,%f,%f,%f,%f\n", &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4) == 8)
     {
       RectangleRectangle rectangleRectangle = RectangleRectangle(x1, y1, x2, y2, x3, y3, x4, y4);
-      collection.insert(rectangleRectangle);
+      collection->insert(rectangleRectangle);
     }
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else {
