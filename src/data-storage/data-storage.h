@@ -10,15 +10,16 @@ class PointCollection{
     string name, databaseName;
 		int recordId;
 		int getNextAt;
-                int collectionStructure;
+    char collectionStructure;
     Point convertStructToObj(ds_point);
     ds_point * convertObjToStruct(Point);
     int insertBulk(vector<Point>);
   public:
     PointCollection();
-    PointCollection(string, string, int, vector<Point>);
+    PointCollection(string, string, char, vector<Point>);
     Point getById(int);
     vector<Point> getNext(int n=1, int transaction_id=1);
+    char getCollectionStructure();
     int insert(Point);
     int insertSortedX(ds_point);
     int insertSortedY(ds_point);
@@ -36,15 +37,16 @@ class RectangleCollection {
     string name, databaseName;
 		int recordId;
 		int getNextAt;
-                int collectionStructure;
+    char collectionStructure;
     Rectangle convertStructToObj(ds_rectangle);
     ds_rectangle * convertObjToStruct(Rectangle);
     int insertBulk(vector<Rectangle>);
   public:
     RectangleCollection();
-    RectangleCollection(string, string, int, vector<Rectangle>);
+    RectangleCollection(string, string, char, vector<Rectangle>);
     Rectangle getById(int);
     vector<Rectangle> getNext(int n=1, int transaction_id=1);
+    char getCollectionStructure();
 		bool isEmpty();
 		int getSize();
     int insert(Rectangle);
@@ -62,15 +64,16 @@ class PointPointCollection {
     string name, databaseName;
     int recordId;
 		int getNextAt;
-
+    char collectionStructure;
     PointPoint convertStructToObj(ds_pointpoint);
     ds_pointpoint * convertObjToStruct(PointPoint);
     int insertBulk(vector<PointPoint>);
   public:
     PointPointCollection();
-    PointPointCollection(string, string, int, vector<PointPoint>);
+    PointPointCollection(string, string, char, vector<PointPoint>);
     PointPoint getById(int);
     vector<PointPoint> getNext(int n=1, int transaction_id=1);
+    char getCollectionStructure();
     int insert(PointPoint);
     int insertBulk(PointPointCollection);
 		bool isEmpty();
@@ -86,15 +89,16 @@ class PointRectangleCollection {
     string name, databaseName;
     int recordId;
 		int getNextAt;
-
+    char collectionStructure;
     PointRectangle convertStructToObj(ds_pointrectangle);
     ds_pointrectangle * convertObjToStruct(PointRectangle);
     int insertBulk(vector<PointRectangle>);
   public:
     PointRectangleCollection();
-    PointRectangleCollection(string, string, int, vector<PointRectangle>);
+    PointRectangleCollection(string, string, char, vector<PointRectangle>);
     PointRectangle getById(int);
     vector<PointRectangle> getNext(int n=1, int transaction_id=1);
+    char getCollectionStructure();
     int insert(PointRectangle);
     int insertBulk(PointRectangleCollection);
 		bool isEmpty();
@@ -110,15 +114,16 @@ class RectangleRectangleCollection {
     string name, databaseName;
     int recordId;
 		int getNextAt;
-
+    char collectionStructure;
     RectangleRectangle convertStructToObj(ds_rectanglerectangle);
     ds_rectanglerectangle * convertObjToStruct(RectangleRectangle);
     int insertBulk(vector<RectangleRectangle>);
   public:
     RectangleRectangleCollection();
-    RectangleRectangleCollection(string, string, int, vector<RectangleRectangle>);
+    RectangleRectangleCollection(string, string, char, vector<RectangleRectangle>);
     RectangleRectangle getById(int);
     vector<RectangleRectangle> getNext(int n=1,int transaction_id=1);
+    char getCollectionStructure();
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
 		bool isEmpty();
@@ -132,7 +137,7 @@ class RectangleRectangleCollection {
 
 
 //Initial data load supported for Points and Rectangles
-int loadData(string dbName, string tableName, int geomtype, string filepath, int collectionStruct);
+int loadData(string dbName, string tableName, int geomtype, string filepath, char collectionStruct);
 /*
 // Insert a single point
 bool insertData(GeometryCollection *pointsRepo, Point pointToInsert);
