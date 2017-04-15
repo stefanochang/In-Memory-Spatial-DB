@@ -29,6 +29,24 @@ public:
     }
 };
 
+class XRectCompare
+{
+public:
+    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+    {
+        return (first.top_x + first.bottom_x) < (second.top_x + second.bottom_x);
+    }
+};
+
+class YRectCompare
+{
+public:
+    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+    {
+        return (first.top_y + first.bottom_y) < (second.top_y + second.bottom_y);
+    }
+};
+
 PointCollection::PointCollection(){
   recordId = 0;
   getNextAt = 0;
@@ -211,6 +229,7 @@ RectangleCollection::RectangleCollection(string name, string databaseName, int c
 :RectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
   recordId = 0;
   insertBulk(recsToInsert);
 }
@@ -286,16 +305,16 @@ int RectangleCollection::insert(Rectangle rec) {
 }
 
 
-int RectangleCollection::insertSortedX(ds_point point) {
-  auto it = std::lower_bound( points.begin(), points.end(), point, XCompare()); 
-  points.insert( it, point);
+int RectangleCollection::insertSortedX(ds_rectangle rectangle) {
+  auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, XRectCompare()); 
+  rectangles.insert( it, rectangle);
   return 1;
 }
 
-int RectangleCollection::insertSortedY(ds_point point) {
-  auto it = std::lower_bound( points.begin(), points.end(), point, YCompare()); 
-  points.insert( it, point);
-return 1;
+int RectangleCollection::insertSortedY(ds_rectangle rectangle) {
+  auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, YRectCompare()); 
+  rectangles.insert( it, rectangle);
+  return 1;
 
 }
 

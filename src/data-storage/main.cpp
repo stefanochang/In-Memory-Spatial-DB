@@ -10,7 +10,7 @@
 #endif
 using namespace std;
 
-void printData(PointCollection *pointsRepo){
+/*void printData(PointCollection *pointsRepo){
   ds_record *tmp_head;
   tmp_head = pointsRepo->getHead();
   if(tmp_head == NULL)
@@ -26,9 +26,9 @@ void printData(PointCollection *pointsRepo){
     }
   }
 
-}
+}*/
 
-bool testGetNextSingle() {
+/*bool testGetNextSingle() {
   PointCollection *pc = new PointCollection();
 
   Point *testPoint = new Point(1, 2);
@@ -167,7 +167,7 @@ void test_insertData() {
     cout << pntcollection->insert(*p3) << "\n";
     cout << pntcollection->insert(*p4) << "\n";
     cout <<"Size: " << pntcollection->getSize() << "\n";
-    printData(pntcollection);
+    //printData(pntcollection);
 }
 
 bool testGetPointByUUID() {
@@ -233,9 +233,9 @@ void test_insertDataSortedX() {
     pntcollection->insert(*p3);
     pntcollection->insert(*p4);
     cout << "Size: " << pntcollection->getSize() << "/n";
-    printData(pntcollection);
+    //printData(pntcollection);
 }
-
+*/
 void test_insertDataSortedY() {
     PointCollection *pntcollection;
     pntcollection = new PointCollection("", "", COLLECTION_STRUCT_SORTEDY, {});
@@ -257,13 +257,39 @@ void test_insertDataSortedY() {
     pntcollection->insert(*p3);
     pntcollection->insert(*p4);
     cout << "Size: " << pntcollection->getSize() << "/n";
-    printData(pntcollection);
+    //printData(pntcollection);
+}
+
+
+void test_insertDataSortedXRect() {
+    RectangleCollection *rcollection;
+    rcollection = new RectangleCollection("", "", COLLECTION_STRUCT_SORTEDX, {});
+
+    Rectangle *r1;
+    r1 = new Rectangle(12.34, 10.34, 5, 2);
+
+    Rectangle *r2;
+    r2 = new Rectangle(12.35, 0, 7, 10.54);
+
+    Rectangle *r3;
+    r3 = new Rectangle(1, 5, 12.36, 1.34);
+
+    Rectangle *r4;
+    r4 = new Rectangle(0, 12.37, 10, 4.34);
+
+    rcollection->insert(*r1);
+    rcollection->insert(*r2);
+    rcollection->insert(*r3);
+    rcollection->insert(*r4);
+    cout << "Size: " << rcollection->getSize() << "/n";
+    //printData(pntcollection);
 }
 
 int main() {
-    test_insertData();
-    test_insertDataSortedX();
-    test_insertDataSortedY();
-    testGetNext();
-    testGetByUUID();
+    test_insertDataSortedXRect();
+    //test_insertDataSortedY();
+    //test_insertDataSortedX();
+    //test_insertDataSortedY();
+    //testGetNext();
+    //testGetByUUID();
 }

@@ -36,7 +36,7 @@ class RectangleCollection {
     string name, databaseName;
 		int recordId;
 		int getNextAt;
-
+                int collectionStructure;
     Rectangle convertStructToObj(ds_rectangle);
     ds_rectangle * convertObjToStruct(Rectangle);
     int insertBulk(vector<Rectangle>);
@@ -48,6 +48,8 @@ class RectangleCollection {
 		bool isEmpty();
 		int getSize();
     int insert(Rectangle);
+    int insertSortedX(ds_rectangle);
+    int insertSortedY(ds_rectangle);
     int insertBulk(RectangleCollection);
     int remove(Rectangle);
     int removeById(int);
