@@ -113,10 +113,12 @@ int PointCollection::insert(Point pnt) {
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
     insertSortedX(*newPoint);
+    free(newPoint);
     return 1;
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
     insertSortedY(*newPoint);
+    free(newPoint);
     return 1;
   }
 }
@@ -268,9 +270,33 @@ vector<Rectangle> RectangleCollection::getNext(int n, int transactionId) {
 int RectangleCollection::insert(Rectangle rec) {
   ds_rectangle *newRec = convertObjToStruct(rec);
   newRec->id = recordId++;
-  rectangles.push_back(*newRec);
-  free(newRec);
+  if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
+    rectangles.push_back(*newRec);
+    free(newRec);
+    return 1;
+  }
+  else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
+    insertSortedX(*newRec);
+    return 1;
+  }
+  else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
+    insertSortedY(*newRec);
+    return 1;
+  }
+}
+
+
+int RectangleCollection::insertSortedX(ds_point point) {
+  auto it = std::lower_bound( points.begin(), points.end(), point, XCompare()); 
+  points.insert( it, point);
   return 1;
+}
+
+int RectangleCollection::insertSortedY(ds_point point) {
+  auto it = std::lower_bound( points.begin(), points.end(), point, YCompare()); 
+  points.insert( it, point);
+return 1;
+
 }
 
 int RectangleCollection::insertBulk(RectangleCollection collection) {
