@@ -8,6 +8,7 @@
 #include "quadTreeLib.h"
 #include "mxcifQuadTree.h"
 #include "../integration/spatial-index-interface.h"
+#include "../data-storage/ds_constants.h"
 #include "qPoint.h"
 #include "../integration/data-storage.h"
 
@@ -34,23 +35,23 @@ private:
         float minY = r.getCoordinates()[1];
         float maxX = r.getCoordinates()[2];
         float maxY = r.getCoordinates()[3];
-        return new qBoundingBox(minX,minY,maxX,maxY,r->getId());
+        return new qBoundingBox(minX,minY,maxX,maxY,r.getId());
     }
 public:
     RectangleSpatialIndex() {}
-    PointCollection search(Rectangle){
+    PointCollection search(Rectangle,PointCollection*){
         throw "Method Not Supported";
     }
-    RectangleCollection searchRectangle(Rectangle bounds){
+    RectangleCollection search(Rectangle bounds,RectangleCollection *rectangleCollection){
         RectangleCollection *result;
         float *queryBounds = computeBounds(bounds);
         vector<qBoundingBox> iBoxes = mxCifTree->queryRange(queryBounds[0],queryBounds[1],queryBounds[2],queryBounds[3]);
         vector<Rectangle> rectangles;
         int i=0;
         for(qBoundingBox box : iBoxes) {
-            rectangles.push_back(getRaectangleByUUID("Rectangle",box.getId()));
+            rectangles.push_back(rectangleCollection->getById(box.getId()));
         }
-        result = new RectangleCollection("RectangleCollection","Rectangle",1,rectangles);
+        result = new RectangleCollection("RectangleCollection","Rectangle",TYPE_RECTANGLE,rectangles);
         delete iBoxes;
         delete rectangles;
         return *result;

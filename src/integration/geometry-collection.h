@@ -1,3 +1,6 @@
+#ifndef GEOMETRY_COLLECTION_H
+#define GEOMETRY_COLLECTION_H
+
 #include<vector>
 #include "geometry.h"
 #include "../data-storage/list.h"
@@ -11,7 +14,7 @@ class PointCollection : public list {
     PointCollection();
     PointCollection(string, string, int, vector<Point>);
     Point getById(int);
-    vector<Point> getNext(int n=1);
+    vector<Point> getNext(int n=1, int transaction_id=1);
     int insert(Point);
     int insertBulk(PointCollection);
     bool isEmpty();
@@ -30,7 +33,7 @@ class RectangleCollection : public list {
     RectangleCollection();
     RectangleCollection(string, string, int, vector<Rectangle>);
     Rectangle getById(int);
-    vector<Rectangle> getNext(int n=1);
+    vector<Rectangle> getNext(int n=1, int transaction_id=1);
     int insert(Rectangle);
     int insertBulk(RectangleCollection);
     int remove(Rectangle);
@@ -49,7 +52,7 @@ class PointPointCollection : public list {
     PointPointCollection();
     PointPointCollection(string, string, int, vector<PointPoint>);
     PointPoint getById(int);
-    vector<PointPoint> getNext(int n=1);
+    vector<PointPoint> getNext(int n=1, int transaction_id=1);
     int insert(PointPoint);
     int insertBulk(PointPointCollection);
     bool isEmpty();
@@ -66,7 +69,7 @@ class PointRectangleCollection : public list {
     PointRectangleCollection();
     PointRectangleCollection(string, string, int, vector<PointRectangle>);
     PointRectangle getById(int);
-    vector<PointRectangle> getNext(int n=1);
+    vector<PointRectangle> getNext(int n=1, int transaction_id=1);
     int insert(PointRectangle);
     int insertBulk(PointRectangleCollection);
     bool isEmpty();
@@ -83,7 +86,7 @@ class RectangleRectangleCollection : public list {
     RectangleRectangleCollection();
     RectangleRectangleCollection(string, string, int, vector<RectangleRectangle>);
     RectangleRectangle getById(int);
-    vector<RectangleRectangle> getNext(int n=1);
+    vector<RectangleRectangle> getNext(int n=1, int transaction_id=1);
     int insert(RectangleRectangle);
     int insertBulk(RectangleRectangleCollection);
     bool isEmpty();
@@ -91,3 +94,5 @@ class RectangleRectangleCollection : public list {
     string getDBName();
     string getTableName();
 };
+
+#endif
