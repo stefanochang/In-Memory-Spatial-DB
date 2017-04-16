@@ -31,7 +31,7 @@ For example:
 
 ```
 For Simple  'select', 'filterBy', and 'objectsInRange' queries, root can be empty, so the root type is specified by: 
-	1.	rootType = NO_JOIN
+	1. rootType = NO_JOIN
 For 'Distance Join':
 	2. rootType = DISTANCE_JOIN
 For 'KNN Join queries':
@@ -39,7 +39,7 @@ For 'KNN Join queries':
 For 'Range Join":
 	4. rootType = RANGE_JOIN
 ```	
-Where NO_JOIN, RANGE_JOIN, KNN_JOIN, and DISTANCE_JOIN are single char macros defined in the beginning of the file:
+Where NO_JOIN, RANGE_JOIN, KNN_JOIN, and DISTANCE_JOIN are single char macros defined at the beginning of the file:
 ```
 #define NO_JOIN '1'
 #define RANGE_JOIN '2'
