@@ -60,10 +60,7 @@ bool queryProcessingTests() {
 		QueryProcessing query;
 		qTree.setRootType(NO_JOIN);
 
-		vector<float> inputParams;
-		inputParams.push_back(2);
-		inputParams.push_back(0);
-		inputParams.push_back(0);
+		vector<float> inputParams = { 2, 0, 0 };
 
 		char ft=FILTER_BY_DISTANCE_GT;
 		Filter f = Filter(ft,inputParams);
@@ -112,10 +109,7 @@ bool queryProcessingTests() {
 		QueryProcessing query;
 		qTree.setRootType(NO_JOIN);
 
-		vector<float> inputParams;
-		inputParams.push_back(5);
-		inputParams.push_back(0);
-		inputParams.push_back(1);
+		vector<float> inputParams = { 5, 0, 1 };
 
 		char ft=FILTER_BY_DISTANCE_EQ;
 		Filter f = Filter(ft,inputParams);
@@ -164,12 +158,7 @@ bool queryProcessingTests() {
 		QueryProcessing query;
 		qTree.setRootType(NO_JOIN);
 
-		vector<float> inputParams;
-		inputParams.push_back(2);
-		inputParams.push_back(0);
-		inputParams.push_back(0);
-		inputParams.push_back(1);
-		inputParams.push_back(1);
+		vector<float> inputParams = { 2, 0, 0, 1, 1 };
 
 		char ft=FILTER_BY_DISTANCE_LT;
 		Filter f = Filter(ft,inputParams);
@@ -221,22 +210,12 @@ bool queryProcessingTests() {
 		QueryProcessing query;
 		qTree.setRootType(NO_JOIN);
 
-		vector<float> inputParams1;
-		inputParams1.push_back(2);
-		inputParams1.push_back(0);
-		inputParams1.push_back(0);
-		inputParams1.push_back(1);
-		inputParams1.push_back(1);
+		vector<float> inputParams1 = { 2, 0, 0, 1, 1 };
 
 		char ft1=FILTER_BY_DISTANCE_GT;
 		Filter f1 = Filter(ft1,inputParams1);
 
-		vector<float> inputParams2;
-		inputParams2.push_back(4);
-		inputParams2.push_back(0);
-		inputParams2.push_back(0);
-		inputParams2.push_back(1);
-		inputParams2.push_back(1);
+		vector<float> inputParams2 = { 4, 0, 0, 1, 1 };
 
 		char ft2=FILTER_BY_DISTANCE_LT;
 		Filter f2 = Filter(ft2,inputParams2);
@@ -351,10 +330,7 @@ bool queryProcessingTests() {
 		qTree.setRootType(DISTANCE_JOIN);
 		qTree.setRootParam(5);
 
-		vector<float> inputParamsleft;
-		inputParamsleft.push_back(3);
-		inputParamsleft.push_back(0);
-		inputParamsleft.push_back(0);
+		vector<float> inputParamsleft = { 3, 0, 0 };
 
 		char fl=FILTER_BY_DISTANCE_GT;
 		Filter f_left = Filter(fl,inputParamsleft);
@@ -364,10 +340,8 @@ bool queryProcessingTests() {
 
 		qTree.setLeftFilter(filter_left);
 
-		vector<float> inputParamsright;
-		inputParamsright.push_back(5);
-		inputParamsright.push_back(0);
-		inputParamsright.push_back(3);
+		vector<float> inputParamsright = { 5, 0, 3 };
+
 
 		char fr=FILTER_BY_DISTANCE_LT;
 		Filter f_right = Filter(fr,inputParamsright);
@@ -437,12 +411,7 @@ bool queryProcessingTests() {
 
 		qTree.setLeftFilter(filter_left);
 
-		vector<float> inputParamsright;
-		inputParamsright.push_back(3);
-		inputParamsright.push_back(0);
-		inputParamsright.push_back(0);
-		inputParamsright.push_back(4);
-		inputParamsright.push_back(4);
+		vector<float> inputParamsright = { 3, 0, 0, 4, 4 };
 
 		char fr=FILTER_BY_DISTANCE_LT;
 		Filter f_right = Filter(fr,inputParamsright);
@@ -500,11 +469,7 @@ bool queryProcessingTests() {
 		QueryProcessing query;
 		qTree.setRootType(RANGE_JOIN);
 
-
-		vector<float> inputParamsright;
-		inputParamsright.push_back(6);
-		inputParamsright.push_back(0);
-		inputParamsright.push_back(0);
+		vector<float> inputParamsright = { 6, 0, 0 };
 
 		char fr=FILTER_BY_DISTANCE_LT;
 		Filter f_right = Filter(fr,inputParamsright);
@@ -577,7 +542,7 @@ bool queryProcessingTests() {
 		RectangleCollection reccolleft,reccollright;
 
 		for(int i=1;i<7;i++){
-			reccolleft.insert(Rectangle(1,1,2*i,2*1));
+			reccolleft.insert(Rectangle(1,1,2*i,2*i));
 			reccollright.insert(Rectangle(i-1,i-1,i+1,i+1));
 			cout<<"\n(("<<1<<","<<1<<"),("<<2*i<<","<<2*i<<"))\t\t\t(("<<i-1<<","<<i-1<<"),("<<i+1<<","<<i+1<<"))";
 		}
@@ -598,9 +563,9 @@ bool queryProcessingTests() {
 			{
 				vector<RectangleRectangle> tempt_rr = retcoll.getNext(1);
 				for ( RectangleRectangle rr : tempt_rr){
-					cout<< "[((" << rr.getCoordinates().at(0)<< " ," << rr.getCoordinates().at(1) <<"),"
-						<< "("<< rr.getCoordinates().at(2)<< " ," << rr.getCoordinates().at(3) <<")) ( "
-						<< "("<< rr.getCoordinates().at(4)<< " ," << rr.getCoordinates().at(5) <<"),  "
+					cout<< "[ ((" << rr.getCoordinates().at(0)<< " ," << rr.getCoordinates().at(1) <<"),("
+						<< rr.getCoordinates().at(2)<< " ," << rr.getCoordinates().at(3) <<")), ("
+						<< "("<< rr.getCoordinates().at(4)<< " ," << rr.getCoordinates().at(5) <<"),"
 						<< "("<< rr.getCoordinates().at(6)<< " ," << rr.getCoordinates().at(7) <<")) ]\n";
 				}
 			}
@@ -612,7 +577,7 @@ bool queryProcessingTests() {
 	}
 
 	cout<<"\n--------------------------------------------------------------------------------------------------\n";
-	cout<<"Test 10 : Range Join - RECTANGLE-POINT \n";
+	cout<<"Test 10 : Range Join - POINT-RECTANGLE \n";
 	cout<<"\t Filterby - left branch all Point collection whose distance from rectange ((2,3)(4,5)) is more than 2\n";
 	cout<<"\t Filterby - right branch all Rectangle Collections whose distance is less than 7 from point (2,3)\n";
 	cout<<"\n--------------------------------------------------------------------------------------------------\n";
@@ -622,10 +587,7 @@ bool queryProcessingTests() {
 		QueryProcessing query;
 		qTree.setRootType(RANGE_JOIN);
 
-		vector<float> inputParamsright;
-		inputParamsright.push_back(7);
-		inputParamsright.push_back(2);
-		inputParamsright.push_back(3);
+		vector<float> inputParamsright = { 7, 2, 3 };
 
 		char fr=FILTER_BY_DISTANCE_LT;
 		Filter f_right = Filter(fr,inputParamsright);
@@ -635,12 +597,7 @@ bool queryProcessingTests() {
 
 		qTree.setRightFilter(filter_right);
 
-		vector<float> inputParamsleft;
-		inputParamsleft.push_back(2);
-		inputParamsleft.push_back(2);
-		inputParamsleft.push_back(3);
-		inputParamsleft.push_back(4);
-		inputParamsleft.push_back(5);
+		vector<float> inputParamsleft = { 2, 2, 3, 4, 5 };
 
 		char fl=FILTER_BY_DISTANCE_GT;
 		Filter f_left = Filter(fl,inputParamsleft);
@@ -689,7 +646,7 @@ bool queryProcessingTests() {
 	}
 
 	cout<<"\n---------------------------------------------------------------------------------------------\n";
-	cout<<"Test 11 : KNN Join - POINT-POINT \n";
+	cout<<"Test 11 : KNN Join - POINT-POINT , K=3\n";
 	cout<<"\t left branch all Points Collections without any filter\n";
     cout<<"\t right branch all Points Collections without any filter\n";
 	cout<<"\n---------------------------------------------------------------------------------------------\n";
@@ -698,7 +655,7 @@ bool queryProcessingTests() {
 		QueryResult qResult;
 		QueryProcessing query;
 		qTree.setRootType(KNN_JOIN);
-		qTree.setRootParam(5);
+		qTree.setRootParam(3);
 
 		qTree.setRightFilter(filterNull);
 		qTree.setLeftFilter(filterNull);
@@ -740,7 +697,7 @@ bool queryProcessingTests() {
 	}
 
 	cout<<"\n---------------------------------------------------------------------------------------------\n";
-	cout<<"Test 12 : KNN Join - RECTANGLE-RECTANGLE \n";
+	cout<<"Test 12 : KNN Join - RECTANGLE-RECTANGLE K=3\n";
 	cout<<"\t left branch all Rectangle Collections without any filter\n";
     cout<<"\t right branch all Rectangle Collections without any filter\n";
 	cout<<"\n---------------------------------------------------------------------------------------------\n";
@@ -757,7 +714,7 @@ bool queryProcessingTests() {
 		cout<<"RECTANGLE DATASET LEFT\t\tRECTANGLE DATASET RIGHT";
 		RectangleCollection reccolleft,reccollright;
 
-		for(int i=1;i<5;i++){
+		for(int i=1;i<7;i++){
 			reccolleft.insert(Rectangle(1,1,2*i,2*1));
 			reccollright.insert(Rectangle(i-1,i-1,i+1,i+1));
 			cout<<"\n(("<<1<<","<<1<<"),("<<2*i<<","<<2*i<<"))\t\t\t(("<<i-1<<","<<i-1<<"),("<<i+1<<","<<i+1<<"))";
@@ -793,7 +750,7 @@ bool queryProcessingTests() {
 	}
 
 	cout<<"\n---------------------------------------------------------------------------------------------\n";
-	cout<<"Test 13 : KNN Join - Point-RECTANGLE \n";
+	cout<<"Test 13 : KNN Join - Point-RECTANGLE K=3\n";
 	cout<<"\t left branch all Point Collections without any filter\n";
     cout<<"\t right branch all Rectangle Collections without any filter\n";
 	cout<<"\n---------------------------------------------------------------------------------------------\n";
@@ -811,7 +768,7 @@ bool queryProcessingTests() {
 		RectangleCollection reccolright;
 		PointCollection ptcolleft;
 
-		for(int i=1;i<4;i++){
+		for(int i=1;i<7;i++){
 			reccolright.insert(Rectangle(1,1,2*i,2*1));
 			ptcolleft.insert(Point(i+1,1.5*i));
 			cout<<"\n("<<i+1<<","<<1.5*i<<")\t\t\t(("<<1<<","<<1<<"),("<<2*i<<","<<2*i<<"))";
@@ -833,7 +790,7 @@ bool queryProcessingTests() {
 			{
 				vector<PointRectangle> tempt_rr = retcoll.getNext(1);
 				for ( PointRectangle rr : tempt_rr){
-					cout<< "[(" << rr.getCoordinates().at(0)<< " ," << rr.getCoordinates().at(1) <<"), "
+					cout<< "[(" << rr.getCoordinates().at(0)<< " ," << rr.getCoordinates().at(1) <<"), \t"
 						<< "(("<< rr.getCoordinates().at(2)<< " ," << rr.getCoordinates().at(3) <<")("
 						<< rr.getCoordinates().at(4)<< " ," << rr.getCoordinates().at(5) <<"))]\n";
 				}
