@@ -222,7 +222,8 @@ int PointCollection::switchStorageStructure(char newStructure)
 
 RectangleCollection::RectangleCollection(){
   recordId = 0;
-  getNextAt = 0;
+  getNextAt = 0; 
+  collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
 RectangleCollection::RectangleCollection(string name, string databaseName, char collectionStructure, vector<Rectangle> recsToInsert)
@@ -390,6 +391,7 @@ int RectangleCollection::switchStorageStructure(char newStructure)
 PointPointCollection::PointPointCollection(){
   recordId = 0;
   getNextAt = 0;
+  collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
 PointPointCollection::PointPointCollection(string name, string databaseName, char collectionStructure, vector<PointPoint> recsToInsert)
@@ -653,6 +655,7 @@ int RectangleRectangleCollection::getSize() {
 PointRectangleCollection::PointRectangleCollection(){
   recordId = 0;
   getNextAt = 0;
+  collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
 PointRectangleCollection::PointRectangleCollection(string name, string databaseName, char collectionStructure, vector<PointRectangle> recsToInsert)
