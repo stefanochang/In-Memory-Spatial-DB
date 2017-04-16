@@ -50,6 +50,7 @@ public:
 PointCollection::PointCollection(){
   recordId = 0;
   getNextAt = 0;
+  collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
 PointCollection::PointCollection(string name, string databaseName, char collectionStructure, vector<Point> pointsToInsert)
