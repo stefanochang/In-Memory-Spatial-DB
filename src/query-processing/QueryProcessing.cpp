@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <map>
 #include "../integration/query-processing.h"
 
 using namespace std;
@@ -140,7 +142,9 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 
 PointCollection QueryProcessing::materializeBranch (vector<Filter> filter, PointCollection data) {
 	// initialize result
-	PointCollection result;
+	vector<Point> pt_null;
+	char dataOrientation = data.getCollectionStructure();
+	PointCollection result("","",dataOrientation,pt_null);
 	vector<Point> points = data.getNext(data.getSize());
 	for (int i=0;i<filter.size();i++) {
 		if (filter[i].filterType == KNN) {
@@ -284,6 +288,74 @@ vector<Rectangle> QueryProcessing::getKnnRectanglesFromRectangle (int k, Rectang
 	return knnRectangles;
 }
 
+bool alongX(const Point &p1, const Point &p2){
+	return p1.getX() < p2.getX();
+}
+
+bool alongY(const Point &p1, const Point &p2){
+	return p1.getY() < p2.getY();
+}
+
+PointPointCollection QueryProcessing::sweepBasedJoin (PointCollection leftData, PointCollection rightData, bool onX) {
+
+	cout << " Debug : Using sweepBasedJoin \n";
+	vector<PointPoint> joinResultVector;
+
+	//bool sort_on_X = true;
+	int idx = onX ? 0 : 1;
+
+	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
+	//sort(leftPoints.begin(), leftPoints.end(), onX ? alongX : alongY);	// Sorted based on a dimension
+
+	map<long int, vector<Point> > leftMap;										// Cogrouping the ranges of keys
+	long int key = 0;
+	for (Point pt : leftPoints){
+		key = pt.getCoordinates()[idx] * 100000;
+		leftMap[key].push_back(pt);
+	}
+
+	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
+	//sort(rightPoints.begin(), rightPoints.end(), onX ? alongX : alongY);  // Sorted based on a dimension
+
+	map<long int, vector<Point> > rightMap;										// Cogrouping the ranges of keys
+	key = 0;
+	for (Point pt : rightPoints){
+		key = pt.getCoordinates()[idx] * 100000;
+		rightMap[key].push_back(pt);
+	}
+
+	map<long int, vector<Point> >::iterator leftItr = leftMap.begin();
+	map<long int, vector<Point> >::iterator rightItr = rightMap.begin();
+	int comparisions = 0;
+	while( leftItr != leftMap.end() && rightItr != rightMap.end()){
+		if (leftItr->first == rightItr->first){
+			//Do Join
+			vector<Point> leftSub = leftItr->second;
+			vector<Point> rightSub = rightItr->second;
+			for (Point pt_l : leftSub){
+				for (Point pt_r : rightSub){
+					comparisions++;
+					if( PointOperations::isOverlapping(pt_l, pt_r) || PointOperations::isEqual(pt_l, pt_r)){
+						PointPoint pp(pt_l.getCoordinates()[0], pt_l.getCoordinates()[1], pt_r.getCoordinates()[0], pt_r.getCoordinates()[1]);
+						joinResultVector.insert(joinResultVector.end(), pp);
+					}
+				}
+			}
+			leftItr++; rightItr++;
+		}
+		else if (leftItr->first < rightItr->first){
+			leftItr++;
+		}
+		else{
+			rightItr++;
+		}
+	}
+
+	cout << "Num of comparisions (sweep) : " << comparisions;
+	PointPointCollection rangeJoinResult(POINTPOINT,DB_NAME,TYPE_POINTPOINT,joinResultVector);
+	return rangeJoinResult;
+}
+
 PointPointCollection QueryProcessing::rangeJoin (PointCollection leftData, vector<Filter> filter,
 		PointCollection rightData) {
 
@@ -306,12 +378,24 @@ PointPointCollection QueryProcessing::rangeJoin (PointCollection leftData, vecto
 
 RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection leftData, vector<Filter> filter,
 		RectangleCollection rightData) {
+
+	if (leftData.getCollectionStructure() == COLLECTION_STRUCT_SORTEDX && rightData.getCollectionStructure() == COLLECTION_STRUCT_SORTEDX){
+		cout << "Found both data sorted on X (performing sweep join)";
+		return sweepBasedJoin(leftData, rightData, true);
+	}
+	else if (leftData.getCollectionStructure() == COLLECTION_STRUCT_SORTEDY && rightData.getCollectionStructure() == COLLECTION_STRUCT_SORTEDY){
+		cout << "Found both data sorted on Y (performing sweep join)";
+		return sweepBasedJoin(leftData, rightData, false);
+	}
+
+	int comparisions = 0;
 	vector<RectangleRectangle> joinResultVector;
 	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
 	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
 
 	for (int i=0;i<leftRects.size();i++) {
 		for (int j=0;j<rightRects.size();j++) {
+			comparisions++;
 			if (RectangleOperations::isOverlapping(leftRects[i],rightRects[j]) ||
 					RectangleOperations::isIntersecting(leftRects[i],rightRects[j]) ||
 					RectangleOperations::isWithin(leftRects[i],rightRects[j]) ||
@@ -324,6 +408,7 @@ RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection lef
 			}
 		}
 	}
+	cout << "Num of comparisions (nested): " << comparisions << endl;
 	RectangleRectangleCollection rangeJoinResult(RECTANGLERECTANGLE,DB_NAME,TYPE_RECTANGLERECTANGLE,joinResultVector);
 	return rangeJoinResult;
 }

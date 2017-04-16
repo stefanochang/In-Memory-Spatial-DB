@@ -196,6 +196,7 @@ public:
 
 	vector<Rectangle> getKnnRectanglesFromRectangle (int k, Rectangle inputRect, vector<Rectangle> inputRectangles);
 
+	PointPointCollection sweepBasedJoin (PointCollection leftData, PointCollection rightData, bool onX);
 };
 
 #endif
