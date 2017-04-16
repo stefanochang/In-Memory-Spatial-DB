@@ -11,6 +11,20 @@ Filter::Filter(char& filterType, vector<float>& inputParams) {
 
 QueryTree::QueryTree() {
 
+	this->rootType = NO_JOIN;
+	this->rootParam = 0.0;
+
+	vector<Filter> filterNull;
+	this->leftBranch = filterNull;
+	this->rightBranch = filterNull;
+
+	PointCollection ptcolNull;
+	this->leftDataPoint = ptcolNull;
+	this->rightDataPoint = ptcolNull;
+
+	RectangleCollection retcolNull;
+	this->leftDataRect = retcolNull;
+	this->rightDataRect = retcolNull;
 }
 
 void QueryTree::setLeftPoints(PointCollection leftPoints) {
