@@ -6,7 +6,38 @@
 #endif
 #include <algorithm>
 using namespace std;
+#include <iostream>
+#include <fstream>
+#include <sys/time.h>
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// HELPER FUNCTIONS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool write_log(string command) {
+  timeval tv;
+  gettimeofday(&tv, 0);
+
+  fstream log_file;
+  log_file.open("command_log.txt",fstream::app);
+  if(log_file << &tv << " : " << command << std::endl) {
+    log_file.close();
+    return true;
+  }
+  else {
+    log_file.close();
+    return false;
+  }
+}
+
+// Function to return time in Microseconds precesion
+
+// double dtime ()
+// {
+//     struct timeval tv;
+//     gettimeofday (&tv, NULL);
+//     Microseconds precesion
+//     return ((tv.tv_sec + ((double) tv.tv_usec / 1000000.0)));
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINT COLLECTION
@@ -50,7 +81,10 @@ public:
 PointCollection::PointCollection(){
   recordId = 0;
   getNextAt = 0;
-  collectionStructure = COLLECTION_STRUCT_UNSORTED;
+  getNextAt = 0;
+  this->name = "";
+  this->databaseName = "";
+  this->collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
 PointCollection::PointCollection(string name, string databaseName, char collectionStructure, vector<Point> pointsToInsert)
@@ -124,6 +158,8 @@ int PointCollection::insert(Point pnt) {
   if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
     points.push_back(*newPoint);
     free(newPoint);
+    std::string log_entry = "PointCollection::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newPoint->id) + ", " + std::to_string(newPoint->x) + ", " + std::to_string(newPoint->y) + ")";
+    write_log(log_entry);
     return 1;
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
@@ -142,12 +178,16 @@ int PointCollection::insert(Point pnt) {
 int PointCollection::insertSortedX(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, XCompare());
   points.insert( it, point);
+  std::string log_entry = "PointCollection::insertSortedX(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
+  write_log(log_entry);
   return 1;
 }
 
 int PointCollection::insertSortedY(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, YCompare());
   points.insert( it, point);
+  std::string log_entry = "PointCollection::insertSortedY(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
+  write_log(log_entry);
 return 1;
 
 }
@@ -178,7 +218,9 @@ int PointCollection::removeById(int deleteId) {
   for(it=points.begin() ; it < points.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "PointCollection::removeById(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->x) + ", " + std::to_string(it->y) + ")";
       points.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }

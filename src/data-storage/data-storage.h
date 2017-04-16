@@ -139,6 +139,7 @@ class RectangleRectangleCollection {
 
 
 //Initial data load supported for Points and Rectangles
+bool write_log(string command);
 int loadData(string dbName, string tableName, int geomtype, string filepath, char collectionStruct);
 /*
 // Insert a single point
