@@ -59,7 +59,6 @@ PointCollection::PointCollection(string name, string databaseName, char collecti
   this->collectionStructure = collectionStructure;
   recordId = 0;
   vector<Point>::iterator it;
-  //ds_point *newPoint;
   for(it=pointsToInsert.begin() ; it < pointsToInsert.end(); it++ ) {
     insert(*it);
   }
@@ -68,9 +67,9 @@ PointCollection::PointCollection(string name, string databaseName, char collecti
 Point PointCollection::convertStructToObj(ds_point pointStruct) {
   float x = pointStruct.x;
   float y = pointStruct.y;
-  Point point = Point(x, y);
-  point.setId(pointStruct.id);
-  return point;
+  Point *point = new Point(x, y);
+  point->setId(pointStruct.id);
+  return *point;
 }
 
 ds_point * PointCollection::convertObjToStruct(Point point) {
@@ -89,9 +88,6 @@ Point PointCollection::getById(int findId) {
   {
     if(it->id == findId)
     {
-      /*pnt = new Point(it->x, it->y);
-      pnt->setId(it->id);
-      return *pnt;*/
       return convertStructToObj(*it);
     }
   }
@@ -165,18 +161,6 @@ return 1;
 int PointCollection::insertBulk(PointCollection collection) {
   vector<Point> pointsToInsert = collection.getNext(collection.getSize());
   return insertBulk(pointsToInsert);
-  /*vector<Point>::iterator it;
-  ds_point *newPoint;
-  for(it=pointsToInsert.begin() ; it < pointsToInsert.end(); it++ ) {
-    insert(*it);
-    newPoint = (ds_point *)malloc(sizeof(ds_point));
-    newPoint->id = recordId++;
-    newPoint->x = it->getCoordinates()[0];
-    newPoint->y = it->getCoordinates()[1];
-    ds_point *newPoint = convertObjToStruct(*it);
-    points.push_back(*newPoint);
-    free(newPoint);
-  }*/
 }
 
 int PointCollection::insertBulk(vector<Point> ptsToInsert) {
@@ -243,9 +227,9 @@ Rectangle RectangleCollection::convertStructToObj(ds_rectangle recStruct) {
   float top_y = recStruct.top_y;
   float bottom_x = recStruct.bottom_x;
   float bottom_y = recStruct.bottom_y;
-  Rectangle rectangle = Rectangle(top_x, top_y, bottom_x, bottom_y);
-  rectangle.setId(recStruct.id);
-  return rectangle;
+  Rectangle *rectangle = new Rectangle(top_x, top_y, bottom_x, bottom_y);
+  rectangle->setId(recStruct.id);
+  return *rectangle;
 }
 
 ds_rectangle * RectangleCollection::convertObjToStruct(Rectangle rectangle) {
@@ -394,9 +378,9 @@ PointPoint PointPointCollection::convertStructToObj(ds_pointpoint recStruct) {
   float y1 = recStruct.point1.y;
   float x2 = recStruct.point2.x;
   float y2 = recStruct.point2.y;
-  PointPoint pointPoint = PointPoint(x1, y1, x2, y2);
-  pointPoint.setId(recStruct.id);
-  return pointPoint;
+  PointPoint *pointPoint = new PointPoint(x1, y1, x2, y2);
+  pointPoint->setId(recStruct.id);
+  return *pointPoint;
 }
 
 ds_pointpoint * PointPointCollection::convertObjToStruct(PointPoint pointPoint) {
@@ -527,9 +511,9 @@ RectangleRectangle RectangleRectangleCollection::convertStructToObj(ds_rectangle
   float x22 = recRecStruct.rec2.bottom_x;
   float y22 = recRecStruct.rec2.bottom_y;
 
-  RectangleRectangle rectangleRectangle = RectangleRectangle(x11, y11, x12, y12, x21, y21, x22, y22);
-  rectangleRectangle.setId(recRecStruct.id);
-  return rectangleRectangle;
+  RectangleRectangle *rectangleRectangle = new RectangleRectangle(x11, y11, x12, y12, x21, y21, x22, y22);
+  rectangleRectangle->setId(recRecStruct.id);
+  return *rectangleRectangle;
 }
 
 ds_rectanglerectangle * RectangleRectangleCollection::convertObjToStruct(RectangleRectangle rectangleRectangle) {
@@ -659,9 +643,9 @@ PointRectangle PointRectangleCollection::convertStructToObj(ds_pointrectangle po
   float y2 = pointRecStruct.rec.top_y;
   float x3 = pointRecStruct.rec.bottom_x;
   float y3 = pointRecStruct.rec.bottom_y;
-  PointRectangle pointRectangle = PointRectangle(x1, y1, x2, y2, x3, y3);
-  pointRectangle.setId(pointRecStruct.id);
-  return pointRectangle;
+  PointRectangle *pointRectangle = new PointRectangle(x1, y1, x2, y2, x3, y3);
+  pointRectangle->setId(pointRecStruct.id);
+  return *pointRectangle;
 }
 
 ds_pointrectangle * PointRectangleCollection::convertObjToStruct(PointRectangle pointRectangle) {

@@ -10,25 +10,8 @@
 #endif
 using namespace std;
 
-/*void printData(PointCollection *pointsRepo){
-  ds_record *tmp_head;
-  tmp_head = pointsRepo->getHead();
-  if(tmp_head == NULL)
-    cout << "Empty Collection" << "\n";
-  else{
-    cout << "X: " << tmp_head->geom->pnt->x;
-    cout << " Y: " << tmp_head->geom->pnt->y << "\n";
-    ds_record *tmp_node = tmp_head->next;
-    while(tmp_node != tmp_head){
-      cout << "X: " << tmp_node->geom->pnt->x;
-      cout << " Y: " << tmp_node->geom->pnt->y << "\n";
-      tmp_node = tmp_node->next;
-    }
-  }
 
-}*/
-
-/*bool testGetNextSingle() {
+bool testGetNextSingle() {
   PointCollection *pc = new PointCollection();
 
   Point *testPoint = new Point(1, 2);
@@ -183,8 +166,8 @@ bool testGetPointByUUID() {
   pntcollection->insert(*p1);
   pntcollection->insert(*p2);
 
-  Point * point = pntcollection->getPointByUUID("name", 0);
-  vector<float> resultPointCoordinates = point->getCoordinates();
+  Point point = pntcollection->getById(0);
+  vector<float> resultPointCoordinates = point.getCoordinates();
 
   bool testResultPointCoordinates = (resultPointCoordinates[0] == 12.34f && resultPointCoordinates[1] == 10.34f);
   if(!testResultPointCoordinates) {
@@ -192,8 +175,8 @@ bool testGetPointByUUID() {
     return false;
   }
 
-  point = pntcollection->getPointByUUID("name", 1);
-  resultPointCoordinates = point->getCoordinates();
+  point = pntcollection->getById(1);
+  resultPointCoordinates = point.getCoordinates();
 
   bool testResultPointCoordinates2 = resultPointCoordinates[0] == 12.35f && resultPointCoordinates[1] == 10.34f;
   if(!testResultPointCoordinates2) {
@@ -233,9 +216,8 @@ void test_insertDataSortedX() {
     pntcollection->insert(*p3);
     pntcollection->insert(*p4);
     cout << "Size: " << pntcollection->getSize() << "/n";
-    //printData(pntcollection);
 }
-*/
+
 void test_insertDataSortedY() {
     PointCollection *pntcollection;
     pntcollection = new PointCollection("", "", COLLECTION_STRUCT_SORTEDY, {});
@@ -257,7 +239,6 @@ void test_insertDataSortedY() {
     pntcollection->insert(*p3);
     pntcollection->insert(*p4);
     cout << "Size: " << pntcollection->getSize() << "/n";
-    //printData(pntcollection);
 }
 
 
@@ -282,14 +263,14 @@ void test_insertDataSortedXRect() {
     rcollection->insert(*r3);
     rcollection->insert(*r4);
     cout << "Size: " << rcollection->getSize() << "/n";
-    //printData(pntcollection);
+
 }
 
 int main() {
     test_insertDataSortedXRect();
-    //test_insertDataSortedY();
-    //test_insertDataSortedX();
-    //test_insertDataSortedY();
-    //testGetNext();
-    //testGetByUUID();
+    test_insertDataSortedY();
+    test_insertDataSortedX();
+    test_insertDataSortedY();
+    testGetNext();
+    testGetByUUID();
 }
