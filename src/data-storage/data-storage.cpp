@@ -6,7 +6,38 @@
 #endif
 #include <algorithm>
 using namespace std;
+#include <iostream>
+#include <fstream>
+#include <sys/time.h>
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// HELPER FUNCTIONS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool write_log(string command) {
+  timeval tv;
+  gettimeofday(&tv, 0);
+
+  fstream log_file;
+  log_file.open("command_log.txt",fstream::app);
+  if(log_file << &tv << " : " << command << std::endl) {
+    log_file.close();
+    return true;
+  }
+  else {
+    log_file.close();
+    return false;
+  }
+}
+
+// Function to return time in Microseconds precesion
+
+// double dtime ()
+// {
+//     struct timeval tv;
+//     gettimeofday (&tv, NULL);
+//     Microseconds precesion
+//     return ((tv.tv_sec + ((double) tv.tv_usec / 1000000.0)));
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POINT COLLECTION
@@ -14,42 +45,45 @@ using namespace std;
 class XCompare
 {
 public:
-    bool operator()(const ds_point &first, const ds_point &second) const
-    {
-        return first.x < second.x;
-    }
+  bool operator()(const ds_point &first, const ds_point &second) const
+  {
+    return first.x < second.x;
+  }
 };
 
 class YCompare
 {
 public:
-    bool operator()(const ds_point &first, const ds_point &second) const
-    {
-        return first.y < second.y;
-    }
+  bool operator()(const ds_point &first, const ds_point &second) const
+  {
+    return first.y < second.y;
+  }
 };
 
 class XRectCompare
 {
 public:
-    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
-    {
-        return (first.top_x + first.bottom_x) < (second.top_x + second.bottom_x);
-    }
+  bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+  {
+    return (first.top_x + first.bottom_x) < (second.top_x + second.bottom_x);
+  }
 };
 
 class YRectCompare
 {
 public:
-    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
-    {
-        return (first.top_y + first.bottom_y) < (second.top_y + second.bottom_y);
-    }
+  bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+  {
+    return (first.top_y + first.bottom_y) < (second.top_y + second.bottom_y);
+  }
 };
 
 PointCollection::PointCollection(){
   recordId = 0;
   getNextAt = 0;
+  getNextAt = 0;
+  name = "";
+  databaseName = "";
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
@@ -123,6 +157,8 @@ int PointCollection::insert(Point pnt) {
   newPoint->id = recordId++;
   if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
     points.push_back(*newPoint);
+    std::string log_entry = "PointCollection::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newPoint->id) + ", " + std::to_string(newPoint->x) + ", " + std::to_string(newPoint->y) + ")";
+    write_log(log_entry);
     free(newPoint);
     return 1;
   }
@@ -142,13 +178,17 @@ int PointCollection::insert(Point pnt) {
 int PointCollection::insertSortedX(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, XCompare());
   points.insert( it, point);
+  std::string log_entry = "PointCollection::insertSortedX(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
+  write_log(log_entry);
   return 1;
 }
 
 int PointCollection::insertSortedY(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, YCompare());
   points.insert( it, point);
-return 1;
+  std::string log_entry = "PointCollection::insertSortedY(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
+  write_log(log_entry);
+  return 1;
 
 }
 
@@ -178,7 +218,9 @@ int PointCollection::removeById(int deleteId) {
   for(it=points.begin() ; it < points.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "PointCollection::removeById(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->x) + ", " + std::to_string(it->y) + ")";
       points.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
@@ -222,7 +264,7 @@ int PointCollection::switchStorageStructure(char newStructure)
 
 RectangleCollection::RectangleCollection(){
   recordId = 0;
-  getNextAt = 0; 
+  getNextAt = 0;
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
@@ -398,6 +440,7 @@ PointPointCollection::PointPointCollection(string name, string databaseName, cha
 :PointPointCollection() {
   this->name = name;
   this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
   recordId = 0;
   insertBulk(recsToInsert);
 }
@@ -519,12 +562,14 @@ int PointPointCollection::getSize() {
 RectangleRectangleCollection::RectangleRectangleCollection(){
   recordId = 0;
   getNextAt = 0;
+  collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
 RectangleRectangleCollection::RectangleRectangleCollection(string name, string databaseName, char collectionStructure, vector<RectangleRectangle> recsToInsert)
 :RectangleRectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
   recordId = 0;
   insertBulk(recsToInsert);
 }
@@ -662,6 +707,7 @@ PointRectangleCollection::PointRectangleCollection(string name, string databaseN
 :PointRectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
+  this->collectionStructure = collectionStructure;
   recordId = 0;
   insertBulk(recsToInsert);
 }
