@@ -515,6 +515,69 @@ bool queryProcessingTests() {
 
 	}
 
+	cout<<"\n---------------------------------------------------------------------------------------------\n";
+	cout<<"Test 8 b : Range Join - POINT-POINT (Demonstrating Sweep Join) \n";
+	cout<<"\t No Filterby - left branch all Points Collections without any filter\n";
+	cout<<"\t Filterby right branch all Points whose distance is less than 6 from Point (0,0)\n";
+	cout<<"\n---------------------------------------------------------------------------------------------\n";
+	{
+		QueryTree qTree;
+		QueryResult qResult;
+		QueryProcessing query;
+		qTree.setRootType(RANGE_JOIN);
+
+
+		vector<float> inputParamsright;
+		inputParamsright.push_back(6);
+		inputParamsright.push_back(0);
+		inputParamsright.push_back(0);
+
+		char fr=FILTER_BY_DISTANCE_LT;
+		Filter f_right = Filter(fr,inputParamsright);
+
+		vector<Filter> filter_right;
+		filter_right.push_back(f_right);
+
+		qTree.setRightFilter(filter_right);
+
+		cout<<"POINT DATASET LEFT\t\tPOINT DATASET RIGHT";
+		vector<Point> pt_null;
+		PointCollection ptcolleft("", "", COLLECTION_STRUCT_SORTEDY, pt_null);
+		PointCollection ptcollright("", "", COLLECTION_STRUCT_SORTEDY, pt_null);;
+
+		for(int i=0;i<7;i++){
+			ptcolleft.insert(Point(0,i+1));
+			ptcollright.insert(Point(0,i+3));
+			cout<<"\n\t("<<0<<","<<i+1<<")\t\t\t\t("<<0<<","<<i+3<<")";
+		}
+
+		qTree.setLeftPoints(ptcolleft);
+		qTree.setRightPoints(ptcollright);
+
+		qTree.setLeftRectangles(retcolNull);
+		qTree.setRightRectangles(retcolNull);
+
+		qResult = query.processQuery(qTree);
+
+		if (qResult.getResultType() == TYPE_POINTPOINT){
+			PointPointCollection ptcoll = qResult.getPointPointCollection();
+			cout<<"\nRESULT: PointPointCollection"<<endl;
+			cout << "ResultSet Size : " << ptcoll.getSize() << "\n\n";
+			for(int i=0;i<ptcoll.getSize();i++)
+			{
+				vector<PointPoint> tempt_ppt = ptcoll.getNext(1);
+				for ( PointPoint ppt : tempt_ppt){
+					cout<< "[(" << ppt.getCoordinates().at(0)<< " ," << ppt.getCoordinates().at(1) <<"),"
+						<< "("<< ppt.getCoordinates().at(2)<< " ," << ppt.getCoordinates().at(3) <<") ]"<<endl;
+				}
+			}
+		}
+		else{
+			cout << "Fail Test 8b"<<endl;
+		}
+
+	}
+
 
 	cout<<"\n---------------------------------------------------------------------------------------------\n";
 	cout<<"Test 9 : Range Join - RECTANGLE-RECTANGLE \n";
