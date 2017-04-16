@@ -121,10 +121,6 @@ char PointCollection::getCollectionStructure() {
 int PointCollection::insert(Point pnt) {
   ds_point *newPoint = convertObjToStruct(pnt);
   newPoint->id = recordId++;
-  /*(ds_point *)malloc(sizeof(ds_point));
-  newPoint->id = recordId;
-  newPoint->x = pnt.getCoordinates()[0];
-  newPoint->y = pnt.getCoordinates()[1];*/
   if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
     points.push_back(*newPoint);
     free(newPoint);
@@ -203,6 +199,21 @@ string PointCollection::getTableName() {
 
 int PointCollection::getSize() {
   return points.size();
+}
+
+int PointCollection::switchStorageStructure(char newStructure)
+{
+  collectionStructure = newStructure;
+  if(newStructure == COLLECTION_STRUCT_UNSORTED)
+  {
+    return 1;
+  }
+  if(newStructure == COLLECTION_STRUCT_SORTEDX)
+  {
+    sort(points.begin(), points.end(),XCompare());
+    return 1;
+  }
+  sort(points.begin(), points.end(),YCompare());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,6 +366,21 @@ string RectangleCollection::getTableName() {
 
 int RectangleCollection::getSize() {
   return rectangles.size();
+}
+
+int RectangleCollection::switchStorageStructure(char newStructure)
+{
+  collectionStructure = newStructure;
+  if(newStructure == COLLECTION_STRUCT_UNSORTED)
+  {
+    return 1;
+  }
+  if(newStructure == COLLECTION_STRUCT_SORTEDX)
+  {
+    sort(rectangles.begin(), rectangles.end(),XRectCompare());
+    return 1;
+  }
+  sort(rectangles.begin(), rectangles.end(),YRectCompare());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,6 +10,23 @@
 #endif
 using namespace std;
 
+bool testSwitchStorageStruct()
+{
+  PointCollection *pc = new PointCollection();
+
+  Point *testPoint = new Point(3, 4);
+  Point *testPoint2 = new Point(1, 2);
+
+  pc->insert(*testPoint);
+  pc->insert(*testPoint2);
+  pc->switchStorageStructure(COLLECTION_STRUCT_SORTEDY);
+  vector<Point> result = pc->getNext(pc->getSize());
+  cout<<"\nTesting switchStorageStructure :\n\n";
+  for(int i=0;i<pc->getSize();i++)
+  {
+    cout<<result[i].getCoordinates()[1]<< "\n";
+  }
+}
 
 bool testGetNextSingle() {
   PointCollection *pc = new PointCollection();
@@ -273,4 +290,5 @@ int main() {
     test_insertDataSortedY();
     testGetNext();
     testGetByUUID();
+    testSwitchStorageStruct();
 }

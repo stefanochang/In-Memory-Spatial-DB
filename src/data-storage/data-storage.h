@@ -30,6 +30,7 @@ class PointCollection{
     int removeById(int);  // size of PointCollection
     string getDBName();
     string getTableName();
+    int switchStorageStructure(char);
 };
 
 class RectangleCollection {
@@ -57,6 +58,7 @@ class RectangleCollection {
     int removeById(int);
     string getDBName();
     string getTableName();
+    int switchStorageStructure(char);
 };
 
 class PointPointCollection {
