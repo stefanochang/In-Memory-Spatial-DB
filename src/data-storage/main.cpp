@@ -10,22 +10,22 @@
 #endif
 using namespace std;
 
-void printData(PointCollection *pointsRepo){
-  ds_record *tmp_head;
-  tmp_head = pointsRepo->getHead();
-  if(tmp_head == NULL)
-    cout << "Empty Collection" << "\n";
-  else{
-    cout << "X: " << tmp_head->geom->pnt->x;
-    cout << " Y: " << tmp_head->geom->pnt->y << "\n";
-    ds_record *tmp_node = tmp_head->next;
-    while(tmp_node != tmp_head){
-      cout << "X: " << tmp_node->geom->pnt->x;
-      cout << " Y: " << tmp_node->geom->pnt->y << "\n";
-      tmp_node = tmp_node->next;
-    }
-  }
+bool testSwitchStorageStruct()
+{
+  PointCollection *pc = new PointCollection();
 
+  Point *testPoint = new Point(3, 4);
+  Point *testPoint2 = new Point(1, 2);
+
+  pc->insert(*testPoint);
+  pc->insert(*testPoint2);
+  pc->switchStorageStructure(COLLECTION_STRUCT_SORTEDY);
+  vector<Point> result = pc->getNext(pc->getSize());
+  cout<<"\nTesting switchStorageStructure :\n\n";
+  for(int i=0;i<pc->getSize();i++)
+  {
+    cout<<result[i].getCoordinates()[1]<< "\n";
+  }
 }
 
 bool testGetNextSingle() {
@@ -167,7 +167,7 @@ void test_insertData() {
     cout << pntcollection->insert(*p3) << "\n";
     cout << pntcollection->insert(*p4) << "\n";
     cout <<"Size: " << pntcollection->getSize() << "\n";
-    printData(pntcollection);
+    //printData(pntcollection);
 }
 
 bool testGetPointByUUID() {
@@ -183,8 +183,8 @@ bool testGetPointByUUID() {
   pntcollection->insert(*p1);
   pntcollection->insert(*p2);
 
-  Point * point = pntcollection->getPointByUUID("name", 0);
-  vector<float> resultPointCoordinates = point->getCoordinates();
+  Point point = pntcollection->getById(0);
+  vector<float> resultPointCoordinates = point.getCoordinates();
 
   bool testResultPointCoordinates = (resultPointCoordinates[0] == 12.34f && resultPointCoordinates[1] == 10.34f);
   if(!testResultPointCoordinates) {
@@ -192,8 +192,8 @@ bool testGetPointByUUID() {
     return false;
   }
 
-  point = pntcollection->getPointByUUID("name", 1);
-  resultPointCoordinates = point->getCoordinates();
+  point = pntcollection->getById(1);
+  resultPointCoordinates = point.getCoordinates();
 
   bool testResultPointCoordinates2 = resultPointCoordinates[0] == 12.35f && resultPointCoordinates[1] == 10.34f;
   if(!testResultPointCoordinates2) {
@@ -233,7 +233,6 @@ void test_insertDataSortedX() {
     pntcollection->insert(*p3);
     pntcollection->insert(*p4);
     cout << "Size: " << pntcollection->getSize() << "/n";
-    printData(pntcollection);
 }
 
 void test_insertDataSortedY() {
@@ -257,13 +256,39 @@ void test_insertDataSortedY() {
     pntcollection->insert(*p3);
     pntcollection->insert(*p4);
     cout << "Size: " << pntcollection->getSize() << "/n";
-    printData(pntcollection);
+}
+
+
+void test_insertDataSortedXRect() {
+    RectangleCollection *rcollection;
+    rcollection = new RectangleCollection("", "", COLLECTION_STRUCT_SORTEDX, {});
+
+    Rectangle *r1;
+    r1 = new Rectangle(12.34, 10.34, 5, 2);
+
+    Rectangle *r2;
+    r2 = new Rectangle(12.35, 0, 7, 10.54);
+
+    Rectangle *r3;
+    r3 = new Rectangle(1, 5, 12.36, 1.34);
+
+    Rectangle *r4;
+    r4 = new Rectangle(0, 12.37, 10, 4.34);
+
+    rcollection->insert(*r1);
+    rcollection->insert(*r2);
+    rcollection->insert(*r3);
+    rcollection->insert(*r4);
+    cout << "Size: " << rcollection->getSize() << "/n";
+
 }
 
 int main() {
-    test_insertData();
+    test_insertDataSortedXRect();
+    test_insertDataSortedY();
     test_insertDataSortedX();
     test_insertDataSortedY();
     testGetNext();
     testGetByUUID();
+    testSwitchStorageStruct();
 }
