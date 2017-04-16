@@ -287,10 +287,6 @@ vector<Rectangle> QueryProcessing::getKnnRectanglesFromRectangle (int k, Rectang
 PointPointCollection QueryProcessing::rangeJoin (PointCollection leftData, vector<Filter> filter,
 		PointCollection rightData) {
 
-	// bool use_only_sweep_join = true; 
-	// if (use_only_sweep_join)
-	// 	return sweepBasedJoin(leftData, filter, rightData);
-
 	vector<PointPoint> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
 	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
