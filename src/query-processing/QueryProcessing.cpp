@@ -359,26 +359,6 @@ PointPointCollection QueryProcessing::sweepBasedJoin (PointCollection leftData, 
 PointPointCollection QueryProcessing::rangeJoin (PointCollection leftData, vector<Filter> filter,
 		PointCollection rightData) {
 
-	vector<PointPoint> joinResultVector;
-	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
-	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
-
-	for (int i=0;i<leftPoints.size();i++) {
-		for (int j=0;j<rightPoints.size();j++) {
-			if (PointOperations::isEqual(leftPoints[i], rightPoints[j])) {
-				PointPoint pp(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
-						rightPoints[j].getCoordinates()[0],rightPoints[j].getCoordinates()[1]);
-				joinResultVector.insert(joinResultVector.end(),pp);
-			}
-		}
-	}
-	PointPointCollection rangeJoinResult(POINTPOINT,DB_NAME,TYPE_POINTPOINT,joinResultVector);
-	return rangeJoinResult;
-}
-
-RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection leftData, vector<Filter> filter,
-		RectangleCollection rightData) {
-
 	if (leftData.getCollectionStructure() == COLLECTION_STRUCT_SORTEDX && rightData.getCollectionStructure() == COLLECTION_STRUCT_SORTEDX){
 		cout << "Found both data sorted on X (performing sweep join)";
 		return sweepBasedJoin(leftData, rightData, true);
@@ -388,14 +368,34 @@ RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection lef
 		return sweepBasedJoin(leftData, rightData, false);
 	}
 
+	vector<PointPoint> joinResultVector;
+	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
+	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
 	int comparisions = 0;
+	for (int i=0;i<leftPoints.size();i++) {
+		for (int j=0;j<rightPoints.size();j++) {
+			comparisions++;
+			if (PointOperations::isEqual(leftPoints[i], rightPoints[j])) {
+				PointPoint pp(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
+						rightPoints[j].getCoordinates()[0],rightPoints[j].getCoordinates()[1]);
+				joinResultVector.insert(joinResultVector.end(),pp);
+			}
+		}
+	}
+	cout << "Num of comparisions (nested): " << comparisions << endl;
+	PointPointCollection rangeJoinResult(POINTPOINT,DB_NAME,TYPE_POINTPOINT,joinResultVector);
+	return rangeJoinResult;
+}
+
+RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection leftData, vector<Filter> filter,
+		RectangleCollection rightData) {
+
 	vector<RectangleRectangle> joinResultVector;
 	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
 	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
 
 	for (int i=0;i<leftRects.size();i++) {
 		for (int j=0;j<rightRects.size();j++) {
-			comparisions++;
 			if (RectangleOperations::isOverlapping(leftRects[i],rightRects[j]) ||
 					RectangleOperations::isIntersecting(leftRects[i],rightRects[j]) ||
 					RectangleOperations::isWithin(leftRects[i],rightRects[j]) ||
@@ -408,7 +408,7 @@ RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection lef
 			}
 		}
 	}
-	cout << "Num of comparisions (nested): " << comparisions << endl;
+
 	RectangleRectangleCollection rangeJoinResult(RECTANGLERECTANGLE,DB_NAME,TYPE_RECTANGLERECTANGLE,joinResultVector);
 	return rangeJoinResult;
 }
