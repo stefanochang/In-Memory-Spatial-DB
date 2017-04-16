@@ -53,7 +53,7 @@ public:
             qPoints.push_back(convertPoint(*point));
         }
         qBoundingBox *box = qBoundingBox::getQBoundingBoxCooridinates(qPoints);
-        prTree = new prQuadTree(box);
+        prTree = new prQuadTree(box,8);
         vector<Point> pointVector = points.getNext();
         for (std::vector<Point>::iterator point = pointVector.begin() ; point != pointVector.end(); ++point)
             prTree->insert(convertPoint(*point));
