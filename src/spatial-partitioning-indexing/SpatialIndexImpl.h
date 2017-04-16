@@ -16,16 +16,16 @@ private:
     RectangleSpatialIndex *rectangleIndex;
     bool isPointIndex = false;
 public:
-    PointCollection searchPoint(Rectangle rectangle)  {
+    PointCollection search(Rectangle rectangle,PointCollection *pointCollection)  {
         if(pointIndex != NULL) {
-            return pointIndex->searchPoint(rectangle);
+            return pointIndex->search(rectangle, pointCollection);
         }
         return NULL;
     }
 
-    RectangleCollection searchRectangle(Rectangle rectangle)  {
+    RectangleCollection search(Rectangle rectangle, RectangleCollection *rectangleCollection)  {
         if(rectangleIndex != NULL) {
-            return rectangleIndex->searchRectangle(rectangle);
+            return rectangleIndex->search(rectangle,rectangleCollection);
         }
         return NULL;
     }

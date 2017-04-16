@@ -8,18 +8,19 @@
 #include "quadTreeLib.h"
 #include "prQuadTree.h"
 #include "../integration/spatial-index-interface.h"
+#include "../data-storage/ds_constants.h"
 #include "qPoint.h"
 #include "../integration/data-storage.h"
 
 class PointSpatialIndex: public  SpatialIndexInterface {
 private:
     prQuadTree *prTree;
-    QPoint* convertPoint(Point *p) {
-        return new QPoint(p->getCoordinates()[0],p->getCoordinates()[1],p->getId());
+    qPoint* convertPoint(Point p) {
+        return new qPoint(p.getCoordinates()[0],p.getCoordinates()[1],p.getId());
     }
 public:
     PointSpatialIndex() {}
-    PointCollection search(Rectangle bounds){
+    PointCollection search(Rectangle bounds, PointCollection *pointCollection){
         PointCollection *result;
         float x1 = bounds.getCoordinates()[0];
         float y1 = bounds.getCoordinates()[1];
@@ -31,26 +32,31 @@ public:
         float miny = yResult ? y2 : y1;
         float width = fabs(x2-x1);
         float height = fabs(y2-y1);
-        vector<QPoint>iPoints = prTree->queryRange(minx,miny,width,height);
-        Point points[iPoints.size()];
+        vector<qPoint>iPoints = prTree->queryRange(minx,miny,width,height);
+        vector<Point> points;
         int i=0;
-        for(QPoint point : iPoints) {
-            points[i++] = getPointByUUID("Point",point.getId());
+        for(qPoint point : iPoints) {
+            points.push_back(pointCollection->getById(point.getId()));
         }
-        result = new PointCollection(iPoints.size(),points);
+        result = new PointCollection("PointIndexCollection","Point",TYPE_POINT,points);
         delete points;
         delete iPoints;
         return *result;
     }
-    RectangleCollection searchRectangle(Rectangle){
+    RectangleCollection search(Rectangle,RectangleCollection*){
         throw "Method Not Supported";
     }
     void createIndex(PointCollection points){
-        prTree = new prQuadTree(5000, 5000);
-        Point *p;
-        while((p=points.getNext()) != NULL){
-            prTree->insert(convertPoint(p));
+        vector<Point> allPoints = points.getNext(points.getSize());
+        vector<qPoint*> qPoints;
+        for (std::vector<Point>::iterator point = allPoints.begin() ; point != allPoints.end(); ++point){
+            qPoints.push_back(convertPoint(*point));
         }
+        qBoundingBox *box = qBoundingBox::getQBoundingBoxCooridinates(qPoints);
+        prTree = new prQuadTree(box,8);
+        vector<Point> pointVector = points.getNext();
+        for (std::vector<Point>::iterator point = pointVector.begin() ; point != pointVector.end(); ++point)
+            prTree->insert(convertPoint(*point));
     }
     void createIndex(RectangleCollection){
         throw "Method Not Supported";

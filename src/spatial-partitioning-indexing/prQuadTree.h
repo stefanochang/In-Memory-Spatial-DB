@@ -20,24 +20,24 @@ private:
 public:
 
     prQuadTree(){}
-    prQuadTree(float originX, float originY, float width, float height) {
+    prQuadTree(float originX, float originY, float width, float height, int leafCapacity) {
         float x = originX - width/2;
         float y = originY - height/2;
         qPoint *xyPoint = new qPoint(x,y);
         qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
-        root = new prQuadNode( *QBB );
+        root = new prQuadNode( *QBB, leafCapacity);
     }
 
-    prQuadTree(float width, float height) {
+    prQuadTree(float width, float height, int leafCapacity) {
         float x = 0 - width/2;
         float y = 0 - height/2;
         qPoint *xyPoint = new qPoint(x,y);
         qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
-        root = new prQuadNode( *QBB );
+        root = new prQuadNode( *QBB , leafCapacity);
     }
 
-    prQuadTree(qBoundingBox *qbb) {
-        root = new prQuadNode( *qbb );
+    prQuadTree(qBoundingBox *qbb, int leafCapacity) {
+        root = new prQuadNode( *qbb , leafCapacity);
     }
 
     prQuadNode* getRoot() {
