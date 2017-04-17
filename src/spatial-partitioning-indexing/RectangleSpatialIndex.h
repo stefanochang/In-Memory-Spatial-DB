@@ -8,15 +8,13 @@
 #include "quadTreeLib.h"
 #include "mxcifQuadTree.h"
 #include "../integration/spatial-index-interface.h"
-#include "../data-storage/ds_constants.h"
 #include "qPoint.h"
-#include "../integration/data-storage.h"
 
 class RectangleSpatialIndex: public  SpatialIndexInterface {
 private:
     mxcifQuadTree *mxCifTree;
-    float* computeBounds(Rectangle rect) {
-        float bounds[4];
+    vector<float> computeBounds(Rectangle rect) {
+        vector<float> bounds;
         float x1 = rect.getCoordinates()[0];
         float y1 = rect.getCoordinates()[1];
         float x2 = rect.getCoordinates()[2];
@@ -27,7 +25,7 @@ private:
         float miny = yResult ? y2 : y1;
         float width = fabs(x2-x1);
         float height = fabs(y2-y1);
-        bounds[0]=minx; bounds[1]=miny; bounds[2]=width; bounds[3]=height;
+        bounds.push_back(minx); bounds.push_back(miny); bounds.push_back(width); bounds.push_back(height);
         return bounds;
     }
     qBoundingBox* convertRectangle(Rectangle r) {
@@ -39,21 +37,25 @@ private:
     }
 public:
     RectangleSpatialIndex() {}
-    PointCollection search(Rectangle,PointCollection*){
+    PointCollection searchPoint(Rectangle,PointCollection*){
         throw "Method Not Supported";
     }
-    RectangleCollection search(Rectangle bounds,RectangleCollection *rectangleCollection){
+    RectangleCollection searchRectangle(Rectangle bounds,RectangleCollection *rectangleCollection){
         RectangleCollection *result;
-        float *queryBounds = computeBounds(bounds);
-        vector<qBoundingBox> iBoxes = mxCifTree->queryRange(queryBounds[0],queryBounds[1],queryBounds[2],queryBounds[3]);
+        vector<float> queryBounds = computeBounds(bounds);
+        vector<qBoundingBox> iBoxes = mxCifTree->queryRange(queryBounds.at(0),queryBounds.at(1),queryBounds.at(2),queryBounds.at(3));
         vector<Rectangle> rectangles;
         int i=0;
         for(qBoundingBox box : iBoxes) {
             rectangles.push_back(rectangleCollection->getById(box.getId()));
         }
         result = new RectangleCollection("RectangleCollection","Rectangle",TYPE_RECTANGLE,rectangles);
-        delete iBoxes;
-        delete rectangles;
+        if(!iBoxes.empty()){
+            iBoxes.clear();
+        }
+        if(!rectangles.empty()){
+            rectangles.clear();
+        }
         return *result;
     }
     void createIndex(PointCollection){
@@ -70,8 +72,8 @@ public:
         mxCifTree = new mxcifQuadTree(box);
         vector<Rectangle> rectangleVector = rectangles.getNext();
         for (std::vector<Rectangle>::iterator rect = rectangleVector.begin() ; rect != rectangleVector.end(); ++rect){
-            float *bounds = computeBounds(*rect);
-            mxCifTree->insert(bounds[0],bounds[1],bounds[2],bounds[3],rect->getId());
+            vector<float> bounds = computeBounds(*rect);
+            mxCifTree->insert(bounds.at(0),bounds.at(1),bounds.at(2),bounds.at(3),rect->getId());
 //            mxCifTree->insert(convertRectangle(rect));
         }
     }

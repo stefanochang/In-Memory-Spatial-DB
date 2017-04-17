@@ -16,18 +16,18 @@ private:
     RectangleSpatialIndex *rectangleIndex;
     bool isPointIndex = false;
 public:
-    PointCollection search(Rectangle rectangle,PointCollection *pointCollection)  {
+    PointCollection searchPoint(Rectangle rectangle,PointCollection *pointCollection)  {
         if(pointIndex != NULL) {
-            return pointIndex->search(rectangle, pointCollection);
+            return pointIndex->searchPoint(rectangle, pointCollection);
         }
-        return NULL;
+        throw "Error performing Point search operation. Check error logs";
     }
 
-    RectangleCollection search(Rectangle rectangle, RectangleCollection *rectangleCollection)  {
+    RectangleCollection searchRectangle(Rectangle rectangle, RectangleCollection *rectangleCollection)  {
         if(rectangleIndex != NULL) {
-            return rectangleIndex->search(rectangle,rectangleCollection);
+            return rectangleIndex->searchRectangle(rectangle,rectangleCollection);
         }
-        return NULL;
+        throw "Error performing Rectangle search operation. Check error logs";
     }
 
     void createIndex(PointCollection collection)  {
