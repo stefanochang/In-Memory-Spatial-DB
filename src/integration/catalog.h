@@ -45,16 +45,18 @@ public:
 
 //To be defined as a Singleton Class.
 class Catalog {
-  vector<CatalogItem*> catalogList;  
-  Catalog() {}
-  // Catalog(Catalog const&);              // Don't Implement.
-  // void operator=(Catalog const&);
+  vector<CatalogItem*> catalogList; 
+  Catalog() {};
+  Catalog(Catalog const&) {};              // Don't Implement.
+  Catalog& operator=(Catalog const&){};
+  static Catalog* catalogInstance;
 public:
-  static Catalog& getInstance()
-  {
-      static Catalog instance;
-      return instance;
-  }
+  // static Catalog& getInstance()
+  // {
+  //     static Catalog instance;
+  //     return instance;
+  // }
+  static Catalog* Instance();
   CatalogItem* getCatalogItem(string, string);
   int remove(string, string);
   int insert(CatalogItem*);
@@ -68,6 +70,7 @@ public:
   */
   PointCollection* getPointCollectionByName(string, string);
   RectangleCollection* getRectangleCollectionByName(string, string);
+  int getCatalogSize();
 };
 
 #endif

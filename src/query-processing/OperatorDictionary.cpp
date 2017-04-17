@@ -66,7 +66,7 @@ bool OperatorDictionary::applyFilterBy (vector<string> filterDetails, Rectangle 
 			isCriterionSatisfied = true;
 	}
 	else if (filterDetails[1] == "area") {
-		double metricVal = 0;//RectangleOperations::getArea(inputRect);
+		double metricVal = RectangleOperations::getArea(inputRect);
 		if(operatorName == "gt" && metricVal > compareVal)
 			isCriterionSatisfied = true;
 		else if(operatorName == "ge" && metricVal >= compareVal)

@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 #include <string>
-#include<vector>
+#include <vector>
 using namespace std;
 
 class Rectangle {
@@ -13,7 +13,15 @@ class Rectangle {
     void setId(int);
     vector<float> getCoordinates();
     Rectangle getEnvelope(); 
-    float getVal(int);
+    float getVal(int i) const {
+        switch (i){
+            case 0: return x1;
+            case 1: return y1;
+            case 2: return x2;
+            case 3: return y2;
+            default: return -1;
+        }
+    }
 };
 
 class Point {
@@ -25,8 +33,8 @@ class Point {
     void setId(int);
     vector<float> getCoordinates();
     Rectangle getEnvelope();
-    float getX();
-    float getY();
+    float getX() const { return x; }
+    float getY() const { return y; }
 };
 
 class PointPoint {

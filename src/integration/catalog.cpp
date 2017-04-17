@@ -11,27 +11,37 @@ CatalogItem::CatalogItem(string dbName, string tableName, int collectionType) {
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, PointCollection* pointCollection) {
-    CatalogItem(dbName, tableName, collectionType);
+    this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->points = pointCollection;
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, RectangleCollection* rectangleCollection) {
-	CatalogItem(dbName, tableName, collectionType);
+	this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->rectangles = rectangleCollection;
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, PointPointCollection* pointPointCollection) {
-	CatalogItem(dbName, tableName, collectionType);
+	this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->pointsPoints = pointPointCollection;
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, RectangleRectangleCollection* rectangleRectangleCollection) {
-	CatalogItem(dbName, tableName, collectionType);
+	this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->rectanglesRectangles = rectangleRectangleCollection;
 }
 
 CatalogItem::CatalogItem(string dbName, string tableName, int collectionType, PointRectangleCollection* pointRectangleCollection) {
-	CatalogItem(dbName, tableName, collectionType);
+	this->dbName = dbName.c_str();
+    this->tableName = tableName.c_str();   
+    this->collectionType = collectionType;
     this->pointsRectangles = pointRectangleCollection;
 }
 
@@ -125,6 +135,15 @@ CatalogItem* Catalog::getCatalogItem(string dbName, string tableName) {
 	return NULL;
 }
 
+Catalog* Catalog::catalogInstance = NULL;
+
+Catalog* Catalog::Instance() {
+	if(!catalogInstance) {
+		catalogInstance = new Catalog;
+	}
+	return catalogInstance;
+}
+
 int Catalog::insert(CatalogItem* catalogitem) {
 	catalogList.push_back(catalogitem);
 	return 1;
@@ -185,4 +204,13 @@ SpatialIndexInterface* Catalog::getDataIndexedCollection(string dbName, string t
 		}
 	}
 	return NULL;
+}
+
+int Catalog::getCatalogSize() {
+	int itemCount = 0;
+	vector<CatalogItem*>::iterator it;
+	for(it = catalogList.begin(); it < catalogList.end(); ++it) {
+		itemCount += 1;
+	}
+	return itemCount;
 }

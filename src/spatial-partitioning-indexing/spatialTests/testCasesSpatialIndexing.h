@@ -18,13 +18,17 @@ void executeSpatialIndexingTestCases()
 {
 
     cout<<"\n\n\nSpatial Indexing Testing - Started"<<endl;
-    testQPoints();
-    testQBoundingBox();
-    testprQuadNode();
+//    testQPoints();
+//    testQBoundingBox();
+//    testprQuadNode();
     testprQuadTree();
-    testmxcifQuadNode();
-    testmxcifQuadTree();
+//    testmxcifQuadNode();
+//    testmxcifQuadTree();
     cout<<"\n\n\nSpatial Indexing Testing - Ended"<<endl;
+    long i = 0;
+    cout<<"\n\n\nWhile Loop - Started"<<endl;
+    while(true)i++;
+    cout<<"\n\n\nWhile Loop - Ended"<<endl;
 
 }
 

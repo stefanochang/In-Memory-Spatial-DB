@@ -1,4 +1,4 @@
-#include "rtree-implementation.cpp"
+#include "r-tree-implementation.h"
 #include <typeinfo>
 class DataIndexingWrapper:public SpatialIndexInterface{
 	
@@ -56,11 +56,3 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 			return true;
 		}
 };
-
-int main(){
-
-	DataIndexingWrapper d;
-	
-
-	return 0;
-}

@@ -10,18 +10,18 @@
 #include "../integration/query-processing.h"
 
 
-#define INVALID 0
-#define TYPE_POINT 1
-#define TYPE_RECTANGLE 2
-#define TYPE_POINTPOINT 3
-#define TYPE_POINTRECTANGLE 4
-#define TYPE_RECTANGLERECTANGLE 5
-#define POINT "POINT"
-#define RECTANGLE "RECTANGLE"
-#define POINTPOINT "POINTPOINT"
-#define POINTRECTANGLE "POINTRECTANGLE"
-#define RECTANGLERECTANGLE "RECTANGLERECTANGLE"
-#define DB_NAME ""
+//#define INVALID 0
+//#define TYPE_POINT 1
+//#define TYPE_RECTANGLE 2
+//#define TYPE_POINTPOINT 3
+//#define TYPE_POINTRECTANGLE 4
+//#define TYPE_RECTANGLERECTANGLE 5
+//#define POINT "POINT"
+//#define RECTANGLE "RECTANGLE"
+//#define POINTPOINT "POINTPOINT"
+//#define POINTRECTANGLE "POINTRECTANGLE"
+//#define RECTANGLERECTANGLE "RECTANGLERECTANGLE"
+//#define DB_NAME ""
 
 using namespace std;
 
@@ -41,6 +41,12 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	// left data is points
 	if (!leftDataPoint.isEmpty() && leftDataRect.isEmpty()) {
 		PointCollection leftResult = materializeBranch(leftFilter, leftDataPoint);
+		/*cout << "Printing leftResult : \n";
+		  for(int i=0; i < leftResult.getSize(); i++) {
+			vector<Point> point = leftResult.getNext(1);
+            		vector<float> coords = point[0].getCoordinates();
+		        cout << coords[0] << " " << coords[1] << endl;
+        	}*/
 		// no right branch
 		if (root[0] == "") {
 			queryResult.setResultType(TYPE_POINT);
@@ -143,20 +149,31 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 PointCollection QueryProcessing::materializeBranch (vector<vector<string>> filter, PointCollection data) {
 	// initialize result
 	PointCollection result;
-	vector<Point> points = data.getNext(1);
+	//vector<Point> points = data.getNext(1);
+    vector<Point>points = data.getNext(data.getSize());
 	int j = 0;
-	while (j < data.getSize()) {
+	while (j < points.size()) {
 		//cout << " 1 ";
+
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
-			passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],points[0]);
+			passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],points[j]);
 		}
 		if (passedAllOperators) {
-			result.insert(points[0]);
+			/*vector<float> coords = points[j].getCoordinates();
+		        cout << coords[0] << " " << coords[1] << endl;*/
+			result.insert(points[j]);
 		}
-		points = data.getNext(1);
+		//points = data.getNext(1);
 		j++;
 	}
+	/*cout << "Print before return : \n";
+	vector<Point> point_r = result.getNext(result.getSize());
+//	vector<Point> point_r = result.points;
+	for(int i=0; i < point_r.size(); i++) {
+        vector<float> coords = point_r[i].getCoordinates();
+        cout << coords[0] << " " << coords[1] << endl;
+    	}*/
 	return result;
 }
 
@@ -182,21 +199,62 @@ RectangleCollection QueryProcessing::materializeBranch (vector<vector<string>> f
 }
 
 PointPointCollection QueryProcessing::rangeJoin (PointCollection leftData, vector<vector<string>> filter, PointCollection rightData) {
+
+	// bool use_only_sweep_join = true; 
+	// if (use_only_sweep_join)
+	// 	return sweepBasedJoin(leftData, filter, rightData);
+
 	vector<PointPoint> joinResultVector;
-	PointPointCollection distanceJoinResult(POINTPOINT,DB_NAME,TYPE_POINTPOINT,joinResultVector);
-	return distanceJoinResult;
+	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
+	vector<Point> rightPoints = rightData.getNext(rightData.getSize());
+
+	for (int i=0;i<leftPoints.size();i++) {
+		for (int j=0;j<rightPoints.size();j++) {
+			if (PointOperations::isOverlapping(leftPoints[i],rightPoints[j]) || PointOperations::isEqual(leftPoints[i], rightPoints[j])) {
+				PointPoint pp(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
+						rightPoints[j].getCoordinates()[0],rightPoints[j].getCoordinates()[1]);
+				joinResultVector.insert(joinResultVector.end(),pp);
+			}
+		}
+	}
+	PointPointCollection rangeJoinResult(POINTPOINT,DB_NAME,TYPE_POINTPOINT,joinResultVector);
+	return rangeJoinResult;
 }
 
 RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection leftData, vector<vector<string>> filter, RectangleCollection rightData) {
 	vector<RectangleRectangle> joinResultVector;
-	RectangleRectangleCollection distanceJoinResult(RECTANGLERECTANGLE,DB_NAME,TYPE_RECTANGLERECTANGLE,joinResultVector);
-	return distanceJoinResult;
+	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
+	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
+
+	for (int i=0;i<leftRects.size();i++) {
+		for (int j=0;j<rightRects.size();j++) {
+			if (RectangleOperations::isOverlapping(leftRects[i],rightRects[j])) {
+				RectangleRectangle rr(leftRects[i].getCoordinates()[0],leftRects[i].getCoordinates()[1],leftRects[i].getCoordinates()[2],leftRects[i].getCoordinates()[3],
+						rightRects[j].getCoordinates()[0],rightRects[j].getCoordinates()[1],rightRects[j].getCoordinates()[2],rightRects[j].getCoordinates()[3]);
+				joinResultVector.insert(joinResultVector.end(),rr);
+			}
+		}
+	}
+	RectangleRectangleCollection rangeJoinResult(RECTANGLERECTANGLE,DB_NAME,TYPE_RECTANGLERECTANGLE,joinResultVector);
+	return rangeJoinResult;
 }
 
 PointRectangleCollection QueryProcessing::rangeJoin (PointCollection leftData, vector<vector<string>> filter, RectangleCollection rightData) {
 	vector<PointRectangle> joinResultVector;
-	PointRectangleCollection distanceJoinResult(POINTRECTANGLE,DB_NAME,TYPE_POINTRECTANGLE,joinResultVector);
-	return distanceJoinResult;
+	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
+	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
+
+	for (int i=0;i<leftPoints.size();i++) {
+		for (int j=0;j<rightRects.size();j++) {
+			if (PointOperations::isOverlapping(leftPoints[i],rightRects[j])) {
+				PointRectangle pr(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
+						rightRects[j].getCoordinates()[0],rightRects[j].getCoordinates()[1],rightRects[j].getCoordinates()[2],rightRects[j].getCoordinates()[3]);
+				joinResultVector.insert(joinResultVector.end(),pr);
+			}
+		}
+	}
+	PointRectangleCollection rangeJoinResult(POINTRECTANGLE,DB_NAME,TYPE_POINTRECTANGLE,joinResultVector);
+	return rangeJoinResult;
 }
 
 PointPointCollection QueryProcessing::knnJoin (vector<string> root, PointCollection leftData, vector<vector<string>> filter, PointCollection rightData) {
