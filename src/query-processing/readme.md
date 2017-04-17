@@ -135,7 +135,7 @@ leftDataPoint = <empty_collection> leftDataRect = <data_source> | rightDataPoint
 
 
 
-Demo of the module available at https://www.youtube.com/watch?v=Z-2SC0yNU0s 
+Demo of the module available [here](https://www.youtube.com/watch?v=Z-2SC0yNU0s "Query Processing's Demo") 
 
 
 
