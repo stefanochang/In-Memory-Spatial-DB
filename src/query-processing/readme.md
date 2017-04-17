@@ -50,7 +50,7 @@ Where NO_JOIN, RANGE_JOIN, KNN_JOIN, and DISTANCE_JOIN are single char macros de
 ### A branch can have multiple levels. Each level can have combination of following structure. If you are using
 Similarly, for the "filterBy" operations, we have defined a set of single char macros at the beginning of the file which can be used to save some memory footprint during the in-memory operations. Operations of filterBy go like this: 
 ```
-Defined MAcros:
+Defined Macros:
 #define FILTER_BY_AREA_LT 'a'
 #define FILTER_BY_AREA_LE 'b'
 #define FILTER_BY_AREA_EQ 'c'
