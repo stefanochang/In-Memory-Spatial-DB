@@ -5,8 +5,8 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 	
 	public:
 		
-		PointSpatialIndexR P;
-		RectangleSpatialIndexR R;
+		PointDataIndex P;
+		RectangleDataIndex R;
 		
 		void createIndex(PointCollection points){
 			
@@ -22,7 +22,7 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 			R.createIndex(rects);
 		}
 	
-		PointCollection searchPoint(Rectangle r){
+		PointCollection searchPoint(Rectangle r,PointCollection *dummy){
 			
 			
 			cout<<"R Tree search point"<<endl;
@@ -30,7 +30,7 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 			return p;
 				
 		}
-		RectangleCollection searchRectangle(Rectangle r){
+		RectangleCollection searchRectangle(Rectangle r, RectangleCollection *dummy){
 			
 			cout<<"R Tree search rect"<<endl;
 			RectangleCollection rc = R.searchRectangle(r);
