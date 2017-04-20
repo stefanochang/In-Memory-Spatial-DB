@@ -27,10 +27,10 @@ public:
 
 
     prQuadNode() {}
-    prQuadNode(qBoundingBox QBB)
+    prQuadNode(qBoundingBox QBB, int leafCapacity)
     {
         height = 0;
-        leafCapacity = 4;
+        this->leafCapacity = leafCapacity;
         maxHeight = 25;
         (*this).qbb = QBB;
         (*this).prqnNW = NULL;
@@ -102,22 +102,22 @@ public:
 
         qPoint *pNW = new qPoint(current_x-w,current_y);
         qBoundingBox *qbbNW = new qBoundingBox( pNW, w, h);
-        this->prqnNW = new prQuadNode(*qbbNW);
+        this->prqnNW = new prQuadNode(*qbbNW,leafCapacity);
         this->prqnNW->height = this->height + 1;
 
         qPoint *pNE = new qPoint(current_x,current_y);
         qBoundingBox *qbbNE = new qBoundingBox( pNE, w, h);
-        this->prqnNE = new prQuadNode(*qbbNE);
+        this->prqnNE = new prQuadNode(*qbbNE,leafCapacity);
         this->prqnNE->height = this->height + 1;
 
         qPoint *pSW = new qPoint(current_x-w,current_y-h);
         qBoundingBox *qbbSW =new qBoundingBox( pSW, w, h);
-        this->prqnSW = new prQuadNode(*qbbSW);
+        this->prqnSW = new prQuadNode(*qbbSW,leafCapacity);
         this->prqnSW->height = this->height + 1;
 
         qPoint *pSE = new qPoint(current_x,current_y-h);
         qBoundingBox *qbbSE =new qBoundingBox( pSE, w, h);
-        this->prqnSE = new prQuadNode(*qbbSE);
+        this->prqnSE = new prQuadNode(*qbbSE,leafCapacity);
         this->prqnSE->height = this->height + 1;
 
 

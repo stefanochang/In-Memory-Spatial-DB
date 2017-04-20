@@ -1,3 +1,5 @@
+#include "../data-partitioning-indexing/data-indexing.h"
+
 #ifndef QUERY_PROCESSING_H
 #include "query-processing.h"
 #endif
@@ -122,16 +124,29 @@ int main() {
                  " from " << query_tokens[4] << endl; 
                 cout << "The Catalog now has " << Catalog::Instance()->getCatalogSize() << " item(s)." << endl;
             }
-        }  else  if(query_tokens[0].compare("CREATE") == 0) {
+        } else  if(query_tokens[0].compare("CREATE") == 0) {
             if(is_param_sufficient(query_tokens, 3)) {
-                if(query_tokens[1].compare("SPATIAL-INDEX")) {
+                if(query_tokens[1].compare("SPATIAL-INDEX") == 0) {
                     //Class name unknown.
-                } else if(query_tokens[1].compare("DATA-INDEX")) {
-                    //Class name unknown.
+                    cout << "Index not implemented";
+                } else if(query_tokens[1].compare("DATA-INDEX") == 0) {
+                    SpatialIndexInterface* sp = new DataIndexingWrapper();
+                    if(query_tokens[2].compare("POINT") == 0) {
+                        PointCollection* pc = Catalog::Instance()->getPointCollectionByName(query_tokens[3], query_tokens[4]);
+                        sp->createIndex(*pc);
+                        CatalogItem* ci = Catalog::Instance()->getCatalogItem(query_tokens[3], query_tokens[4]);
+                        ci->addDataIndex(sp);
+                    } else if(query_tokens[2].compare("RECTANGLE") == 0) {
+                        RectangleCollection* rc = Catalog::Instance()->getRectangleCollectionByName(query_tokens[3], query_tokens[4]);
+                        sp->createIndex(*rc);
+                        CatalogItem* ci = Catalog::Instance()->getCatalogItem(query_tokens[3], query_tokens[4]);
+                        ci->addDataIndex(sp);
+                    } else {
+                        cout << "Invalid data type";
+                    }
                 } else {
                     cout << "Invalid index type.\n";                             
                 }
-
             }      
         } else if(query_tokens[0].compare("SELECT") == 0) {    
             QueryTree* qTree = new QueryTree();
@@ -176,8 +191,20 @@ int main() {
             }            
             print_query_result(qProcess->processQuery(*qTree));
             
-            
-
+        } else if(query_tokens[0].compare("INSERT") == 0) {
+            if(query_tokens[1].compare("POINT") == 0) {
+                PointCollection* pc = Catalog::Instance()->getPointCollectionByName(query_tokens[2], query_tokens[3]);
+                Point* p = new Point(stof(query_tokens[4]), stof(query_tokens[5])); 
+                pc->insert(*p);
+                cout << "Record inserted." << endl << "The size of the collection is now " << pc->getSize() << "." << endl;
+            } else if(query_tokens[1].compare("RECTANGLE") == 0) {
+                RectangleCollection* rc = Catalog::Instance()->getRectangleCollectionByName(query_tokens[2], query_tokens[3]);
+                Rectangle* r = new Rectangle(stof(query_tokens[4]), stof(query_tokens[5]), stof(query_tokens[6]), stof(query_tokens[7])); 
+                rc->insert(*r);
+                cout << "Record inserted." << endl << "The size of the collection is now " << rc->getSize() << "." << endl;
+            } else {
+                cout << "Invalid data types.";
+            }
         } else if(query_tokens[0].compare("EXIT") == 0) {
             exit(0);
         } else {

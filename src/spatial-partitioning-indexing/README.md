@@ -41,12 +41,13 @@ Figure 4: Rectangles Visualization in Quadtree
 ## Function Definition
 
 ### SpatialIndexImpl contains the following functions:
-`PointCollection search(Rectangle bounds)`
+`PointCollection search(Rectangle bounds, PointCollection *points)`
 
 >Search the query rectangle provided and return all points satisfying the query
 
 >>Input Paramaters
 >>>bounds - Diagonal Coordinates of the query rectangle. Assumes that the getCoordinates function returns (x1,y1) and (x2,y2) in order
+>>>points - Reference to the points present in database
 
 >> Returns
 >>> PointCollection - Collection of points satisfying the query
@@ -54,63 +55,59 @@ Figure 4: Rectangles Visualization in Quadtree
 
 ---		
 
-`RectangleCollection searchRectangle(Rectangle)`
+`RectangleCollection searchRectangle(Rectangle bounds, RectangleCollection *rectangles)`
 >Search the query rectangle provided and return all rectangles satisfying the query
 
 >>Input Paramters
 >>>bounds - Diagonal Coordinates of the query rectangle. Assumes that the getCoordinates function returns (x1,y1) and (x2,y2) in order
+>>>rectangles - Reference to the rectangles present in database
 
 >>Returns
 >>>RectangleCollection - Collection of rectangles satisfying the query
 
 ---	
 
-`void createIndex(PointCollection points,float width, float height)`
+`void createIndex(PointCollection points)`
 
 >Creates Point Spatial Data Index for the given set of points
 
 >>Input Paramters
 >>>points - Collection of points to be indexed
->>>width, height - of the bounding box containing all the points. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
 
 >>Returns
 >>>void
 
 ---	
 
-`void createIndex(RectangleCollection, float, float)`
+`void createIndex(RectangleCollection rectangles)`
 
 >Creates Rectangle Spatial Data Index for the given set of rectangles
 
 >>Input Paramters
 >>>rectangles - Collection of rectangles to be indexed
->>>width, height - of the bounding box containing all the rectangles. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
 
 >>Returns
 >>>void
 
 ---
 
-`bool update(PointCollection points,float width, float height)`
+`bool update(PointCollection points)`
 
 >Updates the Point Spatial Data index created. This method deletes existing index structure and constructs it for given set of points
 
 >>Input Paramters
 >>>points - Collection of points to be indexed
->>>width, height - of the bounding box containing all the points. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
 
 >>Returns
 >>>bool - sucess status of the update operation
 
 ---	
 	
-`bool update(RectangleCollection,float, float)`
+`bool update(RectangleCollection rectangles)`
 >Updates the Rectangle Spatial Data index created. This method deletes existing index structure and constructs it for given set of rectangles
 
 >>Input Paramters
 >>>rectangles - Collection of rectangles to be indexed
->>>width, height - of the bounding box containing all the rectangles. Assumes that the origin (0,0) is the centre of the bounding box with quadrant dimension width/2 * height/2
-
 >>Returns
 >>>bool - sucess status of the update operation
 
@@ -119,7 +116,6 @@ Figure 4: Rectangles Visualization in Quadtree
 `bool deleteIndex()`
 
 >Deletes index structure for Point Spatial data
-
 >>Returns
 >>>bool - success status of the delete operation
 
