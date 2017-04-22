@@ -26,31 +26,70 @@ g++ -std=c++0x spatial-indexing-test.cpp ../integration/catalog.cpp ../data-stor
 This section describes different modules from integration perspective. Mentioned below is the brief description of each module and their implemented functions. All these methods are accessible to and from integration team and other modules. Internal working and the methods will be described in the individual module description. 
 
 Index Interface:
-Method name -> searchPoint Input -> Rectangle diagonalCoords  Output -> PointCollection
-Method name -> searchRectangle Input -> Rectangle diagonalCoords  Output -> PointCollection
-Method name -> createIndex Input -> PointCollection points  Output -> void
-Method name -> createIndex Input -> RectangleCollection rectangles Output -> void
-Method name -> update Input -> PointCollection points Output -> Boolean
-Method name -> update Input -> RectangleCollection rectangles Output -> Boolean
-Method name -> deleteIndex Input -> void  Output -> Boolean
+__-__Method name -> searchPoint 
+		Input -> Rectangle diagonalCoords  
+		Output -> PointCollection  
+__-__Method name -> searchRectangle 
+		Input -> Rectangle diagonalCoords  
+		Output -> PointCollection  
+__-__Method name -> createIndex 
+		Input -> PointCollection points  
+		Output -> void  
+__-__Method name -> createIndex 
+		Input -> RectangleCollection rectangles 
+		Output -> void  
+__-__Method name -> update 
+		Input -> PointCollection points 
+		Output -> Boolean  
+__-__Method name -> update 
+		Input -> RectangleCollection rectangles 
+		Output -> Boolean  
+__-__Method name -> deleteIndex 
+		Input -> void  
+		Output -> Boolean  
 
 Data Storage Interface:
-Method name -> loadData Input -> String dbName, String tableName, String geomType, String fileName, Int collectionStructure  Output -> Boolean status
-Method name -> insertData Input -> PointCollection pointsRepo, Point pointToInsert  Output -> Boolean status
-Method name -> insertData Input -> RectangleCollection rectanglesRepo, Rectangle rectangleToInsert  Output -> Boolean status
-Method name -> insertDataBulk Input -> PointCollection pointsRepo, PointCollection pointsToInsert Output -> Boolean status
-Method name -> insertDataBulk Input -> RectangleCollection rectanglesRepo, RectangleCollection rectanglesToInsert  Output -> Boolean status
-Method name -> deletePoint Input -> PointCollection pointsRepo, Point point  Output -> Boolean status
-Method name -> deleteRectangle Input -> RectangleCollection rectanglesRepo, Rectangle rectangle  Output -> Boolean status
-Method name -> getPointByUUID Input -> String tableName, Int objectId  Output -> Point point
-Method name -> getRectangleByUUID Input -> String tableName, Int objectId  Output -> Rectangle rectangle
-Method name -> getPointPointByUUID Input -> String tableName, Int objectId  Output -> PointPoint pointPoint
-Method name -> getPointRectangleByUUID Input -> String tableName, Int objectId  Output -> PointRectangle pointRectangle
-Method name -> getRectangleRectangleByUUID Input -> String tableName,
-Int objectId  Output -> RectangleRectangle rectangleRectangle
+__-__Method name -> loadData   
+		Input -> String dbName, String tableName, String geomType, String fileName, Int collectionStructure    
+		Output -> Boolean status   
+__-__Method name -> insertData  
+		Input -> PointCollection pointsRepo, Point pointToInsert    
+		Output -> Boolean status   
+__-__Method name -> insertData  
+		Input -> RectangleCollection rectanglesRepo, Rectangle rectangleToInsert  
+		Output -> Boolean status  
+__-__Method name -> insertDataBulk  
+		Input -> PointCollection pointsRepo, PointCollection pointsToInsert  
+		Output -> Boolean status   
+__-__Method name -> insertDataBulk  
+		Input -> RectangleCollection rectanglesRepo, RectangleCollection rectanglesToInsert   
+		Output -> Boolean status   
+__-__Method name -> deletePoint  
+		Input -> PointCollection pointsRepo, Point point  
+		Output -> Boolean status  
+__-__Method name -> deleteRectangle  
+		Input -> RectangleCollection rectanglesRepo, Rectangle rectangle  
+		Output -> Boolean status  
+__-__Method name -> getPointByUUID  
+		Input -> String tableName, Int objectId  
+		Output -> Point point  
+__-__Method name -> getRectangleByUUID  
+		Input -> String tableName, Int objectId  
+		Output -> Rectangle rectangle  
+__-__Method name -> getPointPointByUUID  
+		Input -> String tableName, Int objectId  
+		Output -> PointPoint pointPoint  
+__-__Method name -> getPointRectangleByUUID  
+		Input -> String tableName, Int objectId  
+		Output -> PointRectangle pointRectangle  
+__-__Method name -> getRectangleRectangleByUUID  
+		Input -> String tableName,Int objectId  
+		Output -> RectangleRectangle rectangleRectangle  
 
 Query Processing Interface:
-Method name -> processQuery Input -> QueryTree queryTree  Output -> QueryResult object
+__-__Method name -> processQuery  
+		Input -> QueryTree queryTree  
+		Output -> QueryResult object  
 
 ## Example Queries
 ### Load queries
