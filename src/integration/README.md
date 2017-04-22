@@ -36,13 +36,13 @@ Index Interface:
 &nbsp;	Input -> PointCollection points  
 &nbsp;	Output -> void  
 * Method name -> createIndex  
-&nbsp;	Input -> RectangleCollection rectangles 
+&nbsp;	Input -> RectangleCollection rectangles  
 &nbsp;	Output -> void  
 * Method name -> update  
-&nbsp;	Input -> PointCollection points 
+&nbsp;	Input -> PointCollection points  
 &nbsp;	Output -> Boolean  
 * Method name -> update  
-&nbsp;	Input -> RectangleCollection rectangles 
+&nbsp;	Input -> RectangleCollection rectangles  
 &nbsp;	Output -> Boolean  
 * Method name -> deleteIndex  
 &nbsp;	Input -> void  
