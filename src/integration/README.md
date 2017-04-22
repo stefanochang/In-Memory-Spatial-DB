@@ -13,8 +13,9 @@ The data used for the application is obtained from http://spatialhadoop.cs.umn.e
 The code is written in C++. To run the code version 6.3.0 or up is required. 
 
 To compile the code, run the following command from the root of the project:
+```bashp
 g++ -std=c++0x spatial-indexing-test.cpp ../integration/catalog.cpp ../data-storage/data-storage.cpp ../integration/geometry.cpp
-
+```
 
 ## Modules
 This section describes different modules from integration perspective. Mentioned below is the brief description of each module and their implemented functions. All these methods are accessible to and from integration team and other modules. Internal working and the methods will be described in the individual module description. 
