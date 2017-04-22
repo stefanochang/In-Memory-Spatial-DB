@@ -1,13 +1,18 @@
 ## Introduction
 The following application is designed by 5 separate teams as part of the group project for CSE 591, Advances in Database class. Each team is responsible for four different modules and integration. The 5 modules of the designed database are:
+```bashp
 Query Processing
 Data Storage
 Spatial Index
 Data Index
 Modules Integration
-
+```
 Application is designed to work independent of each other modules if required. The code is written in C++ with a common interface that brings all different modules together. In future, more modules can be implemented if the standard integration norms are followed. These standards are briefly described below in Integration modules section and more details can be found in integration document.
 The data used for the application is obtained from http://spatialhadoop.cs.umn.edu/datasets.html
+
+### How It Works
+The system is composed of four main modules, namely query processing (src/query-processing/README), data storage (src/data-storage/README), spatial indexing (src/spatial-partitioning-indexing/README) and data partitioning indexing (src/data-partitioning-indexing/README). The approach to the project was to define the interface to each module prior to its development, and modify as necessary as the project begins to come together. 
+All modules are communicating with each other as necessary, and is not controlled by a master module who takes the input and output of each module and passes it along until the query is completely executed. For example, the query processing team 
 
 ## Installation
 The code is written in C++. To run the code version 6.3.0 or up is required. 
@@ -47,7 +52,7 @@ Int objectId  Output -> RectangleRectangle rectangleRectangle
 Query Processing Interface:
 Method name -> processQuery Input -> QueryTree queryTree  Output -> QueryResult object
 
-## Example Query
+## Usage
 LOAD <database_name> <table_name> <data_type> <file_path> <collection_structure_type>
 LOAD adb pts POINT pointsfile.txt 2
 LOAD adb rects RECTANGLE rectfile.txt 2
@@ -72,8 +77,3 @@ INSERT RECTANGLE adb rects 2 2 3 2
 CREATE DATA-INDEX <data_type> <database_name> <table_name>
 CREATE DATA-INDEX POINT adb pts
 CREATE DATA-INDEX RECTANGLE adb rects
-
-
-## How It Works
-The system is composed of four main modules, namely query processing (src/query-processing/README), data storage (src/data-storage/README), spatial indexing (src/spatial-partitioning-indexing/README) and data partitioning indexing (src/data-partitioning-indexing/README). The approach to the project was to define the interface to each module prior to its development, and modify as necessary as the project begins to come together. 
-All modules are communicating with each other as necessary, and is not controlled by a master module who takes the input and output of each module and passes it along until the query is completely executed. For example, the query processing team 
