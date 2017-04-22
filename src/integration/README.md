@@ -63,13 +63,13 @@ LOAD adb rects RECTANGLE rectfile.txt 2
 ### Select queries
 SELECT [left_branch][root][right_branch]
 
-In the above mentioned SELECT query, left_branch will be:
+In the above mentioned SELECT query, left_branch will be:  
 <data_type> <database_name> <table_name> | <operation_name_1>:<operation_params_1>
 
-In the above mentioned SELECT query, root will be:
+In the above mentioned SELECT query, root will be:  
 <join_type|join_params_colon_seperated>
 
-In the above mentioned SELECT query, right_branch will be:
+In the above mentioned SELECT query, right_branch will be:  
 <data_type> <database_name> <table_name> | <operation_name_1>:<operation_params_1>
 
 ```
