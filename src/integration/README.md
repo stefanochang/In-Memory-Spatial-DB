@@ -52,11 +52,15 @@ Int objectId  Output -> RectangleRectangle rectangleRectangle
 Query Processing Interface:
 Method name -> processQuery Input -> QueryTree queryTree  Output -> QueryResult object
 
-## Usage
+## Example Queries
+### Load queries
 LOAD <database_name> <table_name> <data_type> <file_path> <collection_structure_type>
+```
 LOAD adb pts POINT pointsfile.txt 2
 LOAD adb rects RECTANGLE rectfile.txt 2
+```
 
+### Select queries
 SELECT [left_branch][root][right_branch]
 In the above mentioned SELECT query, left_branch will be:
 <data_type> <database_name> <table_name> | <operation_name_1>:<operation_params_1>
@@ -64,16 +68,23 @@ In the above mentioned SELECT query, root will be:
 <join_type|join_params_colon_seperated>
 In the above mentioned SELECT query, right_branch will be:
 <data_type> <database_name> <table_name> | <operation_name_1>:<operation_params_1>
-
+```
 SELECT [RECTANGLE rects|filterBy:distance:ge:5:0:0] [] [|]
 SELECT [POINT adb pts|filterBy:distance:ge:5:0:0] [] [|]
 SELECT [RECTANGLE adb rects|filterBy:distance:le:50:0:0] [] [|]
 SELECT [POINT adb pts|filterBy:distance:ge:5:0:0] [distanceJoin:500] [POINT adb pts|filterBy:distance:ge:5:0:0]
+```
 
+### Insert queries
 INSERT <data_type> <database_name> <table_name> <param>
+```
 INSERT POINT adb pts -88 32
 INSERT RECTANGLE adb rects 2 2 3 2
+```
 
+### Create index queries
 CREATE DATA-INDEX <data_type> <database_name> <table_name>
+```
 CREATE DATA-INDEX POINT adb pts
 CREATE DATA-INDEX RECTANGLE adb rects
+```
