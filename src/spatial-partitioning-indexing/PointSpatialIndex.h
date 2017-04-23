@@ -19,7 +19,7 @@ private:
 public:
     PointSpatialIndex() {}
     PointCollection searchPoint(Rectangle bounds, PointCollection *pointCollection){
-        PointCollection *result;
+        PointCollection *result = new PointCollection();
         float x1 = bounds.getCoordinates()[0];
         float y1 = bounds.getCoordinates()[1];
         float x2 = bounds.getCoordinates()[2];
