@@ -19,7 +19,7 @@ bool write_log(string command) {
 
   fstream log_file;
   log_file.open("command_log.txt",fstream::app);
-  if(log_file << &tv << " : " << command << std::endl) {
+  if(log_file << &tv << ":" << command << std::endl) {
     log_file.close();
     return true;
   }
@@ -28,6 +28,67 @@ bool write_log(string command) {
     return false;
   }
 }
+
+bool recoverData(){
+  ifstream log_file;
+  string line;
+  int count=0;
+  log_file.open("command_log.txt",fstream::app);
+  while ( getline (log_file,line, ':') )
+    {
+      count++;
+      if(count%2 == 0 && line != ""){
+        cout <<line<< '\n';
+        string collection = line.substr(0,line.find_first_of(".",0));
+        string op = line.substr(line.find_first_of(".",0)+1,line.find_first_of("(",0)-line.find_first_of(".",0)-1);
+        string param = line.substr(line.find_first_of("(",0)+1, line.find_first_of(")",0)-line.find_first_of("(",0)-1);
+        cout << param;
+        string next;
+        vector<string> result; 
+        for (string::const_iterator it = param.begin(); it != param.end(); it++) {
+        // If we've hit the terminal character
+          if (*it == ',') {
+            // If we have some characters accumulated
+            if (!next.empty()) {
+                // Add them to the result vector
+                result.push_back(next);
+                cout << next;
+                next.clear();
+            }
+            else
+                result.push_back("NA");
+          } else {
+            // Accumulate the next character into the sequence
+            next += *it;
+          }
+        }
+        if (!next.empty())
+          result.push_back(next);
+        cout << result.size();
+        evaluate(collection, op, result);
+      }
+    }
+    log_file.close();
+}
+
+bool evaluate(string collection,string op,  vector<string> param){
+ if(collection == "points"){
+   PointCollection *pc;
+   if(param[0]=="NA" && param[1] == "NA"){
+      cout << "ok";
+   }
+   else{
+      pc = Catalog::Instance()->getPointCollectionByName(param[0], param[1]);
+      if(pc == NULL){
+         pc = new PointCollection(param[0], param[1], stoi(param[2]), vector<Point>());
+         CatalogItem *catItem = new CatalogItem(param[0], param[1], stoi(param[2]), pc);
+      }
+   }
+   Point *p = new Point(stoi(param[4]),stoi(param[5]));
+   pc->insert(*p);
+ }
+}
+
 
 // Function to return time in Microseconds precesion
 
@@ -191,9 +252,6 @@ int PointCollection::insertSortedY(ds_point point) {
   return 1;
 
 }
-
-
-
 
 int PointCollection::insertBulk(PointCollection collection) {
   vector<Point> pointsToInsert = collection.getNext(collection.getSize());

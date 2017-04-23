@@ -5,6 +5,9 @@
 #include "ds_constants.h"
 #include "../integration/geometry.h"
 
+bool recoverData();
+bool evaluate(string collection,string op,  vector<string>);
+
 class PointCollection{
     vector<ds_point> points;
     string name, databaseName;
