@@ -1,5 +1,5 @@
-#ifndef ITEGRATION_HELPER_H
-#define ITEGRATION_HELPER_H
+#ifndef INTEGRATION_HELPER_H
+#define INTEGRATION_HELPER_H
 
 #ifndef QUERY_PROCESSING_H
 #include "query-processing.h"
@@ -7,6 +7,12 @@
 
 #ifndef CATALOG_H
 #include "catalog.h"
+#endif
+
+#include "../data-partitioning-indexing/data-indexing.h"
+
+#ifndef IN_MEMORY_SPATIAL_DB_SPATIALINDEXIMPL_H
+#include "../spatial-partitioning-indexing/SpatialIndexImpl.h"
 #endif
 
 #include <vector>
@@ -156,10 +162,12 @@ void processDataIndexQuery(vector<string> query_tokens) {
 void processLoadQuery(vector<string> query_tokens) {
 	if(is_param_sufficient(query_tokens, 6)) { 
         int collection_structure = getCollectionStructureFromString(query_tokens[5]);
-        loadData(query_tokens[1], query_tokens[2], get_geom_type_from_string(query_tokens[3]), query_tokens[4], collection_structure);                 
-        cout << "Loaded " << query_tokens[3] << " data collection into " << query_tokens[1] << "." << query_tokens[2] <<
-         " from " << query_tokens[4] << endl; 
-        cout << "The Catalog now has " << Catalog::Instance()->getCatalogSize() << " item(s)." << endl;
+        bool status = loadData(query_tokens[1], query_tokens[2], get_geom_type_from_string(query_tokens[3]), query_tokens[4], collection_structure);                 
+        if(status) {
+	        cout << "Loaded " << query_tokens[3] << " data collection into " << query_tokens[1] << "." << query_tokens[2] <<
+	         " from " << query_tokens[4] << endl; 
+	        cout << "The Catalog now has " << Catalog::Instance()->getCatalogSize() << " item(s)." << endl;
+        }        
     }
 }
 

@@ -1,14 +1,4 @@
-#include "../data-partitioning-indexing/data-indexing.h"
-
-#ifndef QUERY_PROCESSING_H
-#include "query-processing.h"
-#endif
-
-#ifndef CATALOG_H
-#include "catalog.h"
-#endif
-
-#ifndef ITEGRATION_HELPER_H
+#ifndef INTEGRATION_HELPER_H
 #include "integration-helper.h"
 #endif
 
