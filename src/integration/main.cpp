@@ -11,6 +11,10 @@
 #include <iostream>
 #include <vector>
 #include <string.h>
+#include "query-processing.h"
+#include "catalog.h"
+#include "../spatial-partitioning-indexing/SpatialIndexImpl.h"
+#include "../data-partioning-indexing/data-indexing-main.cpp"
 
 using namespace std;
 int get_geom_type_from_string(string geom) {
