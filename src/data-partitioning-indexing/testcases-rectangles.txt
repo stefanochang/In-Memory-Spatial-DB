@@ -1,0 +1,48 @@
+Test Case 1:
+
+//Points
+
+	Rectangle *r;
+	r=new Rectangle(-1,-1,1,1);
+
+	RectangleCollection *rectanglecollection = new RectangleCollection();
+
+	rectanglecollection->insert(*r);
+
+	r = new Recatangle(-2,-2,2,2);
+
+	rectanglecollection->insert(*r);
+
+
+	r = new Recatangle(-3,-3,3,3);
+
+	rectanglecollection->insert(*r);
+
+	r = new Recatangle(-4,-4,4,4);
+
+	rectanglecollection->insert(*r);
+
+	r = new Recatangle(-5,-5,5,5);
+
+	rectanglecollection->insert(*r);
+
+	r = new Recatangle(-6,-6,6,6);
+
+	rectanglecollection->insert(*r);
+
+	r = new Recatangle(-10,-10,10,10);
+
+	rectanglecollection->insert(*r);
+
+
+
+
+	//   Boundary boxes
+
+	Rectangle *r1=new Rectangle(-2.5,-2.5,2.5,2.5);
+
+	Rectangle *r2=new Rectangle(-9,-9,9,9);
+	
+	Rectangle *r3=new Rectangle(11,11,15,15);
+	
+
