@@ -226,7 +226,9 @@ PointCollection QueryProcessing::materializeBranch (char rootType, vector<Filter
 	while (j < data.getSize()) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
-			if (filter[i].filterType != KNN) {
+			if (filter[i].filterType != KNN ||
+					((rootType == NO_JOIN_DI || rootType == RANGE_JOIN_DI || rootType == KNN_JOIN_DI || rootType == DISTANCE_JOIN_DI)
+							&& filter[i].filterType != OBJECTS_IN_RANGE)) {
 				passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],points[j]);
 			}
 		}
@@ -283,7 +285,9 @@ RectangleCollection QueryProcessing::materializeBranch (char rootType, vector<Fi
 	while (j < data.getSize()) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
-			if (filter[i].filterType != KNN) {
+			if (filter[i].filterType != KNN ||
+					((rootType == NO_JOIN_DI || rootType == RANGE_JOIN_DI || rootType == KNN_JOIN_DI || rootType == DISTANCE_JOIN_DI)
+							&& filter[i].filterType != OBJECTS_IN_RANGE)) {
 				passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],rects[j]);
 			}
 		}
