@@ -17,9 +17,13 @@ All modules are communicating with each other as necessary, and is not controlle
 ## Installation
 The code is written in C++. To run the code version 6.3.0 or up is required. 
 
-To compile the code, run the following command from the root of the project:
+To compile the code, execute the following command from src/integration:
 ```bashp
-g++ -std=c++0x spatial-indexing-test.cpp ../integration/catalog.cpp ../data-storage/data-storage.cpp ../integration/geometry.cpp
+g++ -std=c++0x main.cpp catalog.cpp ../data-storage/data-storage.cpp ../query-processing/QueryTree.cpp ../query-processing/QueryResult.cpp geometry.cpp ../query-processing/QueryProcessing.cpp ../query-processing/OperatorDictionary.cpp ../query-processing/PointOperations.cpp ../query-processing/RectangleOperations.cpp -I"/mnt/c/Users/Harini Ravichandran/Downloads/Setup Files/boost_1_63_0/" -fmessage-length=0 -L"/mnt/c/Users/Harini Ravichandran/Downloads/Setup Files/boost_1_63_0/libs"
+```
+To run the system, first compile and then execute the following command from src/integration:
+```bashp
+./a.out
 ```
 
 ## Modules
