@@ -41,15 +41,16 @@ public:
         throw "Method Not Supported";
     }
     RectangleCollection searchRectangle(Rectangle bounds,RectangleCollection *rectangleCollection){
-        RectangleCollection *result;
+        RectangleCollection *result = new RectangleCollection();
         vector<float> queryBounds = computeBounds(bounds);
         vector<qBoundingBox> iBoxes = mxCifTree->queryRange(queryBounds.at(0),queryBounds.at(1),queryBounds.at(2),queryBounds.at(3));
         vector<Rectangle> rectangles;
         int i=0;
         for(qBoundingBox box : iBoxes) {
-            rectangles.push_back(rectangleCollection->getById(box.getId()));
+            //rectangles.push_back(rectangleCollection->getById(box.getId()));
+            result->insert(rectangleCollection->getById(box.getId()));
         }
-        result = new RectangleCollection("RectangleCollection","Rectangle",TYPE_RECTANGLE,rectangles);
+        //result = new RectangleCollection("RectangleCollection","Rectangle",TYPE_RECTANGLE,rectangles);
         if(!iBoxes.empty()){
             iBoxes.clear();
         }
@@ -70,7 +71,7 @@ public:
         }
         qBoundingBox *box = qBoundingBox::getQBoundingBoxCooridinates(qRectangles);
         mxCifTree = new mxcifQuadTree(box);
-        vector<Rectangle> rectangleVector = rectangles.getNext();
+        vector<Rectangle> rectangleVector = rectangles.getNext(rectangles.getSize());
         for (std::vector<Rectangle>::iterator rect = rectangleVector.begin() ; rect != rectangleVector.end(); ++rect){
             vector<float> bounds = computeBounds(*rect);
             mxCifTree->insert(bounds.at(0),bounds.at(1),bounds.at(2),bounds.at(3),rect->getId());
