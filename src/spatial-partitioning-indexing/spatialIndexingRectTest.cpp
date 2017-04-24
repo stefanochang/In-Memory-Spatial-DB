@@ -15,15 +15,15 @@ int main()
     testRect1->setId(999);
     testRect2->setId(998);
     testRect3->setId(997);
-    cout<<"before insertion - testRect  1 id = "<<testRect1->getId()<<endl;
-    cout<<"before insertion - testRect  2 id = "<<testRect2->getId()<<endl;
-    cout<<"before insertion - testRect  3 id = "<<testRect3->getId()<<endl;
+//    cout<<"before insertion - testRect  1 id = "<<testRect1->getId()<<endl;
+//    cout<<"before insertion - testRect  2 id = "<<testRect2->getId()<<endl;
+//    cout<<"before insertion - testRect  3 id = "<<testRect3->getId()<<endl;
     rc->insert(*testRect1);
     rc->insert(*testRect2);
     rc->insert(*testRect3);
-    cout<<"after insertion - testRect 1 id = "<<testRect1->getId()<<endl;
-    cout<<"after insertion - testRect 2 id = "<<testRect2->getId()<<endl;
-    cout<<"after insertion - testRect 3 id = "<<testRect3->getId()<<endl;
+//    cout<<"after insertion - testRect 1 id = "<<testRect1->getId()<<endl;
+//    cout<<"after insertion - testRect 2 id = "<<testRect2->getId()<<endl;
+//    cout<<"after insertion - testRect 3 id = "<<testRect3->getId()<<endl;
     vector<Rectangle> curRects = rc->getNext(rc->getSize());
     cout<<"curRects Size = "<<curRects.size()<<endl;;
     for (int i=0;i<curRects.size();i++){

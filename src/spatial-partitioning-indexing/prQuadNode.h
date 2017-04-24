@@ -19,7 +19,6 @@ private:
 
 protected:
 
-
     qBoundingBox qbb;
     vector<qPoint> points;
     vector<prQuadNode*> nodes;
@@ -31,7 +30,7 @@ public:
     prQuadNode() {}
     prQuadNode(qBoundingBox QBB, int leafCapacity)
     {
-        height = 0;
+        this->height = 0;
         this->leafCapacity = leafCapacity;
         (*this).qbb = QBB;
 
@@ -46,10 +45,9 @@ public:
     }
     prQuadNode(int originX, int originY, float width, float height)
     {
-        height = 0;
-        leafCapacity = 4;
-        qBoundingBox *QBB = new qBoundingBox(originX, originY, width, height);
-        (*this).qbb = *QBB;
+        this->height = 0;
+        this->leafCapacity = 4;
+        (*this).qbb = *( new qBoundingBox(originX, originY, width, height) );
 
     }
 
@@ -126,28 +124,31 @@ public:
         float current_x = qbb.getX() + w;
         float current_y = qbb.getY() + h;
 
+        int cur_height = this->height + 1;
+
         qPoint *pNW = new qPoint(current_x-w,current_y);
         qBoundingBox *qbbNW = new qBoundingBox( pNW, w, h);
-        nodes.push_back(new prQuadNode(*qbbNW,leafCapacity,1));
+        nodes.push_back(new prQuadNode(*qbbNW,leafCapacity,cur_height));
 
 
         qPoint *pNE = new qPoint(current_x,current_y);
         qBoundingBox *qbbNE = new qBoundingBox( pNE, w, h);
-        nodes.push_back(new prQuadNode(*qbbNE,leafCapacity,1));
+        nodes.push_back(new prQuadNode(*qbbNE,leafCapacity,cur_height));
 
 
         qPoint *pSW = new qPoint(current_x-w,current_y-h);
         qBoundingBox *qbbSW = new qBoundingBox( pSW, w, h);
-        nodes.push_back(new prQuadNode(*qbbSW,leafCapacity,1));
+        nodes.push_back(new prQuadNode(*qbbSW,leafCapacity,cur_height));
 
 
         qPoint *pSE = new qPoint(current_x,current_y-h);
         qBoundingBox *qbbSE = new qBoundingBox( pSE, w, h);
-        nodes.push_back(new prQuadNode(*qbbSE,leafCapacity,1));
+        nodes.push_back(new prQuadNode(*qbbSE,leafCapacity,cur_height));
 
 
         for (int i=0; i<points.size(); i++)
             insertIntoChildren(&points[i]);
+
         points.clear();
     }
 
@@ -165,7 +166,6 @@ public:
             }
             return;
         }
-
 
          this->nodeNW()->queryRange(range,pointsInRange);
          this->nodeNE()->queryRange(range,pointsInRange);
