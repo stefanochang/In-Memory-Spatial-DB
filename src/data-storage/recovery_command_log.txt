@@ -1,0 +1,12 @@
+0x7ffe81a60800:point.insert(test_insert,test_insert,10,1,12.340000,10.340000)NR:
+0x7ffe81a60800:point.insert(test_insert,test_insert,10,2,12.350000,10.340000)NR:
+0x7ffe81a60800:point.insert(test_insert,test_insert,10,3,12.360000,10.340000)NR:
+0x7ffe81a60800:point.insert(test_insert,test_insert,10,4,12.370000,10.340000)NR:
+0x7ffe81a60510:point.insertSortedX(test_insert_sortedx,test_insert_sortedx,11,1092972708,12.340000,10.340000)NR:
+0x7ffe81a60510:point.insertSortedX(test_insert_sortedx,test_insert_sortedx,11,1891617672,12.350000,10.540000)NR:
+0x7ffe81a60510:point.insertSortedX(test_insert_sortedx,test_insert_sortedx,11,1891617720,12.360000,1.340000)NR:
+0x7ffe81a60510:point.insertSortedX(test_insert_sortedx,test_insert_sortedx,11,1891617688,12.370000,4.340000)NR:
+0x7ffe81a60510:point.insertSortedY(test_insert_sortedy,test_insert_sortedy,12,1082843464,12.340000,10.340000)NR:
+0x7ffe81a60510:point.insertSortedY(test_insert_sortedy,test_insert_sortedy,12,1891617672,12.350000,10.540000)NR:
+0x7ffe81a60510:point.insertSortedY(test_insert_sortedy,test_insert_sortedy,12,1891617656,12.360000,1.340000)NR:
+0x7ffe81a60510:point.insertSortedY(test_insert_sortedy,test_insert_sortedy,12,1891617688,12.370000,4.340000)NR:

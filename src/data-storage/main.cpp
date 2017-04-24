@@ -10,8 +10,7 @@
 #endif
 using namespace std;
 
-bool testSwitchStorageStruct()
-{
+bool testSwitchStorageStruct() {
   PointCollection *pc = new PointCollection();
 
   Point *testPoint = new Point(3, 4);
@@ -183,7 +182,7 @@ bool testGetPointByUUID() {
   pntcollection->insert(*p1);
   pntcollection->insert(*p2);
 
-  Point point = pntcollection->getById(0);
+  Point point = pntcollection->getById(1);
   vector<float> resultPointCoordinates = point.getCoordinates();
 
   bool testResultPointCoordinates = (resultPointCoordinates[0] == 12.34f && resultPointCoordinates[1] == 10.34f);
@@ -258,7 +257,6 @@ void test_insertDataSortedY() {
     cout << "Size: " << pntcollection->getSize() << "/n";
 }
 
-
 void test_insertDataSortedXRect() {
     RectangleCollection *rcollection;
     rcollection = new RectangleCollection("", "", COLLECTION_STRUCT_SORTEDX, {});
@@ -283,9 +281,134 @@ void test_insertDataSortedXRect() {
 
 }
 
+void test_insertDataSortedYRect() {
+    RectangleCollection *rcollection;
+    rcollection = new RectangleCollection("", "", COLLECTION_STRUCT_SORTEDY, {});
+
+    Rectangle *r1;
+    r1 = new Rectangle(12.34, 10.34, 5, 2);
+
+    Rectangle *r2;
+    r2 = new Rectangle(12.35, 0, 7, 10.54);
+
+    Rectangle *r3;
+    r3 = new Rectangle(1, 5, 12.36, 1.34);
+
+    Rectangle *r4;
+    r4 = new Rectangle(0, 12.37, 10, 4.34);
+
+    rcollection->insert(*r1);
+    rcollection->insert(*r2);
+    rcollection->insert(*r3);
+    rcollection->insert(*r4);
+    cout << "Size: " << rcollection->getSize() << "/n";
+
+}
+
+void test_insertDataUnsortedRect() {
+    RectangleCollection *rcollection;
+    rcollection = new RectangleCollection("", "", COLLECTION_STRUCT_UNSORTED, {});
+
+    Rectangle *r1;
+    r1 = new Rectangle(12.34, 10.34, 5, 2);
+
+    Rectangle *r2;
+    r2 = new Rectangle(12.35, 0, 7, 10.54);
+
+    Rectangle *r3;
+    r3 = new Rectangle(1, 5, 12.36, 1.34);
+
+    Rectangle *r4;
+    r4 = new Rectangle(0, 12.37, 10, 4.34);
+
+    rcollection->insert(*r1);
+    rcollection->insert(*r2);
+    rcollection->insert(*r3);
+    rcollection->insert(*r4);
+    cout << "Size: " << rcollection->getSize() << "/n";
+
+}
+
+void test_insertDataPointPoint() {
+    PointPointCollection *ppcollection;
+    ppcollection = new PointPointCollection("test", "test", COLLECTION_STRUCT_UNSORTED, {});
+
+    PointPoint *r1;
+    r1 = new PointPoint(12.34, 10.34, 5, 2);
+
+    PointPoint *r2;
+    r2 = new PointPoint(12.35, 0, 7, 10.54);
+
+    PointPoint *r3;
+    r3 = new PointPoint(1, 5, 12.36, 1.34);
+
+    PointPoint *r4;
+    r4 = new PointPoint(0, 12.37, 10, 4.34);
+
+    ppcollection->insert(*r1);
+    ppcollection->insert(*r2);
+    ppcollection->insert(*r3);
+    ppcollection->insert(*r4);
+    // cout << "Size: " << rcollection->getSize() << "/n";
+}
+
+void test_insertDataPointRectangle() {
+    PointRectangleCollection *prcollection;
+    prcollection = new PointRectangleCollection("test", "test", COLLECTION_STRUCT_UNSORTED, {});
+
+    PointRectangle *r1;
+    r1 = new PointRectangle(12.34, 10.34, 5, 2, 5, 2);
+
+    PointRectangle *r2;
+    r2 = new PointRectangle(12.35, 0, 7, 10.54, 5, 2);
+
+    PointRectangle *r3;
+    r3 = new PointRectangle(1, 5, 12.36, 1.34, 5, 2);
+
+    PointRectangle *r4;
+    r4 = new PointRectangle(0, 12.37, 10, 4.34, 5, 2);
+
+    prcollection->insert(*r1);
+    prcollection->insert(*r2);
+    prcollection->insert(*r3);
+    prcollection->insert(*r4);
+    // cout << "Size: " << rcollection->getSize() << "/n";
+}
+
+void test_insertDataRectangleRectangle() {
+    RectangleRectangleCollection *rrcollection;
+    rrcollection = new RectangleRectangleCollection("test", "test", COLLECTION_STRUCT_UNSORTED, {});
+
+    RectangleRectangle *r1;
+    r1 = new RectangleRectangle(12.34, 10.34, 5, 2, 5, 2, 5, 2);
+
+    RectangleRectangle *r2;
+    r2 = new RectangleRectangle(12.35, 0, 7, 10.54, 5, 2, 5, 2);
+
+    RectangleRectangle *r3;
+    r3 = new RectangleRectangle(1, 5, 12.36, 1.34, 5, 2, 5, 2);
+
+    RectangleRectangle *r4;
+    r4 = new RectangleRectangle(0, 12.37, 10, 4.34, 5, 2, 5, 2);
+
+    rrcollection->insert(*r1);
+    rrcollection->insert(*r2);
+    rrcollection->insert(*r3);
+    rrcollection->insert(*r4);
+    // cout << "Size: " << rcollection->getSize() << "/n";
+}
+
 int main() {
     test_insertDataSortedXRect();
-    test_insertDataSortedY();
+    test_insertDataSortedYRect();
+    test_insertDataUnsortedRect();
+    test_insertDataPointPoint();
+    test_insertDataPointRectangle();
+    test_insertDataRectangleRectangle();
+
+    recoverData();
+
+    test_insertData();
     test_insertDataSortedX();
     test_insertDataSortedY();
     testGetNext();
