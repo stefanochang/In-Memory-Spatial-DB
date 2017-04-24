@@ -9,40 +9,58 @@ using namespace std;
 #include <iostream>
 #include <fstream>
 #include <sys/time.h>
+bool recoveryMode = false;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool write_log(string command) {
-  timeval tv;
-  gettimeofday(&tv, 0);
+  if(!recoveryMode){
+	  timeval tv;
+	  gettimeofday(&tv, 0);
 
-  fstream log_file;
-  log_file.open("command_log.txt",fstream::app);
-  if(log_file << &tv << ":" << command << std::endl) {
-    log_file.close();
-    return true;
-  }
-  else {
-    log_file.close();
-    return false;
-  }
+	  fstream log_file;
+	  log_file.open("command_log.txt",fstream::app);
+	  if(log_file << &tv << ":" << command <<"NR:"<< std::endl) {
+	    log_file.close();
+	    return true;
+	  }
+	  else {
+	    log_file.close();
+	    return false;
+	  }
+   }
+   else{
+   	  timeval tv;
+	  gettimeofday(&tv, 0);
+
+	  fstream log_file;
+	  log_file.open("command_log.txt",fstream::app);
+	  if(log_file << &tv << ":" << command <<"YR:"<< std::endl) {
+	    log_file.close();
+	    return true;
+	  }
+	  else {
+	    log_file.close();
+	    return false;
+	  }
+   }
 }
 
 bool recoverData(){
+  recoveryMode = true;
   ifstream log_file;
   string line;
-  int count=0;
+  bool count=false;
   log_file.open("command_log.txt",fstream::app);
-  while ( getline (log_file,line, ':') )
-    {
-      count++;
-      if(count%2 == 0 && line != ""){
-        cout <<line<< '\n';
+  while ( getline (log_file,line, ':') ){
+      //cout<<"\ncount:" << count <<"\n";
+      //cout <<line<< "\n";
+      if(count && line != "" && line.length()>3 && line.substr(line.length()-2,2) =="NR"){
         string collection = line.substr(0,line.find_first_of(".",0));
         string op = line.substr(line.find_first_of(".",0)+1,line.find_first_of("(",0)-line.find_first_of(".",0)-1);
         string param = line.substr(line.find_first_of("(",0)+1, line.find_first_of(")",0)-line.find_first_of("(",0)-1);
-        cout << param;
+        //cout <<"Param"<< param<<"\n";
         string next;
         vector<string> result;
         for (string::const_iterator it = param.begin(); it != param.end(); it++) {
@@ -52,28 +70,38 @@ bool recoverData(){
             if (!next.empty()) {
                 // Add them to the result vector
                 result.push_back(next);
-                cout << next;
+                //cout<<"Nxt" << next<<"\n";
                 next.clear();
             }
-            else
+            else{
                 result.push_back("NA");
-          } else {
+            }
+          } 
+          else{
             // Accumulate the next character into the sequence
             next += *it;
           }
         }
-        if (!next.empty())
+        if (!next.empty()){
           result.push_back(next);
-        cout << result.size();
+        }
+        //cout << result.size();
         evaluate(collection, op, result);
+        count = false;
+      }
+      else{
+        count = true;
       }
     }
     log_file.close();
+    recoveryMode = false;
 }
 
 bool evaluate(string collection,string op,  vector<string> param){
- if(collection == "points"){
-   PointCollection *pc;
+ //cout<<"In "<<endl;
+ PointCollection *pc;
+ if(collection == "point"){
+   
    if(param[0]=="NA" && param[1] == "NA"){
       cout << "ok";
    }
@@ -82,10 +110,16 @@ bool evaluate(string collection,string op,  vector<string> param){
       if(pc == NULL){
          pc = new PointCollection(param[0], param[1], stoi(param[2]), vector<Point>());
          CatalogItem *catItem = new CatalogItem(param[0], param[1], stoi(param[2]), pc);
+	 Catalog::Instance()->insert(catItem);
       }
    }
-   Point *p = new Point(stoi(param[4]),stoi(param[5]));
-   pc->insert(*p);
+   Point *p = new Point(stof(param[4]),stof(param[5]));
+   p->setId(stoi(param[3]));
+   
+   if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
+     pc->insert(*p);
+     cout<< "Inserting in Recovery Mode: " <<p->getCoordinates()[0]<<" , "<<p->getCoordinates()[1] <<"\n";
+   }
  }
 }
 
@@ -140,8 +174,7 @@ public:
 };
 
 PointCollection::PointCollection(){
-  recordId = 0;
-  getNextAt = 0;
+  recordId = 1;
   getNextAt = 0;
   name = "";
   databaseName = "";
@@ -153,7 +186,7 @@ PointCollection::PointCollection(string name, string databaseName, char collecti
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
-  recordId = 0;
+  recordId = 1;
   vector<Point>::iterator it;
   for(it=pointsToInsert.begin() ; it < pointsToInsert.end(); it++ ) {
     insert(*it);
@@ -214,8 +247,14 @@ char PointCollection::getCollectionStructure() {
 }
 
 int PointCollection::insert(Point pnt) {
+  int id;
+  //cout << pnt.getId();
+  if(pnt.getId() == 0)
+    id = recordId++;
+  else
+    id = pnt.getId();
   ds_point *newPoint = convertObjToStruct(pnt);
-  newPoint->id = recordId++;
+  newPoint->id = id;
   if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
     points.push_back(*newPoint);
     std::string log_entry = "point.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newPoint->id) + "," + std::to_string(newPoint->x) + "," + std::to_string(newPoint->y) + ")";
@@ -321,7 +360,7 @@ int PointCollection::switchStorageStructure(char newStructure)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RectangleCollection::RectangleCollection(){
-  recordId = 0;
+  recordId = 1;
   getNextAt = 0;
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
@@ -331,7 +370,7 @@ RectangleCollection::RectangleCollection(string name, string databaseName, char 
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
-  recordId = 0;
+  recordId = 1;
   insertBulk(recsToInsert);
 }
 
@@ -497,7 +536,7 @@ int RectangleCollection::switchStorageStructure(char newStructure)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 PointPointCollection::PointPointCollection(){
-  recordId = 0;
+  recordId = 1;
   getNextAt = 0;
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
@@ -507,7 +546,7 @@ PointPointCollection::PointPointCollection(string name, string databaseName, cha
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
-  recordId = 0;
+  recordId = 1;
   insertBulk(recsToInsert);
 }
 
@@ -630,7 +669,7 @@ int PointPointCollection::getSize() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RectangleRectangleCollection::RectangleRectangleCollection(){
-  recordId = 0;
+  recordId = 1;
   getNextAt = 0;
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
@@ -640,7 +679,7 @@ RectangleRectangleCollection::RectangleRectangleCollection(string name, string d
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
-  recordId = 0;
+  recordId = 1;
   insertBulk(recsToInsert);
 }
 
@@ -772,7 +811,7 @@ int RectangleRectangleCollection::getSize() {
 // POINTRECTANGLE COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PointRectangleCollection::PointRectangleCollection(){
-  recordId = 0;
+  recordId = 1;
   getNextAt = 0;
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
@@ -782,7 +821,7 @@ PointRectangleCollection::PointRectangleCollection(string name, string databaseN
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
-  recordId = 0;
+  recordId = 1;
   insertBulk(recsToInsert);
 }
 
