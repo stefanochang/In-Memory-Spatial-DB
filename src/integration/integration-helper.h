@@ -162,9 +162,9 @@ void processDataIndexQuery(vector<string> query_tokens) {
 void processLoadQuery(vector<string> query_tokens) {
 	if(is_param_sufficient(query_tokens, 6)) { 
         int collection_structure = getCollectionStructureFromString(query_tokens[5]);
-        bool status = loadData(query_tokens[1], query_tokens[2], get_geom_type_from_string(query_tokens[3]), query_tokens[4], collection_structure);                 
+        bool status = loadData(query_tokens[2], query_tokens[3], get_geom_type_from_string(query_tokens[1]), query_tokens[4], collection_structure);                 
         if(status) {
-	        cout << "Loaded " << query_tokens[3] << " data collection into " << query_tokens[1] << "." << query_tokens[2] <<
+	        cout << "Loaded " << query_tokens[1] << " data collection into " << query_tokens[2] << "." << query_tokens[3] <<
 	         " from " << query_tokens[4] << endl; 
 	        cout << "The Catalog now has " << Catalog::Instance()->getCatalogSize() << " item(s)." << endl;
         }        
@@ -199,6 +199,17 @@ void processInsertQuery(vector<string> query_tokens) {
     }
 }
 
+char getRootType(string rootType) {
+    if(rootType.compare("distanceJoin") == 0) {
+        return DISTANCE_JOIN;
+    } else if(rootType.compare("rangeJoin") == 0) {
+        return RANGE_JOIN;
+    } else if(rootType.compare("knnJoin") == 0) {
+        return KNN_JOIN;
+    } 
+    return NO_JOIN;
+}
+
 void processSelectQuery(vector<string> query_tokens) {
 	QueryTree* qTree = new QueryTree();
     QueryResult* qResult = new QueryResult();
@@ -220,11 +231,15 @@ void processSelectQuery(vector<string> query_tokens) {
     
     qTree->setLeftFilter(left_filter_param);
     
+
     int root_param_end = query_param.substr(left_param_end+3).find("]");            
     string root = query_param.substr(left_param_end+3, root_param_end);
     vector<string> root_filter_param = split(root, ":");
     
-    qTree->setRoot(root_filter_param);
+    qTree->setRootType(getRootType(root_filter_param[0]));
+    if(root_filter_param.size() > 1) {
+        qTree->setRootParam(stofroot_filter_param[1]);
+    }
 
     int right_param_end = query_param.substr(left_param_end+root_param_end+6).find("]"); 
     string right_branch = query_param.substr(left_param_end+root_param_end+6, right_param_end);
