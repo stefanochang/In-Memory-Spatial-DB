@@ -6,40 +6,90 @@
 #endif
 #include <iostream>
 using namespace std;
-int main()
+
+
+PointCollection* pointCollectionTestCases1()
 {
-    PointCollection *pc = new PointCollection();
+    PointCollection *pointCollection = new PointCollection();
+
+    Point *testPoint1 = new Point(3, 4);
+    Point *testPoint2 = new Point(1, 2);
     Point *testPoint3 = new Point(2, 1);
     Point *testPoint4 = new Point(3, 3);
-    Point *testPoint = new Point(3, 4);
-    Point *testPoint2 = new Point(1, 2);
-    testPoint->setId(999);
+
+    Point *testPoint5 = new Point(-1, -2);
+    Point *testPoint6 = new Point(-1, 2);
+    Point *testPoint7 = new Point(1, -2);
+
+    testPoint1->setId(999);
     testPoint2->setId(998);
     testPoint3->setId(997);
     testPoint4->setId(996);
-//    cout<<"before insertion - testPoint 1 id = "<<testPoint->getId()<<endl;
-//    cout<<"before insertion - testPoint 2 id = "<<testPoint2->getId()<<endl;
-//    cout<<"before insertion - testPoint 3 id = "<<testPoint3->getId()<<endl;
-//    cout<<"before insertion - testPoint 4 id = "<<testPoint4->getId()<<endl;
-    pc->insert(*testPoint);
-    pc->insert(*testPoint2);
-    pc->insert(*testPoint3);
-    pc->insert(*testPoint4);
-//    cout<<"after insertion - testPoint 1 id = "<<testPoint->getId()<<endl;
-//    cout<<"after insertion - testPoint 2 id = "<<testPoint2->getId()<<endl;
-//    cout<<"after insertion - testPoint 3 id = "<<testPoint3->getId()<<endl;
-//    cout<<"after insertion - testPoint 4 id = "<<testPoint4->getId()<<endl;
-    vector<Point> curPoints = pc->getNext(pc->getSize());
-    cout<<"curPoints Size = "<<curPoints.size()<<endl;;
-    for (int i=0;i<curPoints.size();i++){
-        cout<<"x = "<<(curPoints.at(i)).getX()<<" | Y = "<<(curPoints.at(i)).getY()<<" | ID = "<<(curPoints.at(i)).getId()<<endl;
+    testPoint5->setId(995);
+    testPoint6->setId(994);
+    testPoint7->setId(993);
+
+    pointCollection->insert(*testPoint1);
+    pointCollection->insert(*testPoint2);
+    pointCollection->insert(*testPoint3);
+    pointCollection->insert(*testPoint4);
+    pointCollection->insert(*testPoint5);
+    pointCollection->insert(*testPoint6);
+    pointCollection->insert(*testPoint7);
+
+    return pointCollection;
+}
+
+void spatialIndexingPointsQueryRange(SpatialIndexInterface* spatialIndexInterface, PointCollection *pointCollection,double minX, double minY, double maxX, double maxY)
+{
+    Rectangle *rectangle = new Rectangle(minX,minY,maxX,maxY);
+    PointCollection pointCollectionresult = spatialIndexInterface->searchPoint(*rectangle, pointCollection);
+    int size = pointCollectionresult.getSize();
+    cout << "\n\n\tQuery Range For ( "<<minX<<" , "<<minY<<" ) , ( "<<maxX<<" , "<<maxY<<" ) "<<endl;
+    cout<<"\t\t Result Size =  " <<size<<endl;
+
+    for (int i=0; i < size ; i++) {
+        vector<Point> point = pointCollectionresult.getNext(1);
+        vector<float> coords = point[0].getCoordinates();
+        cout << "\t\t\t ( " << coords[0] << ", " << coords[1] << " ) "<< endl;
     }
-    cout << pc->getSize() << endl;
-    //executeSpatialIndexingTestCases();
-    SpatialIndexInterface* sp = new SpatialIndexImpl();
-    sp->createIndex(*pc);
-    Rectangle *r = new Rectangle(0,0,100,100);
-    PointCollection res = sp->searchPoint(*r, pc);
-    cout << "Result: " << res.getSize();
+
+}
+int main()
+{
+
+    cout<<"\n Spatial Indexing Integration Testing Points - Started \n"<<endl;
+
+    PointCollection *pointCollection = pointCollectionTestCases1();
+
+
+    vector<Point> curPoints = pointCollection->getNext(pointCollection->getSize());
+
+    cout<<"\t Size Of Points Created = "<<curPoints.size()<<endl;;
+
+    for (int i=0;i<curPoints.size();i++){
+        cout<<"\t\tPoint | X = "<<(curPoints.at(i)).getX()<<" | Y = "<<(curPoints.at(i)).getY()<<" | ID = "<<(curPoints.at(i)).getId()<<endl;
+    }
+
+
+    cout<<"\t Size Of Points Loaded = "<<pointCollection->getSize()<<endl;;
+
+
+    SpatialIndexInterface* spatialIndexInterface = new SpatialIndexImpl();
+    spatialIndexInterface->createIndex(*pointCollection);
+
+    spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,100,100);
+
+    spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,2.5,2.5);
+
+    spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,2.5,-2.5);
+
+    spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,-2.5,2.5);
+
+    spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,-2.5,-2.5);
+
+
+    cout<<"\n Spatial Indexing Integration Testing Points - Ended \n"<<endl;
+
     return 0;
 }
