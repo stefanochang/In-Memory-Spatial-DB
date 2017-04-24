@@ -1,0 +1,8 @@
+0x7fff52dd9340 : PointCollection::insert(, , 10, 0, -0.000000, 0.000000)
+0x7fff52dd9340 : PointCollection::insert(, , 10, 0, -0.000000, -0.000809)
+0x7fff52dd9340 : PointCollection::insert(, , 10, 2, 2.000000, 1.000000)
+0x7fff52dd9340 : PointCollection::insert(, , 10, 2, 3.000000, 3.000000)
+0x7fff52dd8d70 : PointCollection::insert(, , 10, 0, -0.000000, 0.000000)
+0x7fff52dd8d70 : PointCollection::insert(, , 10, 3, 1.000000, 2.000000)
+0x7fff52dd8d70 : PointCollection::insert(, , 10, 0, -0.000000, -0.000816)
+0x7fff52dd8d70 : PointCollection::insert(, , 10, 0, -0.000000, 0.000000)
