@@ -8,38 +8,39 @@
 using namespace std;
 int main()
 {
-    PointCollection *pc = new PointCollection();
-    Point *testPoint3 = new Point(2, 1);
-    Point *testPoint4 = new Point(3, 3);
-    Point *testPoint = new Point(3, 4);
-    Point *testPoint2 = new Point(1, 2);
-    testPoint->setId(999);
-    testPoint2->setId(998);
-    testPoint3->setId(997);
-    testPoint4->setId(996);
-    cout<<"before insertion - testPoint 1 id = "<<testPoint->getId()<<endl;
-    cout<<"before insertion - testPoint 2 id = "<<testPoint2->getId()<<endl;
-    cout<<"before insertion - testPoint 3 id = "<<testPoint3->getId()<<endl;
-    cout<<"before insertion - testPoint 4 id = "<<testPoint4->getId()<<endl;
-    pc->insert(*testPoint);
-    pc->insert(*testPoint2);
-    pc->insert(*testPoint3);
-    pc->insert(*testPoint4);
-    cout<<"after insertion - testPoint 1 id = "<<testPoint->getId()<<endl;
-    cout<<"after insertion - testPoint 2 id = "<<testPoint2->getId()<<endl;
-    cout<<"after insertion - testPoint 3 id = "<<testPoint3->getId()<<endl;
-    cout<<"after insertion - testPoint 4 id = "<<testPoint4->getId()<<endl;
-    vector<Point> curPoints = pc->getNext(pc->getSize());
-    cout<<"curPoints Size = "<<curPoints.size()<<endl;;
-    for (int i=0;i<curPoints.size();i++){
-        cout<<"x = "<<(curPoints.at(i)).getX()<<" | Y = "<<(curPoints.at(i)).getY()<<" | ID = "<<(curPoints.at(i)).getId()<<endl;
+    RectangleCollection* rc = new RectangleCollection();
+    Rectangle *testRect1 = new Rectangle(1,1,2,2);
+    Rectangle *testRect2 = new Rectangle(1,2,3,3);
+    Rectangle *testRect3 = new Rectangle(10,10,20,20);
+    testRect1->setId(999);
+    testRect2->setId(998);
+    testRect3->setId(997);
+    cout<<"before insertion - testRect  1 id = "<<testRect1->getId()<<endl;
+    cout<<"before insertion - testRect  2 id = "<<testRect2->getId()<<endl;
+    cout<<"before insertion - testRect  3 id = "<<testRect3->getId()<<endl;
+    rc->insert(*testRect1);
+    rc->insert(*testRect2);
+    rc->insert(*testRect3);
+    cout<<"after insertion - testRect 1 id = "<<testRect1->getId()<<endl;
+    cout<<"after insertion - testRect 2 id = "<<testRect2->getId()<<endl;
+    cout<<"after insertion - testRect 3 id = "<<testRect3->getId()<<endl;
+    vector<Rectangle> curRects = rc->getNext(rc->getSize());
+    cout<<"curRects Size = "<<curRects.size()<<endl;;
+    for (int i=0;i<curRects.size();i++){
+        cout<<"X1 = "<<(curRects.at(i)).getVal(0)<<" | Y1 = "<<(curRects.at(i)).getVal(1)<<" |X2 = "<<(curRects.at(i)).getVal(2)<<" | Y2 = "<<(curRects.at(i)).getVal(3)<<"| ID = "<<(curRects.at(i)).getId()<<endl;
     }
-    cout << pc->getSize() << endl;
+    cout << rc->getSize() << endl;
     //executeSpatialIndexingTestCases();
     SpatialIndexInterface* sp = new SpatialIndexImpl();
-    sp->createIndex(*pc);
-    Rectangle *r = new Rectangle(0,0,100,100);
-    PointCollection res = sp->searchPoint(*r, pc);
-    cout << "Result: " << res.getSize();
+    sp->createIndex(*rc);
+    Rectangle *r = new Rectangle(0,0,4,4);
+	RectangleCollection res = sp->searchRectangle(*r, rc);
+    int size = res.getSize();
+	cout << "ResultSet size: " << size << endl;
+	for (int i=0; i < size; i++) {
+		vector<Rectangle> rectangle = res.getNext(1);
+		vector<float> coords = rectangle[0].getCoordinates();
+		cout << "[(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")]" << endl;
+	}
     return 0;
 }
