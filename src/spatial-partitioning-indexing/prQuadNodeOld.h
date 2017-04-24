@@ -10,22 +10,20 @@
 
 class prQuadNode
 {
-
-private:
-
-    int leafCapacity;
-//    int maxHeight;
-    int height;
-
 protected:
-
-
-    qBoundingBox qbb;
-    vector<qPoint> points;
-    vector<prQuadNode*> nodes;
+    int leafCapacity;
+    int maxHeight;
 
 
 public:
+
+    int height;
+    qBoundingBox qbb;
+    vector<qPoint> points;
+    prQuadNode *prqnNW;
+    prQuadNode *prqnNE;
+    prQuadNode *prqnSW;
+    prQuadNode *prqnSE;
 
 
     prQuadNode() {}
@@ -33,55 +31,31 @@ public:
     {
         height = 0;
         this->leafCapacity = leafCapacity;
+        maxHeight = 25;
         (*this).qbb = QBB;
-
-    }
-
-    prQuadNode(qBoundingBox QBB, int leafCapacity, int height)
-    {
-        this->height = height;
-        this->leafCapacity = leafCapacity;
-        (*this).qbb = QBB;
+        (*this).prqnNW = NULL;
+        (*this).prqnNE = NULL;
+        (*this).prqnSW = NULL;
+        (*this).prqnSE = NULL;
 
     }
     prQuadNode(int originX, int originY, float width, float height)
     {
         height = 0;
         leafCapacity = 4;
+        maxHeight = 25;
         qBoundingBox *QBB = new qBoundingBox(originX, originY, width, height);
         (*this).qbb = *QBB;
+        (*this).prqnNW = NULL;
+        (*this).prqnNE = NULL;
+        (*this).prqnSW = NULL;
+        (*this).prqnSE = NULL;
 
-    }
-
-    prQuadNode* returnNodeAtIndex(int index)
-    {
-        if ( nodes.size() == 0) return NULL;
-        return nodes.at(index);
-    }
-
-    prQuadNode* nodeNW()
-    {
-        return returnNodeAtIndex(0);
-    }
-
-    prQuadNode* nodeNE()
-    {
-        return returnNodeAtIndex(1);
-    }
-
-    prQuadNode* nodeSW()
-    {
-        return returnNodeAtIndex(2);
-    }
-
-    prQuadNode* nodeSE()
-    {
-        return returnNodeAtIndex(3);
     }
 
     bool isLeaf()
     {
-        return ( nodeNW() == NULL && nodeNE() == NULL && nodeSW() == NULL && nodeSE() == NULL);
+        return (prqnNW == NULL && prqnNE == NULL && prqnSW == NULL && prqnSE == NULL);
     }
 
 
@@ -91,13 +65,13 @@ public:
         if ( !qbb.containsPoint(point) || ( isLeaf() && point->isIn(points) ) )
             return false;
 
-        if (( isLeaf() && points.size() < leafCapacity )  || ( height == 25 ) )
+        if (( isLeaf() && points.size() < leafCapacity )  || ( height == maxHeight ) )
         {
             points.push_back(*point);
             return true;
         }
 
-        if ( isLeaf() && height < 25 )
+        if (isLeaf() && height<maxHeight)
         {
             subdivide();
         }
@@ -109,10 +83,10 @@ public:
     bool insertIntoChildren(qPoint *point)
     {
 
-        if (nodeNW()->insert(point)) return true;
-        if (nodeNE()->insert(point)) return true;
-        if (nodeSW()->insert(point)) return true;
-        if (nodeSE()->insert(point)) return true;
+        if (prqnNW->insert(point)) return true;
+        if (prqnNE->insert(point)) return true;
+        if (prqnSW->insert(point)) return true;
+        if (prqnSE->insert(point)) return true;
 
     return false;
     }
@@ -128,22 +102,23 @@ public:
 
         qPoint *pNW = new qPoint(current_x-w,current_y);
         qBoundingBox *qbbNW = new qBoundingBox( pNW, w, h);
-        nodes.push_back(new prQuadNode(*qbbNW,leafCapacity,1));
-
+        this->prqnNW = new prQuadNode(*qbbNW,leafCapacity);
+        this->prqnNW->height = this->height + 1;
 
         qPoint *pNE = new qPoint(current_x,current_y);
         qBoundingBox *qbbNE = new qBoundingBox( pNE, w, h);
-        nodes.push_back(new prQuadNode(*qbbNE,leafCapacity,1));
-
+        this->prqnNE = new prQuadNode(*qbbNE,leafCapacity);
+        this->prqnNE->height = this->height + 1;
 
         qPoint *pSW = new qPoint(current_x-w,current_y-h);
-        qBoundingBox *qbbSW = new qBoundingBox( pSW, w, h);
-        nodes.push_back(new prQuadNode(*qbbSW,leafCapacity,1));
-
+        qBoundingBox *qbbSW =new qBoundingBox( pSW, w, h);
+        this->prqnSW = new prQuadNode(*qbbSW,leafCapacity);
+        this->prqnSW->height = this->height + 1;
 
         qPoint *pSE = new qPoint(current_x,current_y-h);
-        qBoundingBox *qbbSE = new qBoundingBox( pSE, w, h);
-        nodes.push_back(new prQuadNode(*qbbSE,leafCapacity,1));
+        qBoundingBox *qbbSE =new qBoundingBox( pSE, w, h);
+        this->prqnSE = new prQuadNode(*qbbSE,leafCapacity);
+        this->prqnSE->height = this->height + 1;
 
 
         for (int i=0; i<points.size(); i++)
@@ -167,18 +142,18 @@ public:
         }
 
 
-         this->nodeNW()->queryRange(range,pointsInRange);
-         this->nodeNE()->queryRange(range,pointsInRange);
-         this->nodeSW()->queryRange(range,pointsInRange);
-         this->nodeSE()->queryRange(range,pointsInRange);
+         this->prqnNW->queryRange(range,pointsInRange);
+         this->prqnNE->queryRange(range,pointsInRange);
+         this->prqnSW->queryRange(range,pointsInRange);
+         this->prqnSE->queryRange(range,pointsInRange);
     }
 
     void deleteNode()
     {
-        if(this->nodeNW() != NULL)this->nodeNW()->deleteNode();
-        if(this->nodeNE() != NULL)this->nodeNE()->deleteNode();
-        if(this->nodeSW() != NULL)this->nodeSW()->deleteNode();
-        if(this->nodeSE() != NULL)this->nodeSE()->deleteNode();
+        if(this->prqnNW != NULL)this->prqnNW->deleteNode();
+        if(this->prqnNE != NULL)this->prqnNE->deleteNode();
+        if(this->prqnSW != NULL)this->prqnSW->deleteNode();
+        if(this->prqnSE != NULL)this->prqnSE->deleteNode();
 
     }
 
@@ -195,6 +170,7 @@ public:
     void print(string prefix = "", bool emptyLine = false)
     {
         if(emptyLine) cout<<endl;
+//        cout<<prefix<< "prQuadNode | leafCapacity : "<<this->leafCapacity<<" | maxHeight : "<<this->maxHeight<<endl;
         cout<<prefix<< "prQuadNode | height : "<<this->height<<endl;
         cout<<prefix<< "prQuadNode | ";
         this->qbb.print("\t\t",true);

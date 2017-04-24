@@ -86,19 +86,15 @@ public:
     {
         if(node!=NULL)
         {
-//            if(node->qbb.getMinX()>=0 && node->qbb.getMinY()>=0)
-//            {
-//                node->print(prefix,true);
-//            }
             node->print(prefix,true);
 
-            if(node->prqnNE != NULL && node->prqnNW != NULL && node->prqnSE != NULL && node->prqnSW != NULL)
+            if(node->nodeNE() != NULL && node->nodeNW() != NULL && node->nodeSE() != NULL && node->nodeSW() != NULL)
             {
                 prefix += "\t";
-                print(node->prqnNW,prefix + " | NW |",true);
-                print(node->prqnNE,prefix + " | NE |",true);
-                print(node->prqnSW,prefix + " | SW |",true);
-                print(node->prqnSE,prefix + " | SE |",true);
+                print(node->nodeNW(),prefix + " | NW |",true);
+                print(node->nodeNE(),prefix + " | NE |",true);
+                print(node->nodeSW(),prefix + " | SW |",true);
+                print(node->nodeSE(),prefix + " | SE |",true);
 
             }
         }
