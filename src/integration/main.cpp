@@ -20,7 +20,7 @@ int main() {
         } else  if(query_tokens[0].compare("CREATE") == 0) {
             processIndexQuery(query_tokens);      
         } else if(query_tokens[0].compare("SELECT") == 0) {    
-            processSelectQuery(query_tokens);            
+            processSelectQuery(query_tokens, query);            
         } else if(query_tokens[0].compare("INSERT") == 0) {
             processInsertQuery(query_tokens);
         } else if(query_tokens[0].compare("EXIT") == 0) {

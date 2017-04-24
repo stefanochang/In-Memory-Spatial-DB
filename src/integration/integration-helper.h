@@ -46,13 +46,42 @@ vector<string> split(string str, string sep) {
     return arr;
 }
 
-vector<vector<string> > get_predicates_from_string(string predicates) {
-    vector<string> left_params = split(predicates, "|");
-    vector<vector<string> > predicate_vector;
-    for(int i=1; i< left_params.size(); i++) {
-        predicate_vector.push_back(split(left_params[i], ":"));   
+char getFilterType(string filterType) {
+    if(rootType.compare("filterAreaLT") == 0) {
+        return FILTER_BY_AREA_LT;
+    } else if(rootType.compare("filterAreaLE") == 0) {
+        return FILTER_BY_AREA_LE;
+    } else if(rootType.compare("filterAreaEQ") == 0) {
+        return FILTER_BY_AREA_EQ;
+    } else if(rootType.compare("filterAreaGT") == 0) {
+        return FILTER_BY_AREA_GT;
+    } else if(rootType.compare("filterAreaGE") == 0) {
+        return FILTER_BY_AREA_GE;
+    } else if(rootType.compare("filterDistanceLT") == 0) {
+        return FILTER_BY_DISTANCE_LT;
+    } else if(rootType.compare("filterDistanceLE") == 0) {
+        return FILTER_BY_DISTANCE_EQ;
+    } else if(rootType.compare("filterDistanceEQ") == 0) {
+        return FILTER_BY_DISTANCE_EQ;
+    } else if(rootType.compare("filterDistanceGT") == 0) {
+        return FILTER_BY_DISTANCE_GT;
+    } else if(rootType.compare("filterDistanceGE") == 0) {
+        return FILTER_BY_DISTANCE_GE;
     }
-    
+}
+
+vector<Filter> get_predicates_from_string(string predicates) {
+    vector<string> leftFilters = split(predicates, "|");
+    vector<Filter> predicateVector;
+    for(int i=1; i<leftFilters.size(); i++) {
+        vector<string> params = split(leftFilters[i], ":");
+        vector<float> filterParams;
+        for(int j=1; j< params.size(); j++) {
+            filterParams.push_back(stof(params[j]))
+        } 
+        Filter f = new Filter(getFilterType(params[0]), filterParams);
+        predicateVector.push_back(f);   
+    }    
     return predicate_vector;
 }
 
@@ -167,6 +196,8 @@ void processLoadQuery(vector<string> query_tokens) {
 	        cout << "Loaded " << query_tokens[1] << " data collection into " << query_tokens[2] << "." << query_tokens[3] <<
 	         " from " << query_tokens[4] << endl; 
 	        cout << "The Catalog now has " << Catalog::Instance()->getCatalogSize() << " item(s)." << endl;
+        } else {
+            cout << "Oops! Something went wrong."
         }        
     }
 }
@@ -199,7 +230,7 @@ void processInsertQuery(vector<string> query_tokens) {
     }
 }
 
-char getRootType(string rootType) {
+char getJoinType(string rootType) {
     if(rootType.compare("distanceJoin") == 0) {
         return DISTANCE_JOIN;
     } else if(rootType.compare("rangeJoin") == 0) {
@@ -210,7 +241,7 @@ char getRootType(string rootType) {
     return NO_JOIN;
 }
 
-void processSelectQuery(vector<string> query_tokens) {
+void processSelectQuery(vector<string> query_tokens, string query) {
 	QueryTree* qTree = new QueryTree();
     QueryResult* qResult = new QueryResult();
     QueryProcessing* qProcess = new QueryProcessing();
@@ -219,7 +250,7 @@ void processSelectQuery(vector<string> query_tokens) {
     
     int left_param_end = query_param.find("]"); 
     string left_branch = query_param.substr(1, left_param_end-1);  
-    vector<vector<string> > left_filter_param = get_predicates_from_string(left_branch);                       
+    vector<Filter> left_filter_param = get_predicates_from_string(left_branch);                       
     vector<string> left_collection_details = split(left_branch.substr(0, left_branch.find("|")), " ");
     if(left_collection_details[0].compare("POINT") == 0) {
         PointCollection* left_pc = Catalog::Instance()->getPointCollectionByName(left_collection_details[1], left_collection_details[2]);
@@ -228,7 +259,6 @@ void processSelectQuery(vector<string> query_tokens) {
         RectangleCollection* left_rc = Catalog::Instance()->getRectangleCollectionByName(left_collection_details[1], left_collection_details[2]);
         qTree->setLeftRectangles(*left_rc);
     }
-    
     qTree->setLeftFilter(left_filter_param);
     
 
@@ -236,14 +266,14 @@ void processSelectQuery(vector<string> query_tokens) {
     string root = query_param.substr(left_param_end+3, root_param_end);
     vector<string> root_filter_param = split(root, ":");
     
-    qTree->setRootType(getRootType(root_filter_param[0]));
+    qTree->setRootType(getJoinType(root_filter_param[0]));
     if(root_filter_param.size() > 1) {
         qTree->setRootParam(stofroot_filter_param[1]);
     }
 
     int right_param_end = query_param.substr(left_param_end+root_param_end+6).find("]"); 
     string right_branch = query_param.substr(left_param_end+root_param_end+6, right_param_end);
-    vector<vector<string> > right_filter_param = get_predicates_from_string(right_branch);
+    vector<Filter> right_filter_param = get_predicates_from_string(right_branch);
     if(right_branch.compare("|") != 0 && right_branch.compare("") != 0 ) {
         vector<string> right_collection_details = split(right_branch.substr(0, right_branch.find("|")), " ");
         if(right_collection_details[0].compare("POINT") == 0) {
