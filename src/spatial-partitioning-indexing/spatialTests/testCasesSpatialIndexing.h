@@ -8,11 +8,10 @@
 #include "testCasesqPoint.h"
 #include "testCasesqBoundingBox.h"
 #include "testCasesprQuadTree.h"
+#include "testCasesprQuadTreeBulkLoad.h"
 #include "testCasesmxcifQuadTree.h"
 
-
 using namespace std;
-
 
 void executeSpatialIndexingTestCases()
 {
@@ -22,8 +21,10 @@ void executeSpatialIndexingTestCases()
 //    testQBoundingBox();
 //    testprQuadNode();
     testprQuadTree();
+//    testprQuadTreeBulkLoad();
 //    testmxcifQuadNode();
 //    testmxcifQuadTree();
+
     cout<<"\n\n\nSpatial Indexing Testing - Ended"<<endl;
 //    long i = 0;
 //    cout<<"\n\n\nWhile Loop - Started"<<endl;
