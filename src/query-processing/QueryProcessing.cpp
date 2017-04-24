@@ -593,7 +593,7 @@ RectangleRectangleCollection QueryProcessing::knnJoin (float k, RectangleCollect
 	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
 	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
 	for (int i=0;i<leftRects.size();i++) {
-		vector<Rectangle> rightKnnRects = getKnnRectanglesFromRectangle((int)k, leftRects[i], leftRects);
+		vector<Rectangle> rightKnnRects = getKnnRectanglesFromRectangle((int)k, leftRects[i], rightRects);
 		for (int j=0;j<rightKnnRects.size();j++) {
 			RectangleRectangle rr(leftRects[i].getCoordinates()[0],leftRects[i].getCoordinates()[1],
 					leftRects[i].getCoordinates()[2],leftRects[i].getCoordinates()[3],
