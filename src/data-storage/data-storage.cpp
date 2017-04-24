@@ -44,7 +44,7 @@ bool recoverData(){
         string param = line.substr(line.find_first_of("(",0)+1, line.find_first_of(")",0)-line.find_first_of("(",0)-1);
         cout << param;
         string next;
-        vector<string> result; 
+        vector<string> result;
         for (string::const_iterator it = param.begin(); it != param.end(); it++) {
         // If we've hit the terminal character
           if (*it == ',') {
@@ -218,7 +218,7 @@ int PointCollection::insert(Point pnt) {
   newPoint->id = recordId++;
   if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
     points.push_back(*newPoint);
-    std::string log_entry = "PointCollection::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newPoint->id) + ", " + std::to_string(newPoint->x) + ", " + std::to_string(newPoint->y) + ")";
+    std::string log_entry = "point::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newPoint->id) + ", " + std::to_string(newPoint->x) + ", " + std::to_string(newPoint->y) + ")";
     write_log(log_entry);
     free(newPoint);
     return 1;
@@ -239,7 +239,7 @@ int PointCollection::insert(Point pnt) {
 int PointCollection::insertSortedX(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, XCompare());
   points.insert( it, point);
-  std::string log_entry = "PointCollection::insertSortedX(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
+  std::string log_entry = "point::insertSortedX(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
   write_log(log_entry);
   return 1;
 }
@@ -247,7 +247,7 @@ int PointCollection::insertSortedX(ds_point point) {
 int PointCollection::insertSortedY(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, YCompare());
   points.insert( it, point);
-  std::string log_entry = "PointCollection::insertSortedY(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
+  std::string log_entry = "point::insertSortedY(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
   write_log(log_entry);
   return 1;
 
@@ -276,7 +276,7 @@ int PointCollection::removeById(int deleteId) {
   for(it=points.begin() ; it < points.end(); it++ ) {
     if(it->id == deleteId)
     {
-      std::string log_entry = "PointCollection::removeById(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->x) + ", " + std::to_string(it->y) + ")";
+      std::string log_entry = "point::removeById(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->x) + ", " + std::to_string(it->y) + ")";
       points.erase(it);
       write_log(log_entry);
       return 1;
@@ -396,6 +396,8 @@ int RectangleCollection::insert(Rectangle rec) {
   newRec->id = recordId++;
   if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
     rectangles.push_back(*newRec);
+    std::string log_entry = "rectangle::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newRec->id) + ", " + std::to_string(newRec->top_x) + ", " + std::to_string(newRec->top_y) + ", " + std::to_string(newRec->bottom_x) + ", " + std::to_string(newRec->bottom_y) + ")";
+    write_log(log_entry);
     free(newRec);
     return 1;
   }
@@ -413,12 +415,16 @@ int RectangleCollection::insert(Rectangle rec) {
 int RectangleCollection::insertSortedX(ds_rectangle rectangle) {
   auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, XRectCompare());
   rectangles.insert( it, rectangle);
+  std::string log_entry = "rectangle::insertSortedX(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(rectangle.id) + ", " + std::to_string(rectangle.top_x) + ", " + std::to_string(rectangle.top_y) + ", " + std::to_string(rectangle.bottom_x) + ", " + std::to_string(rectangle.bottom_y) + ")";
+  write_log(log_entry);
   return 1;
 }
 
 int RectangleCollection::insertSortedY(ds_rectangle rectangle) {
   auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, YRectCompare());
   rectangles.insert( it, rectangle);
+  std::string log_entry = "rectangle::insertSortedY(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(rectangle.id) + ", " + std::to_string(rectangle.top_x) + ", " + std::to_string(rectangle.top_y) + ", " + std::to_string(rectangle.bottom_x) + ", " + std::to_string(rectangle.bottom_y) + ")";
+  write_log(log_entry);
   return 1;
 
 }
@@ -446,7 +452,9 @@ int RectangleCollection::removeById(int deleteId) {
   for(it=rectangles.begin() ; it < rectangles.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "rectangle::removeById(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->top_x) + ", " + std::to_string(it->top_y) + ", " + std::to_string(it->bottom_x) + ", " + std::to_string(it->bottom_y) + ")";
       rectangles.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
@@ -562,6 +570,8 @@ int PointPointCollection::insert(PointPoint rec) {
   ds_pointpoint *newPointPoint = convertObjToStruct(rec);
   newPointPoint->id = recordId++;
   pointPoints.push_back(*newPointPoint);
+  std::string log_entry = "pointpoint::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newPointPoint->id) + ", " + std::to_string(newPointPoint->point1.x) + ", " + std::to_string(newPointPoint->point1.y) + ", " + std::to_string(newPointPoint->point2.x) + ", " + std::to_string(newPointPoint->point2.y) + ")";
+  write_log(log_entry);
   free(newPointPoint);
   return 1;
 }
@@ -589,7 +599,9 @@ int PointPointCollection::removeById(int deleteId) {
   for(it=pointPoints.begin() ; it < pointPoints.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "pointpoint::removeById(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->point1.x) + ", " + std::to_string(it->point1.y) + ", " + std::to_string(it->point2.x) + ", " + std::to_string(it->point2.y) + ")";
       pointPoints.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
@@ -702,6 +714,8 @@ int RectangleRectangleCollection::insert(RectangleRectangle rec) {
   ds_rectanglerectangle *newRecRec = convertObjToStruct(rec);
   newRecRec->id = recordId++;
   rectangleRectangles.push_back(*newRecRec);
+  std::string log_entry = "rectanglerectangle::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newRecRec->id) + ", " + std::to_string(newRecRec->rec1.top_x) + ", " + std::to_string(newRecRec->rec1.top_y) + ", " + std::to_string(newRecRec->rec1.bottom_x) + ", " + std::to_string(newRecRec->rec1.bottom_y) + ", " + std::to_string(newRecRec->rec2.top_x) + ", " + std::to_string(newRecRec->rec2.top_y) + ", " + std::to_string(newRecRec->rec2.bottom_x) + ", " + std::to_string(newRecRec->rec2.bottom_y) + ")";
+  write_log(log_entry);
   free(newRecRec);
   return 1;
 }
@@ -729,7 +743,9 @@ int RectangleRectangleCollection::removeById(int deleteId) {
   for(it=rectangleRectangles.begin() ; it < rectangleRectangles.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "rectanglerectangle::removeById(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->rec1.top_x) + ", " + std::to_string(it->rec1.top_y) + ", " + std::to_string(it->rec1.bottom_x) + ", " + std::to_string(it->rec1.bottom_y) + ", " + std::to_string(it->rec2.top_x) + ", " + std::to_string(it->rec2.top_y) + ", " + std::to_string(it->rec2.bottom_x) + ", " + std::to_string(it->rec2.bottom_y) + ")";
       rectangleRectangles.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
@@ -833,6 +849,8 @@ int PointRectangleCollection::insert(PointRectangle rec) {
   ds_pointrectangle *newPointRec = convertObjToStruct(rec);
   newPointRec->id = recordId++;
   pointRectangles.push_back(*newPointRec);
+  std::string log_entry = "pointrectangle::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newPointRec->id) + ", " + std::to_string(newPointRec->point.x) + ", " + std::to_string(newPointRec->point.y) + ", " + std::to_string(newPointRec->rec.top_x) + ", " + std::to_string(newPointRec->rec.top_y) + ", " + std::to_string(newPointRec->rec.bottom_x) + ", " + std::to_string(newPointRec->rec.bottom_y) + ")";
+  write_log(log_entry);
   free(newPointRec);
   return 1;
 }
@@ -860,7 +878,9 @@ int PointRectangleCollection::removeById(int deleteId) {
   for(it=pointRectangles.begin() ; it < pointRectangles.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "pointrectangle::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->point.x) + ", " + std::to_string(it->point.y) + ", " + std::to_string(it->rec.top_x) + ", " + std::to_string(it->rec.top_y) + ", " + std::to_string(it->rec.bottom_x) + ", " + std::to_string(it->rec.bottom_y) + ")";
       pointRectangles.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
