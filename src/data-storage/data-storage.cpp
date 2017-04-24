@@ -52,7 +52,7 @@ bool recoverData(){
   ifstream log_file;
   string line;
   bool count=false;
-  log_file.open("command_log.txt",fstream::app);
+  log_file.open("recovery_command_log.txt",fstream::app);
   while ( getline (log_file,line, ':') ){
       //cout<<"\ncount:" << count <<"\n";
       //cout <<line<< "\n";
@@ -76,7 +76,7 @@ bool recoverData(){
             else{
                 result.push_back("NA");
             }
-          } 
+          }
           else{
             // Accumulate the next character into the sequence
             next += *it;
@@ -101,7 +101,7 @@ bool evaluate(string collection,string op,  vector<string> param){
  //cout<<"In "<<endl;
  PointCollection *pc;
  if(collection == "point"){
-   
+
    if(param[0]=="NA" && param[1] == "NA"){
       cout << "ok";
    }
@@ -115,7 +115,7 @@ bool evaluate(string collection,string op,  vector<string> param){
    }
    Point *p = new Point(stof(param[4]),stof(param[5]));
    p->setId(stoi(param[3]));
-   
+
    if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
      pc->insert(*p);
      cout<< "Inserting in Recovery Mode: " <<p->getCoordinates()[0]<<" , "<<p->getCoordinates()[1] <<"\n";
