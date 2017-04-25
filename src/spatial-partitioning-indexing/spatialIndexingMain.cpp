@@ -5,13 +5,16 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    int leafCapacity = 8;
+    int leafCapacity = 2048;
 
-    if(argc >= 1)leafCapacity = atoi(argv[0]);
+    if(argc >= 2)
+    {
+        leafCapacity = atoi(argv[1]);
+    }
 
-    cout<<"Leaf Capacity at Main"<<leafCapacity<<endl;
+//    cout<<"\n\nEntering Main | Leaf Capacity = "<<leafCapacity<<endl;
 
-    executeSpatialIndexingTestCases();
+    executeSpatialIndexingTestCases(leafCapacity);
     return 0;
 }
 
