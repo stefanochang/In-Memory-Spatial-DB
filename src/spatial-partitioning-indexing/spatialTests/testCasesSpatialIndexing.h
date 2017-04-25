@@ -10,15 +10,17 @@
 #include "testCasesprQuadTree.h"
 #include "testCasesprQuadTreeBulkLoad.h"
 #include "testCasesmxcifQuadTree.h"
-#include <ctime>
+
 
 using namespace std;
 
 void executeSpatialIndexingTestCases(int leafCapacity = 8)
 {
 
+    milliseconds start_ms = duration_cast< milliseconds >(
+            system_clock::now().time_since_epoch()
+    );
 
-    clock_t begin = clock();
     cout<<"\n\n\nSpatial Indexing Testing - Started"<<endl;
 //    testQPoints();
 //    testQBoundingBox();
@@ -30,13 +32,35 @@ void executeSpatialIndexingTestCases(int leafCapacity = 8)
 
     cout<<"\n\n\nSpatial Indexing Testing - Ended"<<endl;
 
-    clock_t end = clock();
-    double elapsed_secs = double(end - begin)*1000 / CLOCKS_PER_SEC;
-    cout<<"\n\n\n Time Elapsed = "<<elapsed_secs<<endl;
-    long i = 0;
+
+    milliseconds end_ms = duration_cast< milliseconds >(
+            system_clock::now().time_since_epoch()
+    );
+
+
+    milliseconds diff_ms = (end_ms - start_ms);
+
+    cout<<"\n\n\n Time Elapsed = "<<std::to_string(diff_ms.count())<<endl;
+
+    int min_exit = 1;
+    int milli_sec = 60000;
+    long total_time = min_exit*milli_sec;
+
     cout<<"\n\n\nWhile Loop - Started"<<endl;
-    while(true)i++;
-//    cout<<"\n\n\nWhile Loop - Ended"<<endl;
+    cout<<"\n\nTime - Mins = "<<min_exit<<endl;
+    milliseconds cur_start_ms = duration_cast< milliseconds >(
+            system_clock::now().time_since_epoch()
+    );
+    while(true)
+    {
+        milliseconds cur_end_ms = duration_cast< milliseconds >(
+                system_clock::now().time_since_epoch()
+        );
+        milliseconds cur_diff_ms = (cur_end_ms - cur_start_ms);
+
+        if(cur_diff_ms.count()>=total_time)break;
+    }
+    cout<<"\n\nWhile Loop - Ended"<<endl;
 
 }
 
