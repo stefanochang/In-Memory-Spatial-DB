@@ -9,7 +9,7 @@
 #include "../prQuadNode.h"
 #include "../prQuadTree.h"
 
-void testprQuadNode(int leafCapacity = 4)
+void testprQuadNode(int leafCapacity = 8)
 {
     cout<<"\n\n prQuadNode Testing - Started"<<endl;
 
@@ -46,7 +46,7 @@ vector<qPoint*> pointsTestCase1(){
 
 }
 
-void prQuadTreeTestCase1(int leafCapacity = 4)
+void prQuadTreeTestCase1(int leafCapacity = 8)
 {
     cout<<"\n\nprQuadTree spatialTests Case 1"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,200,200,leafCapacity);
@@ -55,7 +55,7 @@ void prQuadTreeTestCase1(int leafCapacity = 4)
         prQT->insert(testQPoints[i]);
     }
     prQT->print();
-    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\n"<<endl;
     cout<<"\n\nprQuadTree 1 - Query Range 1"<<endl;
     printprQuadTreeRange(prQT,0,0,30,30);
 
@@ -64,7 +64,7 @@ void prQuadTreeTestCase1(int leafCapacity = 4)
      */
 }
 
-void prQuadTreeTestCase1Delete(int leafCapacity = 4)
+void prQuadTreeTestCase1Delete(int leafCapacity = 8)
 {
     cout<<"\n\nDelete prQuadTree spatialTests Case 1"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,200,200,leafCapacity);
@@ -91,7 +91,7 @@ vector<qPoint*> pointsTestCase2(){
 
 }
 
-void prQuadTreeTestCase2(int leafCapacity = 4)
+void prQuadTreeTestCase2(int leafCapacity = 8)
 {
     cout<<"\n\nprQuadTree spatialTests Case 2"<<endl;
     prQuadTree *prQT = new prQuadTree(25,25,50,50,leafCapacity);
@@ -158,7 +158,7 @@ vector<qPoint*> pointsTestCase3(){
 
 }
 
-void prQuadTreeTestCase3(int leafCapacity = 4)
+void prQuadTreeTestCase3(int leafCapacity = 8)
 {
     cout<<"\n\nprQuadTree spatialTests Case 3"<<endl;
     prQuadTree *prQT = new prQuadTree(0,0,400,400,leafCapacity);
@@ -167,7 +167,7 @@ void prQuadTreeTestCase3(int leafCapacity = 4)
         prQT->insert(testQPoints[i]);
     }
     prQT->print();
-    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\n"<<endl;
     cout<<"\n\nprQuadTree 3 - Query Range 1"<<endl;
     printprQuadTreeRange(prQT,0,0,400,400);
 
@@ -188,7 +188,7 @@ vector<qPoint*> pointsTestCase4(){
 
 }
 
-void prQuadTreeTestCase4(int leafCapacity = 4)
+void prQuadTreeTestCase4(int leafCapacity = 8)
 {
     cout<<"\n\nprQuadTree 4"<<endl;
     prQuadTree *prQT = new prQuadTree(50,50,100,100,leafCapacity);
@@ -198,7 +198,7 @@ void prQuadTreeTestCase4(int leafCapacity = 4)
     }
 
     prQT->print();
-    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\n"<<endl;
     cout<<"\n\nprQuadTree 4 - Query Range 1"<<endl;
     printprQuadTreeRange(prQT,0,0,100,100);
 
@@ -207,7 +207,7 @@ void prQuadTreeTestCase4(int leafCapacity = 4)
      */
 }
 
-void testprQuadTree(int leafCapacity = 4)
+void testprQuadTree(int leafCapacity = 8)
 {
     cout<<"\n\n prQuadTree Testing - Started"<<endl;
 
