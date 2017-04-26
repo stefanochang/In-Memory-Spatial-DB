@@ -27,8 +27,8 @@ void executeSpatialIndexingTestCases(int leafCapacity = 8)
 //    testprQuadNode();
 //    testprQuadTree(leafCapacity);
     testprQuadTreeBulkLoad(leafCapacity);
-//    testmxcifQuadNode();
-//    testmxcifQuadTree();
+//    testmxcifQuadNode(leafCapacity);
+//    testmxcifQuadTree(leafCapacity);
 
     cout<<"\n\n\nSpatial Indexing Testing - Ended"<<endl;
 
@@ -42,7 +42,7 @@ void executeSpatialIndexingTestCases(int leafCapacity = 8)
 
     cout<<"\n\n\n Time Elapsed = "<<std::to_string(diff_ms.count())<<endl;
 
-    int min_exit = 1;
+    int min_exit = 0;
     int milli_sec = 60000;
     long total_time = min_exit*milli_sec;
 
