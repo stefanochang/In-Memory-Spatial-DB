@@ -5,7 +5,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    int leafCapacity = 2048;
+    int leafCapacity = 8;
 
     if(argc >= 2)
     {

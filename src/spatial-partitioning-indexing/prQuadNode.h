@@ -86,8 +86,9 @@ public:
     bool insert(qPoint *point)
     {
 
-        if ( !qbb.containsPoint(point) || ( isLeaf() && point->isIn(points) ) )
-            return false;
+        if ( !qbb.containsPoint(point) ) return false;
+
+//        if (isLeaf() && point->isIn(points) ) return false;
 
         if (( isLeaf() && points.size() < leafCapacity )  || ( height == 25 ) )
         {

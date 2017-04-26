@@ -20,27 +20,27 @@ private:
 public:
 
     mxcifQuadTree(){}
-    mxcifQuadTree(float originX, float originY, float width, float height)
+    mxcifQuadTree(float originX, float originY, float width, float height, int leafCapacity)
     {
         float x = originX - width/2;
         float y = originY - height/2;
         qPoint *xyPoint = new qPoint(x,y);
         qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
-        root = new mxcifQuadNode( *QBB );
+        root = new mxcifQuadNode( *QBB , leafCapacity);
     }
 
-    mxcifQuadTree(float width, float height)
+    mxcifQuadTree(float width, float height, int leafCapacity)
     {
         float x = 0 - width/2;
         float y = 0 - height/2;
         qPoint *xyPoint = new qPoint(x,y);
         qBoundingBox *QBB = new qBoundingBox(xyPoint,width,height);
-        root = new mxcifQuadNode( *QBB );
+        root = new mxcifQuadNode( *QBB , leafCapacity);
     }
 
-    mxcifQuadTree(qBoundingBox *qbb)
+    mxcifQuadTree(qBoundingBox *qbb , int leafCapacity)
     {
-        root = new mxcifQuadNode( *qbb );
+        root = new mxcifQuadNode( *qbb , leafCapacity);
     }
 
     mxcifQuadNode* getRoot() { return root; }
