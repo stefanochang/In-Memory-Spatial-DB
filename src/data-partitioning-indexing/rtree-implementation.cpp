@@ -33,9 +33,10 @@ class PointDataIndex{
     	void createIndex(PointCollection points){
         	
 			cout<<"create index point impl"<<endl;
-			bgi::rtree< boostpoint, bgi::linear<16> > rtreeinst;
 			
 			vector<Point> p;
+			vector<boostpoint> packedPoints;
+			
 			int sizeOfColl = points.getSize();
 
 			for(int k=0;k<sizeOfColl;k++){
@@ -45,11 +46,17 @@ class PointDataIndex{
 				vector<float> vect;
 				
 				vect = p.at(i).getCoordinates();
-				rtreeinst.insert(boostpoint(vect.at(0),vect.at(1)));
-			
+				//rtreeinst.insert(boostpoint(vect.at(0),vect.at(1)));
+				
+				packedPoints.push_back(boostpoint(vect.at(0),vect.at(1)));
+				
+				
 				}
 			
 			}
+			
+			bgi::rtree< boostpoint, bgi::linear<16> > rtreeinst(packedPoints);
+			
 
 			
 			cout<<"##################################"<<endl<<endl;
@@ -121,11 +128,11 @@ class RectangleDataIndex{
 			
 			
 			cout<<"create index rect impl"<<endl;
-			bgi::rtree< boostvalue, bgi::quadratic<16> > rtreeinst;
 			
 			vector<Rectangle> r;
 			//if(rects!=NULL)
-
+			vector<boostvalue> boxes;
+			
 			int sizeOfColl = rects.getSize();
 
 			for(int k=0;k<sizeOfColl;k++){
@@ -139,13 +146,15 @@ class RectangleDataIndex{
 				
 					boostbox b(boostpoint(vect.at(0), vect.at(1)), boostpoint(vect.at(2),vect.at(3)));
 
-        			rtreeinst.insert(std::make_pair(b, i));	
-				
+        			//rtreeinst.insert(std::make_pair(b, i));	
+					boxes.push_back(std::make_pair(b,i));
+			
 				}
 
 			}
 
-				
+			bgi::rtree< boostvalue, bgi::quadratic<16> > rtreeinst(boxes);
+							
 			cout<<"##################################"<<endl<<endl;
 			cout<<"Inserted "<<rtreeinst.size()<<" rectangles in R tree"<<endl;
 			rtreeObj = rtreeinst;
