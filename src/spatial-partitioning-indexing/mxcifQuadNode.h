@@ -240,10 +240,15 @@ public:
 
     void deleteNode()
     {
-        if(this->mxqnNW != NULL){this->mxqnNW->deleteNode();delete this->mxqnNW;}
-        if(this->mxqnNE != NULL){this->mxqnNE->deleteNode();delete this->mxqnNE;}
-        if(this->mxqnSW != NULL){this->mxqnSW->deleteNode();delete this->mxqnSW;}
-        if(this->mxqnSE != NULL){this->mxqnSE->deleteNode();delete this->mxqnSE;}
+//        if(this->mxqnNW != NULL){this->mxqnNW->deleteNode();delete this->mxqnNW;}
+//        if(this->mxqnNE != NULL){this->mxqnNE->deleteNode();delete this->mxqnNE;}
+//        if(this->mxqnSW != NULL){this->mxqnSW->deleteNode();delete this->mxqnSW;}
+//        if(this->mxqnSE != NULL){this->mxqnSE->deleteNode();delete this->mxqnSE;}
+
+        if(this->mxqnNW != NULL){this->mxqnNW->deleteNode();}
+        if(this->mxqnNE != NULL){this->mxqnNE->deleteNode();}
+        if(this->mxqnSW != NULL){this->mxqnSW->deleteNode();}
+        if(this->mxqnSE != NULL){this->mxqnSE->deleteNode();}
 
         delete this;
 

@@ -212,7 +212,7 @@ void testprQuadTree(int leafCapacity = 8)
     cout<<"\n\n prQuadTree Testing - Started"<<endl;
 
     prQuadTreeTestCase1(leafCapacity);
-//    prQuadTreeTestCase1Delete();
+    prQuadTreeTestCase1Delete();
     prQuadTreeTestCase2(leafCapacity);
     prQuadTreeTestCase3(leafCapacity);
     prQuadTreeTestCase4(leafCapacity);
