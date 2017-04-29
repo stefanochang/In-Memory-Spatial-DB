@@ -19,7 +19,7 @@ private:
 public:
     PointSpatialIndex() {}
     PointCollection searchPoint(Rectangle bounds, PointCollection *pointCollection){
-        PointCollection *result;
+        PointCollection *result = new PointCollection();
         float x1 = bounds.getCoordinates()[0];
         float y1 = bounds.getCoordinates()[1];
         float x2 = bounds.getCoordinates()[2];
@@ -34,9 +34,10 @@ public:
         vector<Point> points;
         int i=0;
         for(qPoint point : iPoints) {
-            points.push_back(pointCollection->getById(point.getId()));
+            //points.push_back(pointCollection->getById(point.getId()));
+            result->insert(pointCollection->getById(point.getId()));
         }
-        result = new PointCollection("PointIndexCollection","Point",TYPE_POINT,points);
+        //result = new PointCollection("PointIndexCollection","Point",TYPE_POINT,points);
         if(!points.empty()){
             points.clear();
         }
@@ -56,7 +57,7 @@ public:
         }
         qBoundingBox *box = qBoundingBox::getQBoundingBoxCooridinates(qPoints);
         prTree = new prQuadTree(box,8);
-        vector<Point> pointVector = points.getNext();
+        vector<Point> pointVector = points.getNext(points.getSize());
         for (std::vector<Point>::iterator point = pointVector.begin() ; point != pointVector.end(); ++point)
             prTree->insert(convertPoint(*point));
     }
@@ -73,7 +74,7 @@ public:
         }
         return result;
     }
-    bool update(RectangleCollection,float, float){
+    bool update(RectangleCollection){
         throw "Method Not Supported";
     }
     bool deleteIndex(){

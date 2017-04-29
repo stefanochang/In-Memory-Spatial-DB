@@ -1,5 +1,5 @@
-LOAD adb pts POINT pointsfile.txt 2
-LOAD adb rects RECTANGLE rectfile.txt 2
+LOAD POINT adb pts pointsfile.txt 2
+LOAD RECTANGLE adb rects rectfile.txt 2
 SELECT [RECTANGLE rects|filterBy:distance:ge:5:0:0] [] [|]
 SELECT [POINT adb pts|filterBy:distance:ge:5:0:0] [] [|]
 SELECT [RECTANGLE adb rects|filterBy:distance:le:50:0:0] [] [|]

@@ -1,12 +1,13 @@
 #include "rtree-implementation.cpp"
 #include <typeinfo>
+
 class DataIndexingWrapper:public SpatialIndexInterface{
 	
 	
 	public:
 		
-		PointSpatialIndexR P;
-		RectangleSpatialIndexR R;
+		PointDataIndex P;
+		RectangleDataIndex R;
 		
 		void createIndex(PointCollection points){
 			
@@ -22,7 +23,7 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 			R.createIndex(rects);
 		}
 	
-		PointCollection searchPoint(Rectangle r){
+		PointCollection searchPoint(Rectangle r,PointCollection *dummy){
 			
 			
 			cout<<"R Tree search point"<<endl;
@@ -30,7 +31,7 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 			return p;
 				
 		}
-		RectangleCollection searchRectangle(Rectangle r){
+		RectangleCollection searchRectangle(Rectangle r, RectangleCollection *dummy){
 			
 			cout<<"R Tree search rect"<<endl;
 			RectangleCollection rc = R.searchRectangle(r);
@@ -57,10 +58,62 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 		}
 };
 
+
+
+
+
+
+
+
+
 int main(){
 
-	DataIndexingWrapper d;
+	//DataIndexingWrapper d;
 	
+	Point *p;
+	p=new Point(1,1);
 
+	PointCollection *pointcollection=new PointCollection();
+
+	pointcollection->insert(*p);
+
+	p = new Point(2,2);
+
+	pointcollection->insert(*p);
+
+
+	p = new Point(3,3);
+	
+	pointcollection->insert(*p);
+
+	p = new Point(4,4);
+	
+	pointcollection->insert(*p);
+
+	// std::vector<Point> v;
+	// int s = pointcollection->getSize();
+
+
+	// for(int i=0;i<s;i++)
+	// {
+	// 	v = pointcollection->getNext();
+	// 	vector<float> points = v.at(0).getCoordinates();
+	// 	cout<<points.at(0)<<"  "<<points.at(1)<<endl;
+
+		
+
+	// }
+
+	SpatialIndexInterface *sp;
+	sp = new DataIndexingWrapper();
+
+	sp->createIndex(*pointcollection);
+
+	Rectangle *r = new Rectangle(0,0,2,2);
+
+//	PointCollection res = sp->searchPoint(*r);
+
+
+//	cout<<"Hello"<<" "<<res.getSize()<<endl;
 	return 0;
 }
