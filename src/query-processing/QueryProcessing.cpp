@@ -303,14 +303,21 @@ PointCollection QueryProcessing::materializeBranch (QueryTree qTree, vector<Filt
 		}
 	}
 	int j = 0;
+	// ()
 	while (j < data.getSize()) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
-			if (filter[i].filterType != KNN &&
-					(((side == 'l' && qTree.getLIndexType()!=NO_INDEX) || (side == 'r' && qTree.getRIndexType()!=NO_INDEX))
-							&& filter[i].filterType != OBJECTS_IN_RANGE)) {
-				passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],points[j]);
+			if (filter[i].filterType != KNN) {
+				if(((side == 'l' && qTree.getLIndexType()!=NO_INDEX) || (side == 'r' && qTree.getRIndexType()!=NO_INDEX))){
+					if(filter[i].filterType != OBJECTS_IN_RANGE){
+						passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],points[j]);
+					}
+				}
+				else{
+					passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],points[j]);
+				}
 			}
+			
 		}
 		if (passedAllOperators) {
 			result.insert(points[j]);
@@ -369,10 +376,15 @@ RectangleCollection QueryProcessing::materializeBranch (QueryTree qTree, vector<
 	while (j < data.getSize()) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
-			if (filter[i].filterType != KNN &&
-					(((side == 'l' && qTree.getLIndexType()!=NO_INDEX) || (side == 'r' && qTree.getRIndexType()!=NO_INDEX))
-							&& filter[i].filterType != OBJECTS_IN_RANGE)) {
-				passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],rects[j]);
+			if (filter[i].filterType != KNN) {
+				if(((side == 'l' && qTree.getLIndexType()!=NO_INDEX) || (side == 'r' && qTree.getRIndexType()!=NO_INDEX))){
+					if(filter[i].filterType != OBJECTS_IN_RANGE){
+						passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],rects[j]);
+					}
+				}
+				else{
+					passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],rects[j]);
+				}
 			}
 		}
 		if (passedAllOperators) {
