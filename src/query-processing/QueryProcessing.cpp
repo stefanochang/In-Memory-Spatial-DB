@@ -15,6 +15,8 @@ using namespace std;
 
 QueryProcessing::QueryProcessing() {
 	catalogptr = Catalog::Instance();
+	lIndexptr = NULL;
+	rIndexptr = NULL;
 }
 
 QueryResult QueryProcessing::processQuery (QueryTree qTree) {
@@ -41,6 +43,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			}
 			if (lIndexptr == NULL) {
 				cout<< "Query requires index but catalog has returned null" <<endl;
+				exit(1);
 			}
 		}
 		PointCollection leftResult = materializeBranch(qTree, leftFilter, leftDataPoint, 'l');
@@ -61,6 +64,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					}
 					if (rIndexptr == NULL) {
 						cout<< "Query requires index but catalog has returned null" <<endl;
+						exit(1);
 					}
 				}
 				cout << "\nLeft & Right are Points\n";
@@ -97,6 +101,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					}
 					if (rIndexptr == NULL) {
 						cout<< "Query requires index but catalog has returned null" <<endl;
+						exit(1);
 					}
 				}
 				RectangleCollection rightResult = materializeBranch(qTree, rightFilter, rightDataRect, 'r');
@@ -137,6 +142,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			}
 			if (lIndexptr == NULL) {
 				cout<< "Query requires index but catalog has returned null" <<endl;
+				exit(1);
 			}
 		}
 		RectangleCollection leftResult = materializeBranch(qTree, leftFilter, leftDataRect, 'l');
@@ -157,6 +163,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					}
 					if (rIndexptr == NULL) {
 						cout<< "Query requires index but catalog has returned null" <<endl;
+						exit(1);
 					}
 				}
 				PointCollection rightResult = materializeBranch(qTree, rightFilter, rightDataPoint, 'r');
@@ -195,6 +202,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					}
 					if (rIndexptr == NULL) {
 						cout<< "Query requires index but catalog has returned null" <<endl;
+						exit(1);
 					}
 				}
 				RectangleCollection rightResult = materializeBranch(qTree, rightFilter, rightDataRect, 'r');
