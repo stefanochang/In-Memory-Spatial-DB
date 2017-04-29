@@ -14,7 +14,7 @@
 using namespace std;
 
 QueryProcessing::QueryProcessing() {
-	catalopgptr = Catalog::Instance();
+	catalogptr = Catalog::Instance();
 }
 
 QueryResult QueryProcessing::processQuery (QueryTree qTree) {
@@ -27,11 +27,23 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	PointCollection rightDataPoint = qTree.getRightDataPoint();
 	RectangleCollection rightDataRect = qTree.getRightDataRect();
 
+
 	// Initially set to Invalid, but it is set to appropriate result type when setting to result;
 	queryResult.setResultType(INVALID);
 	// left data is points
 	if (!leftDataPoint.isEmpty() && leftDataRect.isEmpty()) {
-		PointCollection leftResult = materializeBranch(rootType, leftFilter, leftDataPoint);
+		if (qTree.getLIndexType() != NO_INDEX) {
+			if (qTree.getLIndexType() == SPATIAL_INDEX) {
+				lIndexptr = catalogptr->getDataIndexedCollection(leftDataPoint.getDBName(), leftDataPoint.getTableName());
+			}
+			else {
+				lIndexptr = catalogptr->getSpatialIndexedCollection(leftDataPoint.getDBName(), leftDataPoint.getTableName());
+			}
+			if (lIndexptr == NULL) {
+				cout<< "Query requires index but catalog has returned null" <<endl;
+			}
+		}
+		PointCollection leftResult = materializeBranch(qTree, leftFilter, leftDataPoint, 'l');
 		// no right branch
 		if (rootType == NO_JOIN || rootType == NO_JOIN_DI || rootType == NO_JOIN_SI) {
 			queryResult.setResultType(TYPE_POINT);
@@ -40,8 +52,19 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 		else {
 			// right data is points
 			if (!rightDataPoint.isEmpty() && rightDataRect.isEmpty()) {
+				if (qTree.getRIndexType() != NO_INDEX) {
+					if (qTree.getRIndexType() == SPATIAL_INDEX) {
+						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+					}
+					else {
+						rIndexptr = catalogptr->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+					}
+					if (rIndexptr == NULL) {
+						cout<< "Query requires index but catalog has returned null" <<endl;
+					}
+				}
 				cout << "\nLeft & Right are Points\n";
-				PointCollection rightResult = materializeBranch(rootType, rightFilter, rightDataPoint);
+				PointCollection rightResult = materializeBranch(qTree, rightFilter, rightDataPoint, 'r');
 				if (rootType == KNN_JOIN || rootType == KNN_JOIN_DI || rootType == KNN_JOIN_SI) {
 					cout << "\nPerforming KNN Join \n";
 					cout << "\nRight Data Size : " << rightResult.getSize() << endl;
@@ -65,7 +88,18 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			}
 			// right data is rectangles
 			else if (rightDataPoint.isEmpty() && !rightDataRect.isEmpty()) {
-				RectangleCollection rightResult = materializeBranch(rootType, rightFilter, rightDataRect);
+				if (qTree.getRIndexType() != NO_INDEX) {
+					if (qTree.getRIndexType() == SPATIAL_INDEX) {
+						rIndexptr = catalogptr->getDataIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
+					}
+					else {
+						rIndexptr = catalogptr->getSpatialIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
+					}
+					if (rIndexptr == NULL) {
+						cout<< "Query requires index but catalog has returned null" <<endl;
+					}
+				}
+				RectangleCollection rightResult = materializeBranch(qTree, rightFilter, rightDataRect, 'r');
 				if (rootType == KNN_JOIN || rootType == KNN_JOIN_DI || rootType == KNN_JOIN_SI) {
 					PointRectangleCollection joinResult =
 							knnJoin(qTree.getRootParam(), leftResult, rightFilter, rightResult);
@@ -74,14 +108,8 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				}
 				else if (rootType == RANGE_JOIN || rootType == RANGE_JOIN_DI || rootType == RANGE_JOIN_SI) {
 					PointRectangleCollection joinResult;
-					if ((rootType == RANGE_JOIN_DI || rootType == RANGE_JOIN_SI) && rightFilter.empty()) {
-						if (rootType == RANGE_JOIN_DI) {
-							indexptr = catalopgptr->getDataIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
-						}
-						else {
-							indexptr = catalopgptr->getSpatialIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
-						}
-						joinResult = rangeJoinWithIndex(leftResult, rightFilter, rightResult);
+					if (qTree.getLIndexType()!=NO_INDEX && leftFilter.empty()) {
+						joinResult = rangeJoinWithIndex(leftResult, rightFilter, rightResult, lIndexptr);
 					}
 					else {
 						joinResult = rangeJoin(leftResult, rightFilter, rightResult);
@@ -100,7 +128,18 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	}
 	// left data is rectangles
 	else if (leftDataPoint.isEmpty() && !leftDataRect.isEmpty()) {
-		RectangleCollection leftResult = materializeBranch(rootType, leftFilter, leftDataRect);
+		if (qTree.getLIndexType() != NO_INDEX) {
+			if (qTree.getLIndexType() == SPATIAL_INDEX) {
+				lIndexptr = catalogptr->getDataIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
+			}
+			else {
+				lIndexptr = catalogptr->getSpatialIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
+			}
+			if (lIndexptr == NULL) {
+				cout<< "Query requires index but catalog has returned null" <<endl;
+			}
+		}
+		RectangleCollection leftResult = materializeBranch(qTree, leftFilter, leftDataRect, 'l');
 		// no right branch
 		if (rootType == NO_JOIN || rootType == NO_JOIN_DI || rootType == NO_JOIN_SI) {
 			queryResult.setResultType(TYPE_RECTANGLE);
@@ -109,7 +148,18 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 		else {
 			// right data is points
 			if (!rightDataPoint.isEmpty() && rightDataRect.isEmpty()) {
-				PointCollection rightResult = materializeBranch(rootType, rightFilter, rightDataPoint);
+				if (qTree.getRIndexType() != NO_INDEX) {
+					if (qTree.getRIndexType() == SPATIAL_INDEX) {
+						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+					}
+					else {
+						rIndexptr = catalogptr->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+					}
+					if (rIndexptr == NULL) {
+						cout<< "Query requires index but catalog has returned null" <<endl;
+					}
+				}
+				PointCollection rightResult = materializeBranch(qTree, rightFilter, rightDataPoint, 'r');
 				if (rootType == KNN_JOIN || rootType == KNN_JOIN_DI || rootType == KNN_JOIN_SI) {
 					PointRectangleCollection joinResult =
 							knnJoin(qTree.getRootParam(), leftResult, rightFilter, rightResult);
@@ -118,14 +168,8 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				}
 				else if (rootType == RANGE_JOIN || rootType == RANGE_JOIN_DI || rootType == RANGE_JOIN_SI) {
 					PointRectangleCollection joinResult;
-					if ((rootType == RANGE_JOIN_DI || rootType == RANGE_JOIN_SI) && rightFilter.empty()) {
-						if (rootType == RANGE_JOIN_DI) {
-							indexptr = catalopgptr->getDataIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
-						}
-						else {
-							indexptr = catalopgptr->getSpatialIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
-						}
-						joinResult = rangeJoinWithIndex(rightResult, rightFilter, leftResult);
+					if (qTree.getRIndexType()!=NO_INDEX && rightFilter.empty()) {
+						joinResult = rangeJoinWithIndex(rightResult, rightFilter, leftResult, rIndexptr);
 					}
 					else {
 						joinResult = rangeJoin(rightResult, rightFilter, leftResult);
@@ -142,7 +186,18 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			}
 			// right data is rectangles
 			else if (rightDataPoint.isEmpty() && !rightDataRect.isEmpty()) {
-				RectangleCollection rightResult = materializeBranch(rootType, rightFilter, rightDataRect);
+				if (qTree.getRIndexType() != NO_INDEX) {
+					if (qTree.getRIndexType() == SPATIAL_INDEX) {
+						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+					}
+					else {
+						rIndexptr = catalogptr->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+					}
+					if (rIndexptr == NULL) {
+						cout<< "Query requires index but catalog has returned null" <<endl;
+					}
+				}
+				RectangleCollection rightResult = materializeBranch(qTree, rightFilter, rightDataRect, 'r');
 				if (rootType == KNN_JOIN || rootType == KNN_JOIN_DI || rootType == KNN_JOIN_SI) {
 					RectangleRectangleCollection joinResult =
 							knnJoin(qTree.getRootParam(), leftResult, rightFilter, rightResult);
@@ -151,14 +206,11 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				}
 				else if (rootType == RANGE_JOIN || rootType == RANGE_JOIN_DI || rootType == RANGE_JOIN_SI) {
 					RectangleRectangleCollection joinResult = rangeJoin(leftResult, rightFilter, rightResult);
-					if ((rootType == RANGE_JOIN_DI || rootType == RANGE_JOIN_SI) && rightFilter.empty()) {
-						if (rootType == RANGE_JOIN_DI) {
-							indexptr = catalopgptr->getDataIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
-						}
-						else {
-							indexptr = catalopgptr->getSpatialIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
-						}
-						joinResult = rangeJoinWithIndex(leftResult, rightFilter, rightResult);
+					if (qTree.getRIndexType()!=NO_INDEX && rightFilter.empty()) {
+						joinResult = rangeJoinWithIndex(rightResult, rightFilter, leftResult, rIndexptr);
+					}
+					else if (qTree.getLIndexType()!=NO_INDEX && leftFilter.empty()) {
+						joinResult = rangeJoinWithIndex(leftResult, rightFilter, rightResult, lIndexptr);
 					}
 					else {
 						joinResult = rangeJoin(leftResult, rightFilter, rightResult);
@@ -179,30 +231,32 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	return queryResult;
 }
 
-PointCollection QueryProcessing::materializeBranch (char rootType, vector<Filter> filter, PointCollection data) {
+PointCollection QueryProcessing::materializeBranch (QueryTree qTree, vector<Filter> filter,
+		PointCollection data, char side) {
 	// initialize result
 	vector<Point> pt_null;
 	char dataOrientation = '0';//data.getCollectionStructure();
 	PointCollection result("","",dataOrientation,pt_null);
 
-	if (rootType == NO_JOIN_DI || rootType == RANGE_JOIN_DI || rootType == KNN_JOIN_DI || rootType == DISTANCE_JOIN_DI) {
-		indexptr = catalopgptr->getDataIndexedCollection(data.getDBName(), data.getTableName());
+	PointCollection* dataptr = new PointCollection();
+	dataptr = &data;
+
+	if (side == 'l' && qTree.getLIndexType()!=NO_INDEX) {
 		for (int i=0;i<filter.size();i++) {
 			if (filter[i].filterType == OBJECTS_IN_RANGE) {
 				Rectangle rec(filter[i].inputParams[0], filter[i].inputParams[1],
 						filter[i].inputParams[2], filter[i].inputParams[3]);
-				data = indexptr->searchPoint(rec);
+				data = lIndexptr->searchPoint(rec, dataptr);
 				break;
 			}
 		}
 	}
-	else if (rootType == NO_JOIN_SI || rootType == RANGE_JOIN_SI || rootType == KNN_JOIN_SI || rootType == DISTANCE_JOIN_SI) {
-		indexptr = catalopgptr->getSpatialIndexedCollection(data.getDBName(), data.getTableName());
+	else if (side == 'r' && qTree.getRIndexType()!=NO_INDEX) {
 		for (int i=0;i<filter.size();i++) {
 			if (filter[i].filterType == OBJECTS_IN_RANGE) {
 				Rectangle rec(filter[i].inputParams[0], filter[i].inputParams[1],
 						filter[i].inputParams[2], filter[i].inputParams[3]);
-				data = indexptr->searchPoint(rec);
+				data = rIndexptr->searchPoint(rec, dataptr);
 				break;
 			}
 		}
@@ -226,8 +280,8 @@ PointCollection QueryProcessing::materializeBranch (char rootType, vector<Filter
 	while (j < data.getSize()) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
-			if (filter[i].filterType != KNN ||
-					((rootType == NO_JOIN_DI || rootType == RANGE_JOIN_DI || rootType == KNN_JOIN_DI || rootType == DISTANCE_JOIN_DI)
+			if (filter[i].filterType != KNN &&
+					(((side == 'l' && qTree.getLIndexType()!=NO_INDEX) || (side == 'r' && qTree.getRIndexType()!=NO_INDEX))
 							&& filter[i].filterType != OBJECTS_IN_RANGE)) {
 				passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],points[j]);
 			}
@@ -240,28 +294,30 @@ PointCollection QueryProcessing::materializeBranch (char rootType, vector<Filter
 	return result;
 }
 
-RectangleCollection QueryProcessing::materializeBranch (char rootType, vector<Filter> filter, RectangleCollection data) {
+RectangleCollection QueryProcessing::materializeBranch (QueryTree qTree, vector<Filter> filter,
+		RectangleCollection data, char side) {
 	// initialize result
 	RectangleCollection result;
 
-	if (rootType == NO_JOIN_DI || rootType == RANGE_JOIN_DI || rootType == KNN_JOIN_DI || rootType == DISTANCE_JOIN_DI) {
-		indexptr = catalopgptr->getDataIndexedCollection(data.getDBName(), data.getTableName());
+	RectangleCollection* dataptr = new RectangleCollection();
+	dataptr = &data;
+
+	if (side == 'l' && qTree.getLIndexType()!=NO_INDEX) {
 		for (int i=0;i<filter.size();i++) {
 			if (filter[i].filterType == OBJECTS_IN_RANGE) {
 				Rectangle rec(filter[i].inputParams[0], filter[i].inputParams[1],
 						filter[i].inputParams[2], filter[i].inputParams[3]);
-				data = indexptr->searchRectangle(rec);
+				data = lIndexptr->searchRectangle(rec, dataptr);
 				break;
 			}
 		}
 	}
-	else if (rootType == NO_JOIN_SI || rootType == RANGE_JOIN_SI || rootType == KNN_JOIN_SI || rootType == DISTANCE_JOIN_SI) {
-		indexptr = catalopgptr->getSpatialIndexedCollection(data.getDBName(), data.getTableName());
+	else if (side == 'r' && qTree.getRIndexType()!=NO_INDEX) {
 		for (int i=0;i<filter.size();i++) {
 			if (filter[i].filterType == OBJECTS_IN_RANGE) {
 				Rectangle rec(filter[i].inputParams[0], filter[i].inputParams[1],
 						filter[i].inputParams[2], filter[i].inputParams[3]);
-				data = indexptr->searchRectangle(rec);
+				data = rIndexptr->searchRectangle(rec, dataptr);
 				break;
 			}
 		}
@@ -285,8 +341,8 @@ RectangleCollection QueryProcessing::materializeBranch (char rootType, vector<Fi
 	while (j < data.getSize()) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
-			if (filter[i].filterType != KNN ||
-					((rootType == NO_JOIN_DI || rootType == RANGE_JOIN_DI || rootType == KNN_JOIN_DI || rootType == DISTANCE_JOIN_DI)
+			if (filter[i].filterType != KNN &&
+					(((side == 'l' && qTree.getLIndexType()!=NO_INDEX) || (side == 'r' && qTree.getRIndexType()!=NO_INDEX))
 							&& filter[i].filterType != OBJECTS_IN_RANGE)) {
 				passedAllOperators = passedAllOperators && opDict.applyOperator(filter[i],rects[j]);
 			}
@@ -527,13 +583,15 @@ PointRectangleCollection QueryProcessing::rangeJoin (PointCollection leftData, v
 }
 
 RectangleRectangleCollection QueryProcessing::rangeJoinWithIndex (RectangleCollection leftData, vector<Filter> filter,
-		RectangleCollection rightData) {
+		RectangleCollection rightDataOriginal, SpatialIndexInterface* indexptr) {
 
 	vector<RectangleRectangle> joinResultVector;
 	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
+	RectangleCollection* rightDataPtr = new RectangleCollection();
+	rightDataPtr = &rightDataOriginal;
 
 	for (int i=0;i<leftRects.size();i++) {
-		rightData = indexptr->searchRectangle(leftRects[i]);
+		RectangleCollection rightData = indexptr->searchRectangle(leftRects[i], rightDataPtr);
 		vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
 		for (int j=0;j<rightRects.size();j++) {
 			RectangleRectangle rr(leftRects[i].getCoordinates()[0],leftRects[i].getCoordinates()[1],
@@ -548,12 +606,15 @@ RectangleRectangleCollection QueryProcessing::rangeJoinWithIndex (RectangleColle
 	return rangeJoinResult;
 }
 
-PointRectangleCollection QueryProcessing::rangeJoinWithIndex (PointCollection leftData, vector<Filter> filter,
-		RectangleCollection rightData) {
+PointRectangleCollection QueryProcessing::rangeJoinWithIndex (PointCollection leftDataOriginal, vector<Filter> filter,
+		RectangleCollection rightData, SpatialIndexInterface* indexptr) {
 	vector<PointRectangle> joinResultVector;
 	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
+	PointCollection* leftDataPtr = new PointCollection();
+	leftDataPtr = &leftDataOriginal;
+
 	for (int j=0;j<rightRects.size();j++) {
-		leftData = indexptr->searchPoint(rightRects[j]);
+		PointCollection leftData = indexptr->searchPoint(rightRects[j], leftDataPtr);
 		vector<Point> leftPoints = leftData.getNext(leftData.getSize());
 		for (int i=0;i<leftPoints.size();i++) {
 			PointRectangle pr(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],

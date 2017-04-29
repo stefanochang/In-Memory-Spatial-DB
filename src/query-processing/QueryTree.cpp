@@ -13,6 +13,8 @@ QueryTree::QueryTree() {
 
 	this->rootType = NO_JOIN;
 	this->rootParam = 0.0;
+	this->lIndexType = NO_INDEX;
+	this->rIndexType = NO_INDEX;
 
 	vector<Filter> filterNull;
 	this->leftBranch = filterNull;
@@ -49,6 +51,14 @@ void QueryTree::setRootType(char rootType) {
 
 void QueryTree::setRootParam(float rootParam) {
 	this->rootParam = rootParam;
+}
+
+void QueryTree::setLIndexType(char lIndexType) {
+	this->lIndexType = lIndexType;
+}
+
+void QueryTree::setRIndexType(char rIndexType) {
+	this->rIndexType = rIndexType;
 }
 
 void QueryTree::setRightPoints(PointCollection rightPoints) {
@@ -97,6 +107,14 @@ const char& QueryTree::getRootType() const {
 
 const float& QueryTree::getRootParam() const {
 	return rootParam;
+}
+
+const char& QueryTree::getLIndexType() const {
+	return lIndexType;
+}
+
+const char& QueryTree::getRIndexType() const {
+	return rIndexType;
 }
 
 /*void QueryTree::setRightIndexedObject(SpatialIndexInterface rightIndexedObject) {

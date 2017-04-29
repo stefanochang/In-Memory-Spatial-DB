@@ -19,6 +19,10 @@
 #define RECTANGLERECTANGLE "RECTANGLERECTANGLE"
 #define DB_NAME ""
 
+#define NO_INDEX '1'
+#define SPATIAL_INDEX '2'
+#define DATA_INDEX '3'
+
 #define NO_JOIN '1'
 #define RANGE_JOIN '2'
 #define KNN_JOIN '3'
@@ -60,6 +64,8 @@ public:
 class QueryTree {
     char rootType;
     float rootParam;
+    char lIndexType;
+    char rIndexType;
     vector<Filter> leftBranch;
     PointCollection leftDataPoint;
     RectangleCollection leftDataRect;
@@ -71,6 +77,8 @@ public:
     QueryTree();
     void setRootType(char);
     void setRootParam(float);
+    void setLIndexType(char);
+    void setRIndexType(char);
     void setLeftFilter(vector<Filter>);
     void setLeftPoints(PointCollection);
     void setLeftRectangles(RectangleCollection);
@@ -85,6 +93,8 @@ public:
 	const RectangleCollection& getRightDataRect() const;
 	const char& getRootType() const;
 	const float& getRootParam() const;
+	const char& getLIndexType() const;
+	const char& getRIndexType() const;
 };
 
 class QueryResult {
@@ -152,8 +162,9 @@ class QueryProcessing {
 
 private:
 	OperatorDictionary opDict;
-	SpatialIndexInterface* indexptr;
-	Catalog* catalopgptr;
+	SpatialIndexInterface* lIndexptr;
+	SpatialIndexInterface* rIndexptr;
+	Catalog* catalogptr;
 
 public:
 
@@ -161,9 +172,9 @@ public:
 
 	QueryResult processQuery (QueryTree qTree);
 
-	PointCollection materializeBranch (char rootType, vector<Filter> filter, PointCollection data);
+	PointCollection materializeBranch (QueryTree qTree, vector<Filter> filter, PointCollection data, char side);
 
-	RectangleCollection materializeBranch (char rootType, vector<Filter> filter, RectangleCollection data);
+	RectangleCollection materializeBranch (QueryTree qTree, vector<Filter> filter, RectangleCollection data, char side);
 
 	PointPointCollection rangeJoin (PointCollection leftData, vector<Filter> filter, PointCollection rightData);
 
@@ -173,11 +184,11 @@ public:
 	PointRectangleCollection rangeJoin (
 			PointCollection leftData, vector<Filter> filter, RectangleCollection rightData);
 
-	RectangleRectangleCollection rangeJoinWithIndex (
-				RectangleCollection leftData, vector<Filter> filter, RectangleCollection rightData);
+	RectangleRectangleCollection rangeJoinWithIndex (RectangleCollection leftData,
+				vector<Filter> filter, RectangleCollection rightData, SpatialIndexInterface* indexptr);
 
-		PointRectangleCollection rangeJoinWithIndex (
-				PointCollection leftData, vector<Filter> filter, RectangleCollection rightData);
+	PointRectangleCollection rangeJoinWithIndex (PointCollection leftData,
+				vector<Filter> filter, RectangleCollection rightData, SpatialIndexInterface* indexptr);
 
 	PointPointCollection knnJoin (
 			float k, PointCollection leftData, vector<Filter> filter, PointCollection rightData);
