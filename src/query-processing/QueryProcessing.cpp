@@ -35,7 +35,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	// left data is points
 	if (!leftDataPoint.isEmpty() && leftDataRect.isEmpty()) {
 		if (qTree.getLIndexType() != NO_INDEX) {
-			if (qTree.getLIndexType() == SPATIAL_INDEX) {
+			if (qTree.getLIndexType() == DATA_INDEX) {
 				lIndexptr = catalogptr->getDataIndexedCollection(leftDataPoint.getDBName(), leftDataPoint.getTableName());
 			}
 			else {
@@ -56,7 +56,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			// right data is points
 			if (!rightDataPoint.isEmpty() && rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
-					if (qTree.getRIndexType() == SPATIAL_INDEX) {
+					if (qTree.getRIndexType() == DATA_INDEX) {
 						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					else {
@@ -93,7 +93,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			// right data is rectangles
 			else if (rightDataPoint.isEmpty() && !rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
-					if (qTree.getRIndexType() == SPATIAL_INDEX) {
+					if (qTree.getRIndexType() == DATA_INDEX) {
 						rIndexptr = catalogptr->getDataIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
 					}
 					else {
@@ -134,7 +134,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	// left data is rectangles
 	else if (leftDataPoint.isEmpty() && !leftDataRect.isEmpty()) {
 		if (qTree.getLIndexType() != NO_INDEX) {
-			if (qTree.getLIndexType() == SPATIAL_INDEX) {
+			if (qTree.getLIndexType() == DATA_INDEX) {
 				lIndexptr = catalogptr->getDataIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
 			}
 			else {
@@ -155,7 +155,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			// right data is points
 			if (!rightDataPoint.isEmpty() && rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
-					if (qTree.getRIndexType() == SPATIAL_INDEX) {
+					if (qTree.getRIndexType() == DATA_INDEX) {
 						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					else {
@@ -194,7 +194,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			// right data is rectangles
 			else if (rightDataPoint.isEmpty() && !rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
-					if (qTree.getRIndexType() == SPATIAL_INDEX) {
+					if (qTree.getRIndexType() == DATA_INDEX) {
 						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					else {
