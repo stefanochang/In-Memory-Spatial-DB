@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
+#include <thread>
 #ifndef DATASTORAGE_H
 #include "data-storage.h"
 #endif
@@ -398,6 +399,29 @@ void test_insertDataRectangleRectangle() {
     // cout << "Size: " << rcollection->getSize() << "/n";
 }
 
+PointCollection *pntcollection2;
+
+void initPointCollection() {
+  pntcollection2 = new PointCollection("", "", COLLECTION_STRUCT_SORTEDX, {});
+}
+
+
+void insertThread(int threadId) {
+  cout<< "Thread " << threadId << "\n";
+  Point *p1 = new Point(12.34, 10.34);
+
+  pntcollection2->insert(*p1);
+  cout<< "Thread " << threadId << " completed \n";
+
+}
+
+void testTableLock() {    
+    std::thread t1(insertThread, 1);
+    std::thread t2(insertThread, 2);
+    t1.join();
+    t2.join();
+}
+
 int main() {
     test_insertDataSortedXRect();
     test_insertDataSortedYRect();
@@ -414,4 +438,7 @@ int main() {
     testGetNext();
     testGetByUUID();
     testSwitchStorageStruct();
+
+    initPointCollection();
+    testTableLock();
 }

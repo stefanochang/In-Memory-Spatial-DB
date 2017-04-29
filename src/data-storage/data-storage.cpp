@@ -211,6 +211,11 @@ ds_point * PointCollection::convertObjToStruct(Point point) {
 }
 
 Point PointCollection::getById(int findId) {
+  tableLock.lock();
+  insertBulkLock.lock();
+  cout<< "Inside GetNext\n";
+  cout<< "Lock Acquired by GetNext\n";
+
   //Point *pnt;
   vector<ds_point>::iterator it;
   for(it=points.begin() ; it < points.end(); it++ )
@@ -220,9 +225,17 @@ Point PointCollection::getById(int findId) {
       return convertStructToObj(*it);
     }
   }
+
+  tableLock.unlock();
+  insertBulkLock.unlock();
 }
 
 vector<Point> PointCollection::getNext(int n, int transactionId) {
+  tableLock.lock();
+  insertBulkLock.lock();
+  cout<< "Inside GetNext\n";
+  cout<< "Lock Acquired by GetNext\n";
+
   vector<Point> pointsReturned;
   //Point *newPoint;
   int rdcnt=n;
@@ -239,6 +252,10 @@ vector<Point> PointCollection::getNext(int n, int transactionId) {
   {
     getNextAt = 0;
   }
+
+  tableLock.unlock();
+  insertBulkLock.unlock();
+
   return pointsReturned; // change name if wrapper function name changes
 }
 
@@ -247,6 +264,11 @@ char PointCollection::getCollectionStructure() {
 }
 
 int PointCollection::insert(Point pnt) {
+
+  tableLock.lock();
+  cout<< "Inside Insert\n";
+  cout<< "Lock Acquired by Insert\n";
+
   int id;
   //cout << pnt.getId();
   if(pnt.getId() == 0)
@@ -257,21 +279,20 @@ int PointCollection::insert(Point pnt) {
   newPoint->id = id;
   if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
     insertSortedX(*newPoint);
-    free(newPoint);
-    return 1;
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
     insertSortedY(*newPoint);
-    free(newPoint);
-    return 1;
   }
   else{
     points.push_back(*newPoint);
     std::string log_entry = "point.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newPoint->id) + "," + std::to_string(newPoint->x) + "," + std::to_string(newPoint->y) + ")";
     write_log(log_entry);
-    free(newPoint);
-    return 1;
   }
+
+  free(newPoint);
+  tableLock.unlock();
+  cout<< "Mischief Managed\n";
+  return 1;
 }
 
 
@@ -298,11 +319,16 @@ int PointCollection::insertBulk(PointCollection collection) {
 }
 
 int PointCollection::insertBulk(vector<Point> ptsToInsert) {
+  insertBulkLock.lock();
+  cout<< "Inside InsertBulk\n";
+  cout<< "Lock Acquired by InsertBulk\n";
+
   vector<Point>::iterator it;
   for(it=ptsToInsert.begin() ; it < ptsToInsert.end(); it++ ) {
     insert(*it);
   }
 
+  insertBulkLock.unlock();
   return 1;
 }
 
@@ -311,6 +337,10 @@ int PointCollection::remove(Point point) {
 }
 
 int PointCollection::removeById(int deleteId) {
+  tableLock.lock();
+
+  int returnValue = 0;
+  
   vector<ds_point>::iterator it;
   for(it=points.begin() ; it < points.end(); it++ ) {
     if(it->id == deleteId)
@@ -318,10 +348,12 @@ int PointCollection::removeById(int deleteId) {
       std::string log_entry = "point.removeById(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(it->id) + "," + std::to_string(it->x) + "," + std::to_string(it->y) + ")";
       points.erase(it);
       write_log(log_entry);
-      return 1;
+      returnValue = 1;
     }
   }
-  return 0;
+
+  tableLock.unlock();
+  return returnValue;
 }
 
 bool PointCollection::isEmpty() {

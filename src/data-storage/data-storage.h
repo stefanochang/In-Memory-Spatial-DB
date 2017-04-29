@@ -1,3 +1,7 @@
+using namespace std;
+#include <mutex>
+#include <unistd.h>
+
 #ifndef DATASTORAGE_H
 #define DATASTORAGE_H
 
@@ -17,6 +21,8 @@ class PointCollection{
     Point convertStructToObj(ds_point);
     ds_point * convertObjToStruct(Point);
     int insertBulk(vector<Point>);
+    mutex tableLock;
+    mutex insertBulkLock;
   public:
     PointCollection();
     PointCollection(string, string, char, vector<Point>);
