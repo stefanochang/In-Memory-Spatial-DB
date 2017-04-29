@@ -36,10 +36,10 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	if (!leftDataPoint.isEmpty() && leftDataRect.isEmpty()) {
 		if (qTree.getLIndexType() != NO_INDEX) {
 			if (qTree.getLIndexType() == DATA_INDEX) {
-				lIndexptr = catalogptr->getDataIndexedCollection(leftDataPoint.getDBName(), leftDataPoint.getTableName());
+				lIndexptr = Catalog::Instance()->getDataIndexedCollection(leftDataPoint.getDBName(), leftDataPoint.getTableName());
 			}
 			else {
-				lIndexptr = catalogptr->getSpatialIndexedCollection(leftDataPoint.getDBName(), leftDataPoint.getTableName());
+				lIndexptr = Catalog::Instance()->getSpatialIndexedCollection(leftDataPoint.getDBName(), leftDataPoint.getTableName());
 			}
 			if (lIndexptr == NULL) {
 				cout<< "Query requires index but catalog has returned null" <<endl;
@@ -57,10 +57,10 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			if (!rightDataPoint.isEmpty() && rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
 					if (qTree.getRIndexType() == DATA_INDEX) {
-						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+						rIndexptr = Catalog::Instance()->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					else {
-						rIndexptr = catalogptr->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+						rIndexptr = Catalog::Instance()->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					if (rIndexptr == NULL) {
 						cout<< "Query requires index but catalog has returned null" <<endl;
@@ -94,10 +94,10 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			else if (rightDataPoint.isEmpty() && !rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
 					if (qTree.getRIndexType() == DATA_INDEX) {
-						rIndexptr = catalogptr->getDataIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
+						rIndexptr = Catalog::Instance()->getDataIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
 					}
 					else {
-						rIndexptr = catalogptr->getSpatialIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
+						rIndexptr = Catalog::Instance()->getSpatialIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
 					}
 					if (rIndexptr == NULL) {
 						cout<< "Query requires index but catalog has returned null" <<endl;
@@ -140,10 +140,10 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 	else if (leftDataPoint.isEmpty() && !leftDataRect.isEmpty()) {
 		if (qTree.getLIndexType() != NO_INDEX) {
 			if (qTree.getLIndexType() == DATA_INDEX) {
-				lIndexptr = catalogptr->getDataIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
+				lIndexptr = Catalog::Instance()->getDataIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
 			}
 			else {
-				lIndexptr = catalogptr->getSpatialIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
+				lIndexptr = Catalog::Instance()->getSpatialIndexedCollection(leftDataRect.getDBName(), leftDataRect.getTableName());
 			}
 			if (lIndexptr == NULL) {
 				cout<< "Query requires index but catalog has returned null" <<endl;
@@ -161,10 +161,10 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			if (!rightDataPoint.isEmpty() && rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
 					if (qTree.getRIndexType() == DATA_INDEX) {
-						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+						rIndexptr = Catalog::Instance()->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					else {
-						rIndexptr = catalogptr->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+						rIndexptr = Catalog::Instance()->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					if (rIndexptr == NULL) {
 						cout<< "Query requires index but catalog has returned null" <<endl;
@@ -205,10 +205,10 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			else if (rightDataPoint.isEmpty() && !rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
 					if (qTree.getRIndexType() == DATA_INDEX) {
-						rIndexptr = catalogptr->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+						rIndexptr = Catalog::Instance()->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					else {
-						rIndexptr = catalogptr->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+						rIndexptr = Catalog::Instance()->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
 					}
 					if (rIndexptr == NULL) {
 						cout<< "Query requires index but catalog has returned null" <<endl;
