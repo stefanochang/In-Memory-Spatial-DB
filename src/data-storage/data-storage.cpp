@@ -134,9 +134,6 @@ bool evaluate(string collection,string op,  vector<string> param){
 //     return ((tv.tv_sec + ((double) tv.tv_usec / 1000000.0)));
 // }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// POINT COLLECTION
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class XCompare
 {
 public:
@@ -173,6 +170,10 @@ public:
   }
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// POINT COLLECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 PointCollection::PointCollection(){
   recordId = 1;
   getNextAt = 0;
@@ -186,7 +187,6 @@ PointCollection::PointCollection(string name, string databaseName, char collecti
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
-  recordId = 1;
   vector<Point>::iterator it;
   for(it=pointsToInsert.begin() ; it < pointsToInsert.end(); it++ ) {
     insert(*it);
@@ -255,20 +255,20 @@ int PointCollection::insert(Point pnt) {
     id = pnt.getId();
   ds_point *newPoint = convertObjToStruct(pnt);
   newPoint->id = id;
-  if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
-    points.push_back(*newPoint);
-    std::string log_entry = "point.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newPoint->id) + "," + std::to_string(newPoint->x) + "," + std::to_string(newPoint->y) + ")";
-    write_log(log_entry);
-    free(newPoint);
-    return 1;
-  }
-  else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
+  if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
     insertSortedX(*newPoint);
     free(newPoint);
     return 1;
   }
   else if(collectionStructure == COLLECTION_STRUCT_SORTEDY){
     insertSortedY(*newPoint);
+    free(newPoint);
+    return 1;
+  }
+  else{
+    points.push_back(*newPoint);
+    std::string log_entry = "point.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newPoint->id) + "," + std::to_string(newPoint->x) + "," + std::to_string(newPoint->y) + ")";
+    write_log(log_entry);
     free(newPoint);
     return 1;
   }
