@@ -112,6 +112,15 @@ double testprQuadBulkSearchTime(prQuadTree* prQT,vector<qPoint*> pointsToSearch)
     return total_search_time;
 }
 
+void prQuadTreeBulkDelete(prQuadTree* prQT)
+{
+
+    cout<<"\n\t\t prQuad Tree Deletion - Started"<<endl;
+    prQT->deleteRoot();
+    cout<<"\n\t\t prQuad Tree Deletion - Ended"<<endl;
+
+}
+
 
 
 void testprQuadTreeBulkLoad(int leafCapacity = 8) {
@@ -145,6 +154,7 @@ void testprQuadTreeBulkLoad(int leafCapacity = 8) {
 
     cout<<"\n\t\t Average Search Time = "<<total_search_time<<endl;
 
+    prQuadTreeBulkDelete(prQT);
 
     cout << "\n\n prQuadTree Leaf Capacity = "<<leafCapacity<<" Testing - Ended" << endl;
 }
