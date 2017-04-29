@@ -9,28 +9,28 @@ Test Case 1:
 
 	rectanglecollection->insert(*r);
 
-	r = new Recatangle(-2,-2,2,2);
+	r = new Rectangle(-2,-2,2,2);
 
 	rectanglecollection->insert(*r);
 
 
-	r = new Recatangle(-3,-3,3,3);
+	r = new Rectangle(-3,-3,3,3);
 
 	rectanglecollection->insert(*r);
 
-	r = new Recatangle(-4,-4,4,4);
+	r = new Rectangle(-4,-4,4,4);
 
 	rectanglecollection->insert(*r);
 
-	r = new Recatangle(-5,-5,5,5);
+	r = new Rectangle(-5,-5,5,5);
 
 	rectanglecollection->insert(*r);
 
-	r = new Recatangle(-6,-6,6,6);
+	r = new Rectangle(-6,-6,6,6);
 
 	rectanglecollection->insert(*r);
 
-	r = new Recatangle(-10,-10,10,10);
+	r = new Rectangle(-10,-10,10,10);
 
 	rectanglecollection->insert(*r);
 
