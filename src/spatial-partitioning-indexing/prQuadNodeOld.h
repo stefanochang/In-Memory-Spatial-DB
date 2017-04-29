@@ -150,10 +150,12 @@ public:
 
     void deleteNode()
     {
-        if(this->prqnNW != NULL)this->prqnNW->deleteNode();
-        if(this->prqnNE != NULL)this->prqnNE->deleteNode();
-        if(this->prqnSW != NULL)this->prqnSW->deleteNode();
-        if(this->prqnSE != NULL)this->prqnSE->deleteNode();
+        if(this->prqnNW != NULL){this->prqnNW->deleteNode();delete this->prqnNW;}
+        if(this->prqnNE != NULL){this->prqnNE->deleteNode();delete this->prqnNE;}
+        if(this->prqnSW != NULL){this->prqnSW->deleteNode();delete this->prqnSW;}
+        if(this->prqnSE != NULL){this->prqnSE->deleteNode();delete this->prqnSE;}
+
+        delete this;
 
     }
 
