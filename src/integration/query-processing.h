@@ -211,6 +211,12 @@ public:
 	PointRectangleCollection distanceJoin (float distThresh, PointCollection leftData,
 			vector<Filter> filter, RectangleCollection rightData);
 
+	RectangleRectangleCollection distanceJoinWithIndex (float distThresh, RectangleCollection leftData,
+			vector<Filter> filter, RectangleCollection rightData, SpatialIndexInterface* indexptr);
+
+	PointRectangleCollection distanceJoinWithIndex (float distThresh, PointCollection leftData,
+			vector<Filter> filter, RectangleCollection rightData, SpatialIndexInterface* indexptr);
+
 	vector<Point> getKnnPointsFromPoint (int k, Point inputPoint, vector<Point> inputPoints);
 
 	vector<Point> getKnnPointsFromRectangle (int k, Rectangle inputRect, vector<Point> inputPoints);

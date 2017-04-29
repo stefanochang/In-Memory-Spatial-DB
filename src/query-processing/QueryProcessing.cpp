@@ -123,8 +123,13 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					queryResult.setPointRectangleCollection(joinResult);
 				}
 				else if (rootType == DISTANCE_JOIN || rootType == DISTANCE_JOIN_DI || rootType == DISTANCE_JOIN_SI) {
-					PointRectangleCollection joinResult =
-							distanceJoin(qTree.getRootParam(), leftResult, rightFilter, rightResult);
+					PointRectangleCollection joinResult;
+					if (qTree.getLIndexType()!=NO_INDEX && leftFilter.empty()) {
+						joinResult = distanceJoinWithIndex(qTree.getRootParam(), leftResult, rightFilter, rightResult, lIndexptr);
+					}
+					else {
+						joinResult = distanceJoin(qTree.getRootParam(), leftResult, rightFilter, rightResult);
+					}
 					queryResult.setResultType(TYPE_POINTRECTANGLE);
 					queryResult.setPointRectangleCollection(joinResult);
 				}
@@ -185,8 +190,13 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					queryResult.setPointRectangleCollection(joinResult);
 				}
 				else if (rootType == DISTANCE_JOIN || rootType == DISTANCE_JOIN_DI || rootType == DISTANCE_JOIN_SI) {
-					PointRectangleCollection joinResult =
-							distanceJoin(qTree.getRootParam(), rightResult, rightFilter, leftResult);
+					PointRectangleCollection joinResult;
+					if (qTree.getRIndexType()!=NO_INDEX && rightFilter.empty()) {
+						joinResult = distanceJoinWithIndex(qTree.getRootParam(), rightResult, rightFilter, leftResult, rIndexptr);
+					}
+					else {
+						joinResult = distanceJoin(qTree.getRootParam(), rightResult, rightFilter, leftResult);
+					}
 					queryResult.setResultType(TYPE_POINTRECTANGLE);
 					queryResult.setPointRectangleCollection(joinResult);
 				}
@@ -213,7 +223,7 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					queryResult.setRectangleRectangleCollection(joinResult);
 				}
 				else if (rootType == RANGE_JOIN || rootType == RANGE_JOIN_DI || rootType == RANGE_JOIN_SI) {
-					RectangleRectangleCollection joinResult = rangeJoin(leftResult, rightFilter, rightResult);
+					RectangleRectangleCollection joinResult;
 					if (qTree.getRIndexType()!=NO_INDEX && rightFilter.empty()) {
 						joinResult = rangeJoinWithIndex(rightResult, rightFilter, leftResult, rIndexptr);
 					}
@@ -227,8 +237,16 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					queryResult.setRectangleRectangleCollection(joinResult);
 				}
 				else if (rootType == DISTANCE_JOIN || rootType == DISTANCE_JOIN_DI || rootType == DISTANCE_JOIN_SI) {
-					RectangleRectangleCollection joinResult =
-							distanceJoin(qTree.getRootParam(), leftResult, rightFilter, rightResult);
+					RectangleRectangleCollection joinResult;
+					if (qTree.getRIndexType()!=NO_INDEX && rightFilter.empty()) {
+						joinResult = distanceJoinWithIndex(qTree.getRootParam(), rightResult, rightFilter, leftResult, rIndexptr);
+					}
+					else if (qTree.getLIndexType()!=NO_INDEX && leftFilter.empty()) {
+						joinResult = distanceJoinWithIndex(qTree.getRootParam(), leftResult, rightFilter, rightResult, lIndexptr);
+					}
+					else {
+						joinResult = distanceJoin(qTree.getRootParam(), leftResult, rightFilter, rightResult);
+					}
 					queryResult.setResultType(TYPE_RECTANGLERECTANGLE);
 					queryResult.setRectangleRectangleCollection(joinResult);
 				}
@@ -756,6 +774,63 @@ PointRectangleCollection QueryProcessing::distanceJoin (float distThresh, PointC
 	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
 	for (int i=0;i<leftPoints.size();i++) {
 		for (int j=0;j<rightRects.size();j++) {
+			if (PointOperations::getDistance(leftPoints[i],rightRects[j]) <= distThresh) {
+				PointRectangle pr(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
+						rightRects[j].getCoordinates()[0],rightRects[j].getCoordinates()[1],
+						rightRects[j].getCoordinates()[2],rightRects[j].getCoordinates()[3]);
+				joinResultVector.insert(joinResultVector.end(),pr);
+			}
+		}
+	}
+	PointRectangleCollection joinResult(POINTRECTANGLE,DB_NAME,TYPE_POINTRECTANGLE,joinResultVector);
+	return joinResult;
+}
+
+RectangleRectangleCollection QueryProcessing::distanceJoinWithIndex (float distThresh, RectangleCollection leftData,
+		vector<Filter> filter, RectangleCollection rightData, SpatialIndexInterface* indexptr) {
+	vector<RectangleRectangle> joinResultVector;
+	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
+	RectangleCollection* rightDataPtr = new RectangleCollection();
+	rightDataPtr = &rightData;
+	for (int i=0;i<leftRects.size();i++) {
+		Rectangle distmbr(
+				((leftRects[i].getCoordinates()[0] + leftRects[i].getCoordinates()[2])/2) - distThresh,
+				((leftRects[i].getCoordinates()[1] + leftRects[i].getCoordinates()[3])/2) - distThresh,
+				((leftRects[i].getCoordinates()[0] + leftRects[i].getCoordinates()[2])/2) + distThresh,
+				((leftRects[i].getCoordinates()[1] + leftRects[i].getCoordinates()[3])/2) + distThresh
+				);
+		RectangleCollection rightDataFromIndex = indexptr->searchRectangle(distmbr, rightDataPtr);
+		vector<Rectangle> rightRects = rightDataFromIndex.getNext(rightDataFromIndex.getSize());
+		for (int j=0;j<rightRects.size();j++) {
+			if (RectangleOperations::getDistance(leftRects[i],rightRects[j]) <= distThresh) {
+				RectangleRectangle rr(leftRects[i].getCoordinates()[0],leftRects[i].getCoordinates()[1],
+						leftRects[i].getCoordinates()[2],leftRects[i].getCoordinates()[3],
+						rightRects[j].getCoordinates()[0],rightRects[j].getCoordinates()[1],
+						rightRects[j].getCoordinates()[2],rightRects[j].getCoordinates()[3]);
+				joinResultVector.insert(joinResultVector.end(),rr);
+			}
+		}
+	}
+	RectangleRectangleCollection joinResult(RECTANGLERECTANGLE,DB_NAME,TYPE_RECTANGLERECTANGLE,joinResultVector);
+	return joinResult;
+}
+
+PointRectangleCollection QueryProcessing::distanceJoinWithIndex (float distThresh, PointCollection leftData,
+		vector<Filter> filter, RectangleCollection rightData, SpatialIndexInterface* indexptr) {
+	vector<PointRectangle> joinResultVector;
+	PointCollection* leftDataPtr = new PointCollection();
+	leftDataPtr = &leftData;
+	vector<Rectangle> rightRects = rightData.getNext(rightData.getSize());
+	for (int j=0;j<rightRects.size();j++) {
+		Rectangle distmbr(
+						((rightRects[j].getCoordinates()[0] + rightRects[j].getCoordinates()[2])/2) - distThresh,
+						((rightRects[j].getCoordinates()[1] + rightRects[j].getCoordinates()[3])/2) - distThresh,
+						((rightRects[j].getCoordinates()[0] + rightRects[j].getCoordinates()[2])/2) + distThresh,
+						((rightRects[j].getCoordinates()[1] + rightRects[j].getCoordinates()[3])/2) + distThresh
+						);
+		PointCollection leftDataFromIndex = indexptr->searchPoint(distmbr, leftDataPtr);
+		vector<Point> leftPoints = leftDataFromIndex.getNext(leftDataFromIndex.getSize());
+		for (int i=0;i<leftPoints.size();i++) {
 			if (PointOperations::getDistance(leftPoints[i],rightRects[j]) <= distThresh) {
 				PointRectangle pr(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
 						rightRects[j].getCoordinates()[0],rightRects[j].getCoordinates()[1],
