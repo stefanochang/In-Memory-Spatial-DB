@@ -1,5 +1,5 @@
 
-#ifndef DATA_STORAGE_H
+#ifndef CATALOG_H
 #include "../integration/catalog.h"
 #endif
 
@@ -56,7 +56,7 @@ using namespace std;
 class Filter {
 public:
 	Filter();
-	Filter(char& filterType, vector<float>& inputParams);
+	Filter(char filterType, vector<float> inputParams);
 	char filterType;
 	vector<float> inputParams;
 };
