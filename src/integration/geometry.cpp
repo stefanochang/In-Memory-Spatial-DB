@@ -2,15 +2,16 @@
 #include <vector>
 using namespace std;
 
-Rectangle::Rectangle(float topleft_x, float topleft_y, float bottomright_x, float bottomright_y) {
-	x1 = topleft_x;
-	y1 = topleft_y;
-	x2 = bottomright_x;
-	y2 = bottomright_y;
+Rectangle::Rectangle(float bottomleft_x, float bottomleft_y, float topright_x, float topright_y) {
+	this->x1 = bottomleft_x;
+	this->y1 = bottomleft_y;
+	this->x2 = topright_x;
+	this->y2 = topright_y;
+        this->id = 0;
 }
 
 int Rectangle::getId() {
-	return id;
+	return this->id;
 }
 
 void Rectangle::setId(int id) {
@@ -35,6 +36,7 @@ vector<float> Rectangle::getCoordinates() {
 Point::Point( float x, float y) {
         this->x = x;
 	this->y = y;
+        this->id = 0;
 }
 
 int Point::getId() {
@@ -56,7 +58,8 @@ PointPoint::PointPoint( float x1, float y1, float x2, float y2) {
         this->x1 = x1;
         this->y1 = y1;
         this->x2 = x2;
-        this->y2 = y2;          
+        this->y2 = y2;
+        this->id = 0;          
 }
 
 int PointPoint::getId() {
@@ -87,6 +90,7 @@ PointRectangle::PointRectangle(float x1, float y1, float x2, float y2, float x3,
         this->y2 = y2;          
         this->x3 = x3;
         this->y3 = y3;
+        this->id = 0;
 }
 
 int PointRectangle::getId() {
@@ -119,7 +123,7 @@ RectangleRectangle::RectangleRectangle(float x1, float y1, float x2, float y2, f
         this->y3 = y3;
         this->x4 = x4;
         this->y4 = y4;
-
+        this->id = 0;
 }
 
 int RectangleRectangle::getId() {
