@@ -88,6 +88,9 @@ int main()
 
     spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,-2.5,-2.5);
 
+    spatialIndexInterface->deleteIndex();
+
+    spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,100,100);
 
     cout<<"\n Spatial Indexing Integration Testing Points - Ended \n"<<endl;
 

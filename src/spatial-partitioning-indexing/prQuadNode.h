@@ -176,15 +176,14 @@ public:
 
     void deleteNode()
     {
-//        if(this->nodeNW() != NULL){this->nodeNW()->deleteNode();delete this->nodeNW();}
-//        if(this->nodeNE() != NULL){this->nodeNE()->deleteNode();delete this->nodeNE();}
-//        if(this->nodeSW() != NULL){this->nodeSW()->deleteNode();delete this->nodeSW();}
-//        if(this->nodeSE() != NULL){this->nodeSE()->deleteNode();delete this->nodeSE();}
 
         if(this->nodeNW() != NULL){this->nodeNW()->deleteNode();}
         if(this->nodeNE() != NULL){this->nodeNE()->deleteNode();}
         if(this->nodeSW() != NULL){this->nodeSW()->deleteNode();}
         if(this->nodeSE() != NULL){this->nodeSE()->deleteNode();}
+
+//        if(!points.empty()){points.clear();}
+//        if(!nodes.empty()){nodes.clear();}
 
         delete this;
 

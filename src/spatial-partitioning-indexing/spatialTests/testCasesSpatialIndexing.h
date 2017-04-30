@@ -26,9 +26,9 @@ void executeSpatialIndexingTestCases(int leafCapacity = 8)
 //    testQBoundingBox();
 //    testprQuadNode();
 //    testprQuadTree(leafCapacity);
-    testprQuadTreeBulkLoad(leafCapacity);
+//    testprQuadTreeBulkLoad(leafCapacity);
 //    testmxcifQuadNode(leafCapacity);
-//    testmxcifQuadTree(leafCapacity);
+    testmxcifQuadTree(leafCapacity);
 
     cout<<"\n\n\nSpatial Indexing Testing - Ended"<<endl;
 
