@@ -34,12 +34,13 @@ QueryProcessing::QueryProcessing() {
 	rectChunkSize = lineSize / sizerec - sizeof(Rectangle);
 
 	if (pointChunkSize <= 0) {
-		pointChunkSize = sizeof(Point);
+		pointChunkSize = 1;
 	}
 	if (rectChunkSize <= 0) {
-		rectChunkSize = sizeof(Rectangle);
+		rectChunkSize = 1;
 	}
 
+	cout<<"pointChunkSize: "<<pointChunkSize<<" rectChunkSize: "<<rectChunkSize<<endl;
 }
 
 QueryResult QueryProcessing::processQuery (QueryTree qTree) {
@@ -348,9 +349,9 @@ RectangleCollection QueryProcessing::materializeKnn (vector<Filter> filter, Rect
 	}
 }
 
-vector<Point> QueryProcessing::materializeChunk (vector<Filter> filter, PointCollection& data) {
+vector<Point> QueryProcessing::materializeChunk (vector<Filter> filter, PointCollection* dataptr) {
 	vector<Point> result;
-	vector<Point> points = data.getNext(pointChunkSize);
+	vector<Point> points = dataptr->getNext(pointChunkSize);
 	for (int j=0;j<points.size();j++) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
@@ -365,9 +366,9 @@ vector<Point> QueryProcessing::materializeChunk (vector<Filter> filter, PointCol
 	return result;
 }
 
-vector<Rectangle> QueryProcessing::materializeChunk (vector<Filter> filter, RectangleCollection& data) {
+vector<Rectangle> QueryProcessing::materializeChunk (vector<Filter> filter, RectangleCollection* dataptr) {
 	vector<Rectangle> result;
-	vector<Rectangle> rects = data.getNext(rectChunkSize);
+	vector<Rectangle> rects = dataptr->getNext(rectChunkSize);
 	for (int j=0;j<rects.size();j++) {
 		bool passedAllOperators = true;
 		for (int i=0;i<filter.size();i++) {
@@ -681,10 +682,11 @@ PointPointCollection QueryProcessing::rangeJoin (PointCollection leftData, vecto
 
 	vector<PointPoint> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
+	int objectsProcessed= rectChunkSize<rightData.getSize()?rectChunkSize:rightData.getSize();
 	int comparisions = 0;
 	for (int i=0;i<leftPoints.size();i++) {
-		vector<Point> rightPoints = materializeChunk(filter, rightData);
-		while (!rightPoints.empty()) {
+		vector<Point> rightPoints = materializeChunk(filter, &rightData);
+		while (objectsProcessed<=rightData.getSize()) {
 			for (int j=0;j<rightPoints.size();j++) {
 				comparisions++;
 				if (PointOperations::isEqual(leftPoints[i], rightPoints[j])) {
@@ -694,7 +696,8 @@ PointPointCollection QueryProcessing::rangeJoin (PointCollection leftData, vecto
 				}
 			}
 			rightPoints.erase(rightPoints.begin(), rightPoints.end());
-			rightPoints = materializeChunk(filter, rightData);
+			rightPoints = materializeChunk(filter, &rightData);
+			objectsProcessed+=rectChunkSize;
 		}
 	}
 	cout << "Num of comparisions (nested): " << comparisions << endl;
@@ -707,9 +710,10 @@ RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection lef
 
 	vector<RectangleRectangle> joinResultVector;
 	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
+	int objectsProcessed= rectChunkSize<rightData.getSize()?rectChunkSize:rightData.getSize();
 	for (int i=0;i<leftRects.size();i++) {
-		vector<Rectangle> rightRects = materializeChunk(filter, rightData);
-		while (!rightRects.empty()) {
+		vector<Rectangle> rightRects = materializeChunk(filter, &rightData);
+		while (objectsProcessed<=rightData.getSize()) {
 			for (int j=0;j<rightRects.size();j++) {
 				if (RectangleOperations::isOverlapping(leftRects[i],rightRects[j]) ||
 						RectangleOperations::isIntersecting(leftRects[i],rightRects[j]) ||
@@ -723,7 +727,8 @@ RectangleRectangleCollection QueryProcessing::rangeJoin (RectangleCollection lef
 				}
 			}
 			rightRects.erase(rightRects.begin(), rightRects.end());
-			rightRects = materializeChunk(filter, rightData);
+			rightRects = materializeChunk(filter, &rightData);
+			objectsProcessed+=rectChunkSize;
 		}
 	}
 	RectangleRectangleCollection rangeJoinResult(RECTANGLERECTANGLE,DB_NAME,TYPE_RECTANGLERECTANGLE,joinResultVector);
@@ -734,9 +739,10 @@ PointRectangleCollection QueryProcessing::rangeJoin (PointCollection leftData, v
 		RectangleCollection rightData) {
 	vector<PointRectangle> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
+	int objectsProcessed= rectChunkSize<rightData.getSize()?rectChunkSize:rightData.getSize();
 	for (int i=0;i<leftPoints.size();i++) {
-		vector<Rectangle> rightRects = materializeChunk(filter, rightData);
-		while (!rightRects.empty()) {
+		vector<Rectangle> rightRects = materializeChunk(filter, &rightData);
+		while (objectsProcessed<=rightData.getSize()) {
 			for (int j=0;j<rightRects.size();j++) {
 				if (PointOperations::isOverlapping(leftPoints[i],rightRects[j]) ||
 						PointOperations::isIntersecting(leftPoints[i],rightRects[j]) ||
@@ -748,7 +754,9 @@ PointRectangleCollection QueryProcessing::rangeJoin (PointCollection leftData, v
 				}
 			}
 			rightRects.erase(rightRects.begin(), rightRects.end());
-			rightRects = materializeChunk(filter, rightData);
+			rightRects = materializeChunk(filter, &rightData);
+			objectsProcessed+=rectChunkSize;
+
 		}
 	}
 	PointRectangleCollection rangeJoinResult(POINTRECTANGLE,DB_NAME,TYPE_POINTRECTANGLE,joinResultVector);
@@ -877,9 +885,10 @@ PointPointCollection QueryProcessing::distanceJoin (float distThresh, PointColle
 		vector<Filter> filter, PointCollection rightData) {
 	vector<PointPoint> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
+	int objectsProcessed= rectChunkSize<rightData.getSize()?rectChunkSize:rightData.getSize();
 	for (int i=0;i<leftPoints.size();i++) {
-		vector<Point> rightPoints = materializeChunk(filter, rightData);
-		while (!rightPoints.empty()) {
+		vector<Point> rightPoints = materializeChunk(filter, &rightData);
+		while (objectsProcessed<=rightData.getSize()) {
 			for (int j=0;j<rightPoints.size();j++) {
 				if (PointOperations::getDistance(leftPoints[i],rightPoints[j]) <= distThresh) {
 					PointPoint pp(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
@@ -888,7 +897,8 @@ PointPointCollection QueryProcessing::distanceJoin (float distThresh, PointColle
 				}
 			}
 			rightPoints.erase(rightPoints.begin(), rightPoints.end());
-			rightPoints = materializeChunk(filter, rightData);
+			rightPoints = materializeChunk(filter, &rightData);
+			objectsProcessed+=rectChunkSize;
 		}
 	}
 	PointPointCollection joinResult(POINTPOINT,DB_NAME,TYPE_POINTPOINT,joinResultVector);
@@ -899,9 +909,10 @@ RectangleRectangleCollection QueryProcessing::distanceJoin (float distThresh, Re
 		vector<Filter> filter, RectangleCollection rightData) {
 	vector<RectangleRectangle> joinResultVector;
 	vector<Rectangle> leftRects = leftData.getNext(leftData.getSize());
+	int objectsProcessed= rectChunkSize<rightData.getSize()?rectChunkSize:rightData.getSize();
 	for (int i=0;i<leftRects.size();i++) {
-		vector<Rectangle> rightRects = materializeChunk(filter, rightData);
-		while (!rightRects.empty()) {
+		vector<Rectangle> rightRects = materializeChunk(filter, &rightData);
+		while (objectsProcessed<=rightData.getSize()) {
 			for (int j=0;j<rightRects.size();j++) {
 				if (RectangleOperations::getDistance(leftRects[i],rightRects[j]) <= distThresh) {
 					RectangleRectangle rr(leftRects[i].getCoordinates()[0],leftRects[i].getCoordinates()[1],
@@ -912,7 +923,8 @@ RectangleRectangleCollection QueryProcessing::distanceJoin (float distThresh, Re
 				}
 			}
 			rightRects.erase(rightRects.begin(), rightRects.end());
-			rightRects = materializeChunk(filter, rightData);
+			rightRects = materializeChunk(filter, &rightData);
+			objectsProcessed+=rectChunkSize;
 		}
 	}
 	RectangleRectangleCollection joinResult(RECTANGLERECTANGLE,DB_NAME,TYPE_RECTANGLERECTANGLE,joinResultVector);
@@ -923,9 +935,10 @@ PointRectangleCollection QueryProcessing::distanceJoin (float distThresh, PointC
 		vector<Filter> filter, RectangleCollection rightData) {
 	vector<PointRectangle> joinResultVector;
 	vector<Point> leftPoints = leftData.getNext(leftData.getSize());
+	int objectsProcessed= rectChunkSize<rightData.getSize()?rectChunkSize:rightData.getSize();
 	for (int i=0;i<leftPoints.size();i++) {
-		vector<Rectangle> rightRects = materializeChunk(filter, rightData);
-		while (!rightRects.empty()) {
+		vector<Rectangle> rightRects = materializeChunk(filter, &rightData);
+		while (objectsProcessed<=rightData.getSize()) {
 			for (int j=0;j<rightRects.size();j++) {
 				if (PointOperations::getDistance(leftPoints[i],rightRects[j]) <= distThresh) {
 					PointRectangle pr(leftPoints[i].getCoordinates()[0],leftPoints[i].getCoordinates()[1],
@@ -935,7 +948,8 @@ PointRectangleCollection QueryProcessing::distanceJoin (float distThresh, PointC
 				}
 			}
 			rightRects.erase(rightRects.begin(), rightRects.end());
-			rightRects = materializeChunk(filter, rightData);
+			rightRects = materializeChunk(filter, &rightData);
+			objectsProcessed+=rectChunkSize;
 		}
 	}
 	PointRectangleCollection joinResult(POINTRECTANGLE,DB_NAME,TYPE_POINTRECTANGLE,joinResultVector);
