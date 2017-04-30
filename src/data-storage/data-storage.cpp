@@ -9,6 +9,19 @@ using namespace std;
 #include <iostream>
 #include <fstream>
 #include <sys/time.h>
+
+/* ************************************************************************************* *\
+    CSE 591 - Advances in Databases - Spring 2017 - Project - Data Storage Module
+    -------------------------------------------------------------------------------
+
+    File: data-storage.cpp
+
+    This file contains function definitions which are declared in the data-storage.h file
+
+    -- Ajay Kulkarni, Anuran Duttaroy, Dhanashree Adhikari, Nilam Bari, Omkar Kaptan --
+
+\* ************************************************************************************* */
+
 bool recoveryMode = false;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

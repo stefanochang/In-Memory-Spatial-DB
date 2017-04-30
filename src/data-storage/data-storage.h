@@ -5,36 +5,136 @@
 #include "ds_constants.h"
 #include "../integration/geometry.h"
 
-bool recoverData();
-bool evaluate(string collection,string op,  vector<string>);
+/* ************************************************************************************* *\
+    CSE 591 - Advances in Databases - Spring 2017 - Project - Data Storage Module
+   -------------------------------------------------------------------------------
+
+   File: data-storage.h
+
+    This header file contains all collection and API details for the data storage
+    module. Include this file in the project to use all data storage features.
+
+    Relavant files
+        - data-storage.cpp: All method implementations are done here
+        - main.cpp: All test cases are defined here
+        - constants.cpp: All constants are defined here
+        - ds_datatypes.cpp: All internal structures are defined here
+
+    This module currently supports the following spatial geometry types:
+        - Point: Defined by an X and Y coordinate
+        - Rectangle: Defined by 2 points namely the left bottom and right top
+        - PointPoint: Pair type defined by 2 points
+        - RectangleRectangle: Pair type defined by 2 rectangles
+        - PointRectangle: Pair type defined by a point and a rectangle
+
+    The documentation for the collections API is detailed in the PointCollection only
+    since the other collections follow a very similar pattern. The "Geometry" placeholder
+    is used to refer to individual geometry types.
+
+    There are other functions common across all the collections which are declared after
+    all the collections have been declared. The documentation for the same is provided.
+
+    -- Ajay Kulkarni, Anuran Duttaroy, Dhanashree Adhikari, Nilam Bari, Omkar Kaptan --
+
+\* ************************************************************************************* */
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// POINT COLLECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class PointCollection{
+
+    /* ************************************************************************************* *\
+        Point Collection Variables:
+        - points: 
+            The vector containing the points in the collection. The elements are of type 
+            ds_point which is a struct representation for the points
+        - name:
+            The name for this collection
+        - databaseName:
+            The database this collection is a part of
+        - recordId
+            Auto incrementing record id for new elements being inserted into the collection
+        - getNextAt
+            Position marker to resume getNext from when a transaction invokes getNext
+        - collectionStructure
+            The method of data organization within the collection
+    \* ************************************************************************************* */
+
     vector<ds_point> points;
     string name, databaseName;
-		int recordId;
-		int getNextAt;
+	int recordId;
+	int getNextAt;
     char collectionStructure;
+
+    /* ************************************************************************************* *\
+        Point Collection Methods
+    \* ************************************************************************************* */
+
+    /* Convert between the Geometry Object type and the internal structure representation */
     Point convertStructToObj(ds_point);
     ds_point * convertObjToStruct(Point);
+
+    /* Bulk insert an entire vector into the collection */
     int insertBulk(vector<Point>);
   public:
+    /* 
+        Constructors to initialize a collection
+        - Default constructor which initilizes variables to defaults
+        - Parameterized constructor to initialize collection and database name, data representation
+            and initial geometry elements that should be inserted in the new collection
+    */
     PointCollection();
     PointCollection(string, string, char, vector<Point>);
+
+    /* Get a geometry object from the collection by ID */
     Point getById(int);
+
+    /* Get next "n" points from the collection (n >= 1) */
     vector<Point> getNext(int n=1, int transaction_id=1);
+
+    /* Get character representation of the collection element origanization */
     char getCollectionStructure();
+
+    /*
+        Methods for insertion into the collection
+        - insert(Point)
+            insert a single point into the collection while retaining the data organization
+        - insertSortedX(ds_point)
+            insert a single point into the collection in a X sorted fashion
+        - insertSortedY(ds_point)
+            insert a single point into the collection in a Y sorted fashion
+        - insertBulk(PointCollection)
+            insert all points in a given collection into this collection
+    */
     int insert(Point);
     int insertSortedX(ds_point);
     int insertSortedY(ds_point);
     int insertBulk(PointCollection);
-		bool isEmpty();
-		int getSize();
+
+    /* Check if collection is empty */
+	bool isEmpty();
+
+    /* Get count of elements in the collection */
+	int getSize();
+
+    /* Remove a given point by specifying the point or its ID */
     int remove(Point);
-    int removeById(int);  // size of PointCollection
+    int removeById(int);
+
+    /* Get name of database this collection belongs to */
     string getDBName();
+
+    /* Get name of collection */
     string getTableName();
+
+    /* Switch the storage structure to the required form */
     int switchStorageStructure(char);
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// RECTANGLE COLLECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class RectangleCollection {
     vector<ds_rectangle> rectangles;
@@ -64,6 +164,10 @@ class RectangleCollection {
     int switchStorageStructure(char);
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// POINTPOINT COLLECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class PointPointCollection {
     vector<ds_pointpoint> pointPoints;
     string name, databaseName;
@@ -89,6 +193,10 @@ class PointPointCollection {
     string getTableName();
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// POINTRECTANGLE COLLECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class PointRectangleCollection {
     vector<ds_pointrectangle> pointRectangles;
     string name, databaseName;
@@ -113,6 +221,10 @@ class PointRectangleCollection {
     string getDBName();
     string getTableName();
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// RECTANGLERECTANGLE COLLECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class RectangleRectangleCollection {
     vector<ds_rectanglerectangle> rectangleRectangles;
@@ -140,9 +252,21 @@ class RectangleRectangleCollection {
 };
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// COMMON FUNCTIONS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Initial data load supported for Points and Rectangles
+/* Create a collection and load data into it from the given file */
 int loadData(string dbName, string tableName, int geomtype, string filepath, char collectionStruct);
+
+/* Recover data in case of a system failure */
+bool recoverData();
+
+bool evaluate(string collection,string op,  vector<string>);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*
 // Insert a single point
 bool insertData(GeometryCollection *pointsRepo, Point pointToInsert);
