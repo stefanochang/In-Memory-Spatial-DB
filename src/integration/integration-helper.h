@@ -1,18 +1,18 @@
 #ifndef INTEGRATION_HELPER_H
 #define INTEGRATION_HELPER_H
 
+#include "../data-partitioning-indexing/data-indexing.h"
+
+#ifndef IN_MEMORY_SPATIAL_DB_SPATIALINDEXIMPL_H
+#include "../spatial-partitioning-indexing/SpatialIndexImpl.h"
+#endif
+
 #ifndef QUERY_PROCESSING_H
 #include "query-processing.h"
 #endif
 
 #ifndef CATALOG_H
 #include "catalog.h"
-#endif
-
-#include "../data-partitioning-indexing/data-indexing.h"
-
-#ifndef IN_MEMORY_SPATIAL_DB_SPATIALINDEXIMPL_H
-#include "../spatial-partitioning-indexing/SpatialIndexImpl.h"
 #endif
 
 #include <vector>
@@ -47,25 +47,25 @@ vector<string> split(string str, string sep) {
 }
 
 char getFilterType(string filterType) {
-    if(rootType.compare("filterAreaLT") == 0) {
+    if(filterType.compare("filterAreaLT") == 0) {
         return FILTER_BY_AREA_LT;
-    } else if(rootType.compare("filterAreaLE") == 0) {
+    } else if(filterType.compare("filterAreaLE") == 0) {
         return FILTER_BY_AREA_LE;
-    } else if(rootType.compare("filterAreaEQ") == 0) {
+    } else if(filterType.compare("filterAreaEQ") == 0) {
         return FILTER_BY_AREA_EQ;
-    } else if(rootType.compare("filterAreaGT") == 0) {
+    } else if(filterType.compare("filterAreaGT") == 0) {
         return FILTER_BY_AREA_GT;
-    } else if(rootType.compare("filterAreaGE") == 0) {
+    } else if(filterType.compare("filterAreaGE") == 0) {
         return FILTER_BY_AREA_GE;
-    } else if(rootType.compare("filterDistanceLT") == 0) {
+    } else if(filterType.compare("filterDistanceLT") == 0) {
         return FILTER_BY_DISTANCE_LT;
-    } else if(rootType.compare("filterDistanceLE") == 0) {
+    } else if(filterType.compare("filterDistanceLE") == 0) {
         return FILTER_BY_DISTANCE_EQ;
-    } else if(rootType.compare("filterDistanceEQ") == 0) {
+    } else if(filterType.compare("filterDistanceEQ") == 0) {
         return FILTER_BY_DISTANCE_EQ;
-    } else if(rootType.compare("filterDistanceGT") == 0) {
+    } else if(filterType.compare("filterDistanceGT") == 0) {
         return FILTER_BY_DISTANCE_GT;
-    } else if(rootType.compare("filterDistanceGE") == 0) {
+    } else if(filterType.compare("filterDistanceGE") == 0) {
         return FILTER_BY_DISTANCE_GE;
     }
 }
@@ -77,10 +77,10 @@ vector<Filter> get_predicates_from_string(string predicates) {
         vector<string> params = split(leftFilters[i], ":");
         vector<float> filterParams;
         for(int j=1; j< params.size(); j++) {
-            filterParams.push_back(stof(params[j]))
+            filterParams.push_back(stof(params[j]));
         } 
-        Filter f = new Filter(getFilterType(params[0]), filterParams);
-        predicateVector.push_back(f);   
+        Filter* f = new Filter(getFilterType(params[0]), filterParams);
+        predicateVector.push_back(*f);   
     }    
     return predicate_vector;
 }
@@ -92,34 +92,33 @@ void print_query_result(QueryResult resultset) {
     if (resultType == TYPE_POINT) {      
         PointCollection pc = resultset.getPointCollection(); 
         int size = pc.getSize();
-        cout << "ResultSet size: " << size << endl;
-                for (int i=0; i< pc.getSize(); i++) {
+        for (int i=0; i< pc.getSize(); i++) {
             vector<Point> point = pc.getNext(1);
             vector<float> coords = point[0].getCoordinates();
             cout << "[(" << coords[0] << ", " << coords[1] << ")]" << endl;
         }
+        cout << "ResultSet size: " << size << endl;
     } else if (resultType == TYPE_RECTANGLE) {      
         RectangleCollection rc = resultset.getRectangleCollection(); 
         int size = rc.getSize();
-        cout << "ResultSet size: " << size << endl;
         for (int i=0; i < size; i++) {
             vector<Rectangle> rectangle = rc.getNext(1);
             vector<float> coords = rectangle[0].getCoordinates();
             cout << "[(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")]" << endl;
         }
+        cout << "ResultSet size: " << size << endl;
     } else if (resultType == TYPE_POINTPOINT) {      
         PointPointCollection ppc = resultset.getPointPointCollection(); 
         int size = ppc.getSize();
-        cout << "ResultSet size: " << size << endl;
         for (int i=0; i< ppc.getSize(); i++) {
             vector<PointPoint> pointPoint = ppc.getNext(1);
             vector<float> coords = pointPoint[0].getCoordinates();
             cout << "[(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")]" << endl;
         }
+        cout << "ResultSet size: " << size << endl;
     } else if (resultType == TYPE_POINTRECTANGLE) {      
         PointRectangleCollection prc = resultset.getPointRectangleCollection(); 
         int size = prc.getSize();
-        cout << "ResultSet size: " << size << endl;
         for (int i=0; i< prc.getSize(); i++) {
             vector<PointRectangle> pointRectangle = prc.getNext(1);
             vector<float> coords = pointRectangle[0].getCoordinates();
@@ -127,16 +126,17 @@ void print_query_result(QueryResult resultset) {
                 << coords[2] << ", " << coords[3] << "), ("
                 << coords[4] << ", " << coords[5] << ")] ]" << endl;
         }
+        cout << "ResultSet size: " << size << endl;
     } else if (resultType == TYPE_RECTANGLERECTANGLE) {      
         RectangleRectangleCollection rrc = resultset.getRectangleRectangleCollection(); 
         int size = rrc.getSize();
-        cout << "ResultSet size: " << size << endl;
         for (int i=0; i< rrc.getSize(); i++) {
             vector<RectangleRectangle> rectangleRectangle = rrc.getNext(1);
             vector<float> coords = rectangleRectangle[0].getCoordinates();
             cout << "[ [(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")], " 
                 << "[(" << coords[4] << ", " << coords[5] << "), (" << coords[6] << ", " << coords[7] << ")] ]"<< endl;
         }
+        cout << "ResultSet size: " << size << endl;
     } else {
         cout << "ERROR: Unknown Collection Type." << endl;
     }
@@ -161,11 +161,13 @@ void processSpatialIndexQuery(vector<string> query_tokens) {
 		sp->createIndex(*pc);
 		CatalogItem* ci = Catalog::Instance()->getCatalogItem(query_tokens[3], query_tokens[4]);
 		ci->addSpatialIndex(sp);
+        cout << "Created Spatial Index for " << query_tokens[3] << "." << query_tokens[4]  << endl; 
 	} else if(query_tokens[2].compare("RECTANGLE") == 0) {
 		RectangleCollection* rc = Catalog::Instance()->getRectangleCollectionByName(query_tokens[3], query_tokens[4]);
 		sp->createIndex(*rc);
 		CatalogItem* ci = Catalog::Instance()->getCatalogItem(query_tokens[3], query_tokens[4]);
 		ci->addSpatialIndex(sp);
+        cout << "Created Spatial Index for " << query_tokens[3] << "." << query_tokens[4]  << endl; 
 	} else {
 		cout << "Invalid data type";
 	}
@@ -178,11 +180,13 @@ void processDataIndexQuery(vector<string> query_tokens) {
         sp->createIndex(*pc);
         CatalogItem* ci = Catalog::Instance()->getCatalogItem(query_tokens[3], query_tokens[4]);
         ci->addDataIndex(sp);
+        cout << "Created Data Index for " << query_tokens[3] << "." << query_tokens[4]  << endl; 
     } else if(query_tokens[2].compare("RECTANGLE") == 0) {
         RectangleCollection* rc = Catalog::Instance()->getRectangleCollectionByName(query_tokens[3], query_tokens[4]);
         sp->createIndex(*rc);
         CatalogItem* ci = Catalog::Instance()->getCatalogItem(query_tokens[3], query_tokens[4]);
         ci->addDataIndex(sp);
+        cout << "Created Data Index for " << query_tokens[3] << "." << query_tokens[4]  << endl; 
     } else {
         cout << "Invalid data type";
     }
@@ -197,7 +201,7 @@ void processLoadQuery(vector<string> query_tokens) {
 	         " from " << query_tokens[4] << endl; 
 	        cout << "The Catalog now has " << Catalog::Instance()->getCatalogSize() << " item(s)." << endl;
         } else {
-            cout << "Oops! Something went wrong."
+            cout << "Oops! Something went wrong.";
         }        
     }
 }
@@ -261,10 +265,13 @@ void processSelectQuery(vector<string> query_tokens, string query) {
     }
     qTree->setLeftFilter(left_filter_param);
     if(left_collection_details.size() > 3) {
-        if(left_collection_details[3].compare("SPATIAL") == 0) {
+        if(left_collection_details[3].compare("SPATIAL-INDEX") == 0) {
             qTree->setLIndexType(SPATIAL_INDEX);
-        } else {
+        } else if(left_collection_details[3].compare("DATA-INDEX") == 0) {
             qTree->setLIndexType(DATA_INDEX);
+        } else {
+            cout << "WARNING: Unknown index type. Index not applied."
+            qTree->setLIndexType(NO_INDEX);    
         }
     } else {
         qTree->setLIndexType(NO_INDEX);
@@ -276,7 +283,7 @@ void processSelectQuery(vector<string> query_tokens, string query) {
     
     qTree->setRootType(getJoinType(root_filter_param[0]));
     if(root_filter_param.size() > 1) {
-        qTree->setRootParam(stofroot_filter_param[1]);
+        qTree->setRootParam(stof(root_filter_param[1]));
     }
 
     int right_param_end = query_param.substr(left_param_end+root_param_end+6).find("]"); 
@@ -303,5 +310,22 @@ void processSelectQuery(vector<string> query_tokens, string query) {
         }
     }            
     print_query_result(qProcess->processQuery(*qTree));
+}
+
+void parseQuery(query) {
+    vector<string> query_tokens = split(query, " "); 
+    if(query_tokens[0].compare("LOAD") == 0) {            
+        processLoadQuery(query_tokens);
+    } else  if(query_tokens[0].compare("CREATE") == 0) {
+        processIndexQuery(query_tokens);      
+    } else if(query_tokens[0].compare("SELECT") == 0) {    
+        processSelectQuery(query_tokens, query);            
+    } else if(query_tokens[0].compare("INSERT") == 0) {
+        processInsertQuery(query_tokens);
+    } else if(query_tokens[0].compare("EXIT") == 0) {
+        exit(0);
+    } else {
+        cout << "ERROR: Invalid command" << endl;        
+    }
 }
 #endif
