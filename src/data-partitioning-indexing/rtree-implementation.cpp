@@ -164,7 +164,7 @@ class RectangleDataIndex{
 			vector<float> vect = r.getCoordinates();
 			
 			std::vector<boostvalue> result_s;
-    		rtreeObj.query(bgi::intersects(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(result_s));
+    		rtreeObj.query(bgi::covered_by(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(result_s));
 
     		std::vector<Rectangle> rects;
 
