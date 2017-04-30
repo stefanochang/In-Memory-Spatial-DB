@@ -127,7 +127,7 @@ class RectangleDataIndex{
 			//if(rects!=NULL)
 
 			int sizeOfColl = rects.getSize();
-
+			int id=0;
 			for(int k=0;k<sizeOfColl;k++){
 
 				r = rects.getNext();
@@ -139,7 +139,8 @@ class RectangleDataIndex{
 				
 					boostbox b(boostpoint(vect.at(0), vect.at(1)), boostpoint(vect.at(2),vect.at(3)));
 
-        			rtreeinst.insert(std::make_pair(b, i));	
+        			rtreeinst.insert(std::make_pair(b, id));
+					id++;	
 				
 				}
 
@@ -164,13 +165,65 @@ class RectangleDataIndex{
 			vector<float> vect = r.getCoordinates();
 			
 			std::vector<boostvalue> result_s;
-    		rtreeObj.query(bgi::covered_by(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(result_s));
+    		rtreeObj.query(bgi::overlaps(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(result_s));
 
     		std::vector<Rectangle> rects;
 
-    		RectangleCollection *result=new RectangleCollection();
+			std::vector<boostvalue> result_covered;
 			
-    		BOOST_FOREACH(boostvalue const& v, result_s){
+
+			rtreeObj.query(bgi::covered_by(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(result_covered));
+
+			std::vector<boostvalue> resultfinal;
+			
+			int first=0,second=0;
+
+			while(first<result_s.size() && second<result_covered.size()){
+
+
+				boostvalue b1 = result_s.at(first);
+				boostvalue b2= result_covered.at(second);
+				cout<<"In while"<<endl;
+				if(b1.second<b2.second){
+
+					resultfinal.push_back(b1);
+					first++;
+
+				}
+				else if(b2.second<b1.second){
+					resultfinal.push_back(b2);
+					second++;
+				}
+				else{
+					resultfinal.push_back(b1);
+					first++;
+					second++;
+				}
+
+
+			}
+
+			while(first<result_s.size()){
+
+				boostvalue b1 = result_s.at(first);
+				
+				resultfinal.push_back(b1);
+					first++;
+
+			}
+			while(second<result_covered.size()){
+
+				boostvalue b2= result_covered.at(second);
+
+				resultfinal.push_back(b2);
+					second++;
+
+			}
+	
+    		RectangleCollection *result=new RectangleCollection();
+	
+			
+    		BOOST_FOREACH(boostvalue const& v, resultfinal){
 				float x1 = bg::get<bg::min_corner,0>(v.first); 
     			float y1 = bg::get<bg::min_corner,1>(v.first);
     			float x2 = v.first.max_corner().get<0>();
@@ -180,8 +233,6 @@ class RectangleDataIndex{
 				rects.push_back(temp);
 
 				result->insert(temp);
-
-
 
 			}
 
