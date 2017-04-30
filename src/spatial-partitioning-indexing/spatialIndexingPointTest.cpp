@@ -88,6 +88,8 @@ int main()
 
     spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,-2.5,-2.5);
 
+    spatialIndexInterface->update(*pointCollection);
+
     spatialIndexInterface->deleteIndex();
 
     spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,100,100);
