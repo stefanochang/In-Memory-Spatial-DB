@@ -65,7 +65,7 @@ bool recoverData(){
   ifstream log_file;
   string line;
   bool count=false;
-  log_file.open("recovery_command_log.txt",fstream::app);
+  log_file.open("command_log.txt",fstream::app);
   while ( getline (log_file,line, ':') ){
       //cout<<"\ncount:" << count <<"\n";
       //cout <<line<< "\n";
@@ -112,11 +112,12 @@ bool recoverData(){
 
 bool evaluate(string collection,string op,  vector<string> param){
  //cout<<"In "<<endl;
- PointCollection *pc;
+ 
  if(collection == "point"){
-
+   PointCollection *pc;
    if(param[0]=="NA" && param[1] == "NA"){
-      cout << "ok";
+      cout << "pass";
+      return 1;
    }
    else{
       pc = Catalog::Instance()->getPointCollectionByName(param[0], param[1]);
@@ -126,12 +127,42 @@ bool evaluate(string collection,string op,  vector<string> param){
 	 Catalog::Instance()->insert(catItem);
       }
    }
+   if(op == "switchStorageStructure"){
+     pc->switchStorageStructure(stoi(param[3]));
+     cout<< "Switching storage structure in Recovery Mode: "<<param[2]<<" to "<<param[3]<<"\n";
+     return 1;
+   }
+
    Point *p = new Point(stof(param[4]),stof(param[5]));
    p->setId(stoi(param[3]));
 
    if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
      pc->insert(*p);
      cout<< "Inserting in Recovery Mode: " <<p->getCoordinates()[0]<<" , "<<p->getCoordinates()[1] <<"\n";
+     return 1;
+   }
+   
+ }
+ else if(collection == "rectangle"){
+   RectangleCollection *rc;
+   if(param[0]=="NA" && param[1] == "NA"){
+      cout << "pass";
+   }
+   else{
+      cout << param[2]<<"\n";
+      rc = Catalog::Instance()->getRectangleCollectionByName(param[0], param[1]);
+      if(rc == NULL){
+         rc = new RectangleCollection(param[0], param[1], stoi(param[2]), vector<Rectangle>());
+         CatalogItem *catItem = new CatalogItem(param[0], param[1], stoi(param[2]), rc);
+	 Catalog::Instance()->insert(catItem);
+      }
+   }
+   Rectangle *r = new Rectangle(stof(param[4]),stof(param[5]),stof(param[6]),stof(param[7]));
+   r->setId(stoi(param[3]));
+
+   if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
+     rc->insert(*r);
+     cout<< "Inserting in Recovery Mode:R " <<r->getCoordinates()[0]<<" , "<<r->getCoordinates()[1] <<r->getCoordinates()[2]<<" , "<<r->getCoordinates()[3] <<"\n";
    }
  }
 }
@@ -355,6 +386,8 @@ int PointCollection::getSize() {
 
 int PointCollection::switchStorageStructure(char newStructure)
 {
+  std::string log_entry = "point.switchStorageStructure(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) +","+std::to_string(newStructure) +")";
+  write_log(log_entry);
   collectionStructure = newStructure;
   if(newStructure == COLLECTION_STRUCT_UNSORTED)
   {
@@ -445,7 +478,13 @@ char RectangleCollection::getCollectionStructure() {
 
 int RectangleCollection::insert(Rectangle rec) {
   ds_rectangle *newRec = convertObjToStruct(rec);
-  newRec->id = recordId++;
+  //newRec->id = recordId++;
+  int id;
+  if(rec.getId() == 0)
+    id = recordId++;
+  else
+    id = rec.getId();
+  newRec->id = id;
   if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
     rectangles.push_back(*newRec);
     std::string log_entry = "rectangle.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newRec->id) + "," + std::to_string(newRec->top_x) + "," + std::to_string(newRec->top_y) + "," + std::to_string(newRec->bottom_x) + "," + std::to_string(newRec->bottom_y) + ")";
@@ -531,6 +570,9 @@ int RectangleCollection::getSize() {
 
 int RectangleCollection::switchStorageStructure(char newStructure)
 {
+  
+  std::string log_entry = "rectangle.switchStorageStructure(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) +","+std::to_string(newStructure) +")";
+  write_log(log_entry);
   collectionStructure = newStructure;
   if(newStructure == COLLECTION_STRUCT_UNSORTED)
   {
