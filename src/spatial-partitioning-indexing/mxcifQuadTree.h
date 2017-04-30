@@ -76,6 +76,8 @@ public:
 
         root->deleteNode();
 
+        delete this;
+
     }
 
     vector<qBoundingBox> queryRange(float x, float y, float width, float height)

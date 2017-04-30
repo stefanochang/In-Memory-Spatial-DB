@@ -75,6 +75,10 @@ int main()
 
     spatialIndexingRectsQueryRange(spatialIndexInterface,rectangleCollection,15,15,19,19);
 
+//    spatialIndexInterface->deleteIndex();
+
+    spatialIndexingRectsQueryRange(spatialIndexInterface,rectangleCollection,0,0,4,4);
+
     cout<<"\n Spatial Indexing Integration Testing Rectangles - Ended \n"<<endl;
 
     return 0;

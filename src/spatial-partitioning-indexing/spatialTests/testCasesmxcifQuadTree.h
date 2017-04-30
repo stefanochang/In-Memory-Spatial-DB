@@ -98,6 +98,19 @@ void mxcifQuadTreeTestCase1(int leafCapacity = 4)
     printmxcifQuadTreeRange(mxcifQT,3,6,8,26);
 
 
+    mxcifQT->print();
+
+    cout<<"\n\n\n\n\n Deleting Tree - Started"<<endl;
+    mxcifQT->deleteRoot();
+    cout<<"\n\n Deleting Tree - Ended"<<endl;
+
+    mxcifQT->print();
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 8"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,3,6,8,26);
+
+
     /**
      * CONCLUSION: Works fine
      */
