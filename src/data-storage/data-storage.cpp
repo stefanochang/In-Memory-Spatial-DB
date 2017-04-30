@@ -67,13 +67,10 @@ bool recoverData(){
   bool count=false;
   log_file.open("command_log.txt",fstream::app);
   while ( getline (log_file,line, ':') ){
-      //cout<<"\ncount:" << count <<"\n";
-      //cout <<line<< "\n";
       if(count && line != "" && line.length()>3 && line.substr(line.length()-2,2) =="NR"){
         string collection = line.substr(0,line.find_first_of(".",0));
         string op = line.substr(line.find_first_of(".",0)+1,line.find_first_of("(",0)-line.find_first_of(".",0)-1);
         string param = line.substr(line.find_first_of("(",0)+1, line.find_first_of(")",0)-line.find_first_of("(",0)-1);
-        //cout <<"Param"<< param<<"\n";
         string next;
         vector<string> result;
         for (string::const_iterator it = param.begin(); it != param.end(); it++) {
@@ -83,7 +80,6 @@ bool recoverData(){
             if (!next.empty()) {
                 // Add them to the result vector
                 result.push_back(next);
-                //cout<<"Nxt" << next<<"\n";
                 next.clear();
             }
             else{
@@ -98,7 +94,6 @@ bool recoverData(){
         if (!next.empty()){
           result.push_back(next);
         }
-        //cout << result.size();
         evaluate(collection, op, result);
         count = false;
       }
@@ -111,8 +106,6 @@ bool recoverData(){
 }
 
 bool evaluate(string collection,string op,  vector<string> param){
- //cout<<"In "<<endl;
- 
  if(collection == "point"){
    PointCollection *pc;
    if(param[0]=="NA" && param[1] == "NA"){
@@ -129,7 +122,7 @@ bool evaluate(string collection,string op,  vector<string> param){
    }
    if(op == "switchStorageStructure"){
      pc->switchStorageStructure(stoi(param[3]));
-     cout<< "Switching storage structure in Recovery Mode: "<<param[2]<<" to "<<param[3]<<"\n";
+     cout<< "Switching point storage structure in Recovery Mode: "<<param[2]<<" to "<<param[3]<<"\n";
      return 1;
    }
 
@@ -138,18 +131,22 @@ bool evaluate(string collection,string op,  vector<string> param){
 
    if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
      pc->insert(*p);
-     cout<< "Inserting in Recovery Mode: " <<p->getCoordinates()[0]<<" , "<<p->getCoordinates()[1] <<"\n";
+     cout<< "Inserting point in Recovery Mode: " <<p->getCoordinates()[0]<<" , "<<p->getCoordinates()[1] <<"\n";
      return 1;
    }
-   
+   if(op == "removeById"){
+     pc->removeById(stoi(param[3]));
+     cout<< "Deleting point in Recovery Mode: " <<param[3]<<"\n";
+     return 1;
+   }  
  }
  else if(collection == "rectangle"){
    RectangleCollection *rc;
    if(param[0]=="NA" && param[1] == "NA"){
       cout << "pass";
+      return 1;
    }
    else{
-      cout << param[2]<<"\n";
       rc = Catalog::Instance()->getRectangleCollectionByName(param[0], param[1]);
       if(rc == NULL){
          rc = new RectangleCollection(param[0], param[1], stoi(param[2]), vector<Rectangle>());
@@ -157,12 +154,24 @@ bool evaluate(string collection,string op,  vector<string> param){
 	 Catalog::Instance()->insert(catItem);
       }
    }
+   
+   if(op == "switchStorageStructure"){
+     rc->switchStorageStructure(stoi(param[3]));
+     cout<< "Switching point storage structure in Recovery Mode: "<<param[2]<<" to "<<param[3]<<"\n";
+     return 1;
+   }
    Rectangle *r = new Rectangle(stof(param[4]),stof(param[5]),stof(param[6]),stof(param[7]));
    r->setId(stoi(param[3]));
 
    if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
      rc->insert(*r);
-     cout<< "Inserting in Recovery Mode:R " <<r->getCoordinates()[0]<<" , "<<r->getCoordinates()[1] <<r->getCoordinates()[2]<<" , "<<r->getCoordinates()[3] <<"\n";
+     cout<< "Inserting rectangle in Recovery Mode: " <<r->getCoordinates()[0]<<" , "<<r->getCoordinates()[1] <<r->getCoordinates()[2]<<" , "<<r->getCoordinates()[3] <<"\n";
+     return 1;
+   }
+   if(op == "removeById"){
+     rc->removeById(stoi(param[3]));
+     cout<< "Deleting rectangle in Recovery Mode: " <<param[3]<<"\n";
+     return 1;
    }
  }
 }
