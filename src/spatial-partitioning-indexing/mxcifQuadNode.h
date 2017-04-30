@@ -240,7 +240,6 @@ public:
 
     void deleteNode()
     {
-        cout<<"delete node"<<endl;
 
         if(this->mxqnNW != NULL){this->mxqnNW->deleteNode();}
         if(this->mxqnNE != NULL){this->mxqnNE->deleteNode();}

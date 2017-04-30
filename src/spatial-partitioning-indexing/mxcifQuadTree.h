@@ -14,8 +14,8 @@ class mxcifQuadTree
 private:
     qPoint XY_POINT;
     qBoundingBox RANGE;
-
     mxcifQuadNode *root;
+
 
 public:
 
@@ -82,12 +82,14 @@ public:
 
     vector<qBoundingBox> queryRange(float x, float y, float width, float height)
     {
+
         vector<qBoundingBox> vQPoint;
-        if (root == NULL)
-            return vQPoint;
+        if (root == NULL)return vQPoint;
 
         XY_POINT.set(x,y);
         RANGE.set(&XY_POINT,width,height);
+
+
 
         vector<qBoundingBox> rectsInRange;
         root->queryRange(RANGE,rectsInRange);

@@ -88,9 +88,18 @@ int main()
 
     spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,-2.5,-2.5);
 
+
+    cout<<"\n\n\tUpdating Index - Started"<<endl;
+
     spatialIndexInterface->update(*pointCollection);
 
-    spatialIndexInterface->deleteIndex();
+    cout<<"\tUpdating Index - Ended"<<endl;
+
+//    cout<<"\n\n\tDeleting Index - Started"<<endl;
+//
+//    spatialIndexInterface->deleteIndex();
+//
+//    cout<<"\tDeleting Index - Ended"<<endl;
 
     spatialIndexingPointsQueryRange(spatialIndexInterface,pointCollection,0,0,100,100);
 

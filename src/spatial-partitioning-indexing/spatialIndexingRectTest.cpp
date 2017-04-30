@@ -75,9 +75,18 @@ int main()
 
     spatialIndexingRectsQueryRange(spatialIndexInterface,rectangleCollection,15,15,19,19);
 
+
+    cout<<"\n\n\tUpdating Index - Started"<<endl;
+
     spatialIndexInterface->update(*rectangleCollection);
 
+    cout<<"\tUpdating Index - Ended"<<endl;
+
+//    cout<<"\n\n\tDeleting Index - Started"<<endl;
+//
 //    spatialIndexInterface->deleteIndex();
+//
+//    cout<<"\tDeleting Index - Ended"<<endl;
 
     spatialIndexingRectsQueryRange(spatialIndexInterface,rectangleCollection,0,0,4,4);
 
