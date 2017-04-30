@@ -77,6 +77,27 @@ void mxcifQuadTreeTestCase1(int leafCapacity = 4)
     cout<<"\n\nmxcifQuadTree 1 - Query Range 2"<<endl;
     printmxcifQuadTreeRange(mxcifQT,23,23,33,33);
 
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 3"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,3,6,4,8);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 4"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,3,6,3,3);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 5"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,4,4,4,8);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 6"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,4,4,4,4);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 7"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,3,6,8,26);
+
+
     /**
      * CONCLUSION: Works fine
      */

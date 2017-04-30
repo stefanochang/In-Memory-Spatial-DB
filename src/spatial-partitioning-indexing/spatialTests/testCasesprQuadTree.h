@@ -104,6 +104,9 @@ void prQuadTreeTestCase2(int leafCapacity = 8)
     cout<<"\n\nprQuadTree 2 - Query Range 1"<<endl;
     printprQuadTreeRange(prQT,0,0,30,30);
 
+    cout<<"\n\nprQuadTree 2 - Query Range 1.0"<<endl;
+    printprQuadTreeRange(prQT,20,30,20,30);
+
     cout<<"\n\nprQuadTree 2 - Query Range 1.1"<<endl;
     printprQuadTreeRange(prQT,30,30,1,1);
 
@@ -211,11 +214,11 @@ void testprQuadTree(int leafCapacity = 8)
 {
     cout<<"\n\n prQuadTree Testing - Started"<<endl;
 
-    prQuadTreeTestCase1(leafCapacity);
-    prQuadTreeTestCase1Delete();
+//    prQuadTreeTestCase1(leafCapacity);
+//    prQuadTreeTestCase1Delete();
     prQuadTreeTestCase2(leafCapacity);
-    prQuadTreeTestCase3(leafCapacity);
-    prQuadTreeTestCase4(leafCapacity);
+//    prQuadTreeTestCase3(leafCapacity);
+//    prQuadTreeTestCase4(leafCapacity);
 
     cout<<"\n\n prQuadTree Testing - Ended"<<endl;
 

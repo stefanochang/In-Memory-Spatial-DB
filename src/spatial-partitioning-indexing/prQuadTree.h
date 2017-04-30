@@ -67,6 +67,8 @@ public:
 
         root->deleteNode();
 
+        delete this;
+
     }
 
 
