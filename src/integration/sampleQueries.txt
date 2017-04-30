@@ -1,6 +1,6 @@
 LOAD POINT adb pts pointsfile.txt 2
 LOAD RECTANGLE adb rects rectfile.txt 2
 SELECT [RECTANGLE rects|filterBy:distance:ge:5:0:0] [] [|]
-SELECT [POINT adb pts|filterBy:distance:ge:5:0:0] [] [|]
-SELECT [RECTANGLE adb rects|filterBy:distance:le:50:0:0] [] [|]
-SELECT [POINT adb pts|filterDistanceGT:5:0:0] [distanceJoin:500] [POINT adb pts|filterDistanceLT:5:0:0]
+SELECT [POINT adb pts DATA|filterBy:distance:ge:5:0:0] [] [|]
+SELECT [RECTANGLE adb rects SPATIAL|filterBy:distance:le:50:0:0] [] [|]
+SELECT [POINT adb pts SPATIAL|filterDistanceGT:5:0:0] [distanceJoin:500] [POINT adb pts DATA|filterDistanceLT:5:0:0]

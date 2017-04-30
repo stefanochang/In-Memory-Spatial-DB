@@ -260,7 +260,15 @@ void processSelectQuery(vector<string> query_tokens, string query) {
         qTree->setLeftRectangles(*left_rc);
     }
     qTree->setLeftFilter(left_filter_param);
-    
+    if(left_collection_details.size() > 3) {
+        if(left_collection_details[3].compare("SPATIAL") == 0) {
+            qTree->setLIndexType(SPATIAL_INDEX);
+        } else {
+            qTree->setLIndexType(DATA_INDEX);
+        }
+    } else {
+        qTree->setLIndexType(NO_INDEX);
+    }
 
     int root_param_end = query_param.substr(left_param_end+3).find("]");            
     string root = query_param.substr(left_param_end+3, root_param_end);
@@ -284,6 +292,15 @@ void processSelectQuery(vector<string> query_tokens, string query) {
             qTree->setRightRectangles(*right_rc);
         }                
         qTree->setRightFilter(right_filter_param);
+        if(right_collection_details.size() > 3) {
+            if(right_collection_details[3].compare("SPATIAL") == 0) {
+                qTree->setRIndexType(SPATIAL_INDEX);
+            } else {
+                qTree->setRIndexType(DATA_INDEX);
+            }
+        } else {
+            qTree->setRIndexType(NO_INDEX);
+        }
     }            
     print_query_result(qProcess->processQuery(*qTree));
 }
