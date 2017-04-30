@@ -4,7 +4,7 @@ Filter::Filter() {
 
 }
 
-Filter::Filter(char& filterType, vector<float>& inputParams) {
+Filter::Filter(char filterType, vector<float> inputParams) {
 	this->filterType = filterType;
 	this->inputParams = inputParams;
 }
