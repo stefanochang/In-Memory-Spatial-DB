@@ -87,38 +87,36 @@ vector<Filter> get_predicates_from_string(string predicates) {
 
 
 void print_query_result(QueryResult resultset) {
-    int resultType = resultset.getResultType();
+    int resultType, size;
+    resultType = resultset.getResultType();
     cout << "Result Type: " << resultType << endl;
     if (resultType == TYPE_POINT) {      
         PointCollection pc = resultset.getPointCollection(); 
-        int size = pc.getSize();
+        size = pc.getSize();
         for (int i=0; i< pc.getSize(); i++) {
             vector<Point> point = pc.getNext(1);
             vector<float> coords = point[0].getCoordinates();
             cout << "[(" << coords[0] << ", " << coords[1] << ")]" << endl;
-        }
-        cout << "ResultSet size: " << size << endl;
+        }        
     } else if (resultType == TYPE_RECTANGLE) {      
         RectangleCollection rc = resultset.getRectangleCollection(); 
-        int size = rc.getSize();
+        size = rc.getSize();
         for (int i=0; i < size; i++) {
             vector<Rectangle> rectangle = rc.getNext(1);
             vector<float> coords = rectangle[0].getCoordinates();
             cout << "[(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")]" << endl;
         }
-        cout << "ResultSet size: " << size << endl;
     } else if (resultType == TYPE_POINTPOINT) {      
         PointPointCollection ppc = resultset.getPointPointCollection(); 
-        int size = ppc.getSize();
+        size = ppc.getSize();
         for (int i=0; i< ppc.getSize(); i++) {
             vector<PointPoint> pointPoint = ppc.getNext(1);
             vector<float> coords = pointPoint[0].getCoordinates();
             cout << "[(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")]" << endl;
         }
-        cout << "ResultSet size: " << size << endl;
     } else if (resultType == TYPE_POINTRECTANGLE) {      
         PointRectangleCollection prc = resultset.getPointRectangleCollection(); 
-        int size = prc.getSize();
+        size = prc.getSize();
         for (int i=0; i< prc.getSize(); i++) {
             vector<PointRectangle> pointRectangle = prc.getNext(1);
             vector<float> coords = pointRectangle[0].getCoordinates();
@@ -126,20 +124,20 @@ void print_query_result(QueryResult resultset) {
                 << coords[2] << ", " << coords[3] << "), ("
                 << coords[4] << ", " << coords[5] << ")] ]" << endl;
         }
-        cout << "ResultSet size: " << size << endl;
     } else if (resultType == TYPE_RECTANGLERECTANGLE) {      
         RectangleRectangleCollection rrc = resultset.getRectangleRectangleCollection(); 
-        int size = rrc.getSize();
+        size = rrc.getSize();
         for (int i=0; i< rrc.getSize(); i++) {
             vector<RectangleRectangle> rectangleRectangle = rrc.getNext(1);
             vector<float> coords = rectangleRectangle[0].getCoordinates();
             cout << "[ [(" << coords[0] << ", " << coords[1] << "), (" << coords[2] << ", " << coords[3] << ")], " 
                 << "[(" << coords[4] << ", " << coords[5] << "), (" << coords[6] << ", " << coords[7] << ")] ]"<< endl;
         }
-        cout << "ResultSet size: " << size << endl;
     } else {
         cout << "ERROR: Unknown Collection Type." << endl;
+        return;
     }
+    cout << "ResultSet size: " << size << endl;
 }
 
 int getCollectionStructureFromString(string collection_structure) {
