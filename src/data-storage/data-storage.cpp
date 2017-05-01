@@ -135,7 +135,7 @@ bool evaluate(string collection,string op,  vector<string> param){
    if(op == "removeById"){
      pc->removeById(stoi(param[3]));
      return 1;
-   }  
+   }
  }
  else if(collection == "rectangle"){
    RectangleCollection *rc;
@@ -150,7 +150,7 @@ bool evaluate(string collection,string op,  vector<string> param){
 	 Catalog::Instance()->insert(catItem);
       }
    }
-   
+
    if(op == "switchStorageStructure"){
      rc->switchStorageStructure(stoi(param[3]));
      cout<< "Switching point storage structure in Recovery Mode: "<<param[2]<<" to "<<param[3]<<"\n";
@@ -580,7 +580,7 @@ int RectangleCollection::getSize() {
 
 int RectangleCollection::switchStorageStructure(char newStructure)
 {
-  
+
   std::string log_entry = "rectangle.switchStorageStructure(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) +","+std::to_string(newStructure) +")";
   write_log(log_entry);
   collectionStructure = newStructure;
@@ -1021,7 +1021,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
   }
   if(geomtype == TYPE_POINT) {
     float x, y;
-    PointCollection * collection = new PointCollection(dbName, tableName, collectionStruct, vector<Point>());
+    PointCollection * collection = new PointCollection(tableName, dbName, collectionStruct, vector<Point>());
     while(fscanf(fp, "%f,%f\n", &x, &y) == 2)
     {
       Point newPoint = Point(x, y);
@@ -1030,7 +1030,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_RECTANGLE) {
     float x1, y1, x2, y2;
-    RectangleCollection * collection = new RectangleCollection(dbName, tableName, collectionStruct, vector<Rectangle>());
+    RectangleCollection * collection = new RectangleCollection(tableName, dbName, collectionStruct, vector<Rectangle>());
     while(fscanf(fp, "%f,%f,%f,%f\n", &x1, &y1, &x2, &y2) == 4)
     {
       Rectangle rectangle = Rectangle(x1, y1, x2, y2);
@@ -1039,7 +1039,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_POINTPOINT) {
     float x1, y1, x2, y2;
-    PointPointCollection * collection = new PointPointCollection(dbName, tableName, collectionStruct, vector<PointPoint>());
+    PointPointCollection * collection = new PointPointCollection(tableName, dbName, collectionStruct, vector<PointPoint>());
     while(fscanf(fp, "%f,%f,%f,%f\n", &x1, &y1, &x2, &y2) == 4)
     {
       PointPoint pointPoint = PointPoint(x1, y1, x2, y2);
@@ -1048,7 +1048,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_POINTRECTANGLE) {
     float x1, y1, x2, y2, x3, y3;
-    PointRectangleCollection  * collection = new PointRectangleCollection(dbName, tableName, collectionStruct, vector<PointRectangle>());
+    PointRectangleCollection  * collection = new PointRectangleCollection(tableName, dbName, collectionStruct, vector<PointRectangle>());
     while(fscanf(fp, "%f,%f,%f,%f,%f,%f\n", &x1, &y1, &x2, &y2, &x3, &y3) == 6)
     {
       PointRectangle pointRectangle = PointRectangle(x1, y1, x2, y2, x3, y3);
@@ -1057,7 +1057,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_RECTANGLERECTANGLE) {
     float x1, y1, x2, y2, x3, y3, x4, y4;
-    RectangleRectangleCollection * collection = new RectangleRectangleCollection(dbName, tableName, collectionStruct, vector<RectangleRectangle>());
+    RectangleRectangleCollection * collection = new RectangleRectangleCollection(tableName, dbName, collectionStruct, vector<RectangleRectangle>());
     while(fscanf(fp, "%f,%f,%f,%f,%f,%f,%f,%f\n", &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4) == 8)
     {
       RectangleRectangle rectangleRectangle = RectangleRectangle(x1, y1, x2, y2, x3, y3, x4, y4);
