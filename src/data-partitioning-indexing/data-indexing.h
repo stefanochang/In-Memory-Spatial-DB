@@ -1,6 +1,5 @@
-#include "rtree-implementation.cpp"
+#include "r-tree-implementation.h"
 #include <typeinfo>
-
 class DataIndexingWrapper:public SpatialIndexInterface{
 	
 	
@@ -57,63 +56,3 @@ class DataIndexingWrapper:public SpatialIndexInterface{
 			return true;
 		}
 };
-
-
-
-
-
-
-
-
-
-int main(){
-
-	//DataIndexingWrapper d;
-	
-	Point *p;
-	p=new Point(1,1);
-
-	PointCollection *pointcollection=new PointCollection();
-
-	pointcollection->insert(*p);
-
-	p = new Point(2,2);
-
-	pointcollection->insert(*p);
-
-
-	p = new Point(3,3);
-	
-	pointcollection->insert(*p);
-
-	p = new Point(4,4);
-	
-	pointcollection->insert(*p);
-
-	// std::vector<Point> v;
-	// int s = pointcollection->getSize();
-
-
-	// for(int i=0;i<s;i++)
-	// {
-	// 	v = pointcollection->getNext();
-	// 	vector<float> points = v.at(0).getCoordinates();
-	// 	cout<<points.at(0)<<"  "<<points.at(1)<<endl;
-
-		
-
-	// }
-
-	SpatialIndexInterface *sp;
-	sp = new DataIndexingWrapper();
-
-	sp->createIndex(*pointcollection);
-
-	Rectangle *r = new Rectangle(0,0,2,2);
-
-//	PointCollection res = sp->searchPoint(*r);
-
-
-//	cout<<"Hello"<<" "<<res.getSize()<<endl;
-	return 0;
-}

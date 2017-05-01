@@ -10,6 +10,7 @@ using namespace std;
 #include <fstream>
 #include <sys/time.h>
 
+
 /* ************************************************************************************* *\
     CSE 591 - Advances in Databases - Spring 2017 - Project - Data Storage Module
     -------------------------------------------------------------------------------
@@ -223,6 +224,7 @@ public:
 PointCollection::PointCollection(){
   recordId = 1;
   getNextAt = 0;
+
   name = "";
   databaseName = "";
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
@@ -300,6 +302,7 @@ int PointCollection::insert(Point pnt) {
   else
     id = pnt.getId();
   ds_point *newPoint = convertObjToStruct(pnt);
+
   newPoint->id = id;
   if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
     insertSortedX(*newPoint);
@@ -324,7 +327,9 @@ int PointCollection::insert(Point pnt) {
 int PointCollection::insertSortedX(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, XCompare());
   points.insert( it, point);
+
   std::string log_entry = "point.insertSortedX(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(point.id) + "," + std::to_string(point.x) + "," + std::to_string(point.y) + ")";
+
   write_log(log_entry);
   return 1;
 }
@@ -332,9 +337,11 @@ int PointCollection::insertSortedX(ds_point point) {
 int PointCollection::insertSortedY(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, YCompare());
   points.insert( it, point);
+
   std::string log_entry = "point.insertSortedY(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(point.id) + "," + std::to_string(point.x) + "," + std::to_string(point.y) + ")";
   write_log(log_entry);
   return 1;
+
 }
 
 int PointCollection::insertBulk(PointCollection collection) {
@@ -360,7 +367,9 @@ int PointCollection::removeById(int deleteId) {
   for(it=points.begin() ; it < points.end(); it++ ) {
     if(it->id == deleteId)
     {
+
       std::string log_entry = "point.removeById(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(it->id) + "," + std::to_string(it->x) + "," + std::to_string(it->y) + ")";
+
       points.erase(it);
       write_log(log_entry);
       return 1;

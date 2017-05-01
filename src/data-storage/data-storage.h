@@ -256,6 +256,7 @@ class RectangleRectangleCollection {
 // COMMON FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 bool write_log(string command);
 
 /* Create a collection and load data into it from the given file */

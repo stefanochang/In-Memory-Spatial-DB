@@ -4,7 +4,7 @@
 #include <boost/geometry/index/rtree.hpp>
 
 // Header file for SpatialIndexInterface
-#include "../integration/spatial-index-interface.h"
+#include "spatial-index-interface.h"
 // to store queries results
 #include <vector>
 // just for output
@@ -22,13 +22,13 @@ typedef bg::model::point<float, 2, bg::cs::cartesian> boostpoint;
 typedef bg::model::box<boostpoint> boostbox;
 typedef std::pair<boostbox, unsigned> boostvalue;
 
-class PointDataIndex{
+class PointSpatialIndexR{
 	private:
 		bgi::rtree< boostpoint, bgi::linear<16> > rtreeObj;
 	
 	
 	public:
-		PointDataIndex() {}
+		PointSpatialIndexR() {}
     	
     	void createIndex(PointCollection points){
         	
@@ -36,23 +36,17 @@ class PointDataIndex{
 			bgi::rtree< boostpoint, bgi::linear<16> > rtreeinst;
 			
 			vector<Point> p;
-			int sizeOfColl = points.getSize();
-
-			for(int k=0;k<sizeOfColl;k++){
+		//	if(points!=NULL)
 				p = points.getNext();
-			
-				for(int i=0;i<p.size();i++){
+
+			for(int i=0;i<p.size();i++){
 				vector<float> vect;
 				
 				vect = p.at(i).getCoordinates();
 				rtreeinst.insert(boostpoint(vect.at(0),vect.at(1)));
-			
-				}
-			
+			//	cout<<rtreeinst.size()<<endl;
 			}
 
-			
-			cout<<"##################################"<<endl<<endl;
 			cout<<"Indexed "<<rtreeinst.size()<<endl;
 			rtreeObj = rtreeinst;
 			
@@ -77,24 +71,21 @@ class PointDataIndex{
 			//    std::cout << bg::wkt<point>(point(0, 0)) << std::endl;
 			//PointCollection points;
 			    
-			PointCollection *result=new PointCollection();
-
-			cout<<query_result.size()<<endl;
 			for(int x=0;x<query_result.size();x++){
 				x1 = query_result.at(x).get<0>();
 				y1 = query_result.at(x).get<1>();
 				
-							
-				Point temp(x1,y1);
+			
 
-				result->insert(temp);
+				Point temp(x1,y1);
+				returning.push_back(temp);
+			//	points.insert(temp);
+				temp.printpoints();
+
 
 			}
-
-			//PointCollection points(" "," ",0,returning);
-
-			cout<<"Points result"<<result->getSize()<<endl;
-			return *result;
+			PointCollection points(returning);
+			return points;
 		}
 		
 		bool update(PointCollection points){
@@ -107,14 +98,14 @@ class PointDataIndex{
 
 /////////////////////////////////////////////////////
 
-class RectangleDataIndex{
+class RectangleSpatialIndexR{
 
 	private:
 		bgi::rtree< boostvalue, bgi::quadratic<16> > rtreeObj;
 	
 	
 	public:
-		RectangleDataIndex(){
+		RectangleSpatialIndexR(){
 		}
 		
 		void createIndex(RectangleCollection rects){
@@ -125,28 +116,18 @@ class RectangleDataIndex{
 			
 			vector<Rectangle> r;
 			//if(rects!=NULL)
-
-			int sizeOfColl = rects.getSize();
-
-			for(int k=0;k<sizeOfColl;k++){
-
 				r = rects.getNext();
 			
-				for(int i=0;i<r.size();i++){
-					vector<float> vect;
+			for(int i=0;i<r.size();i++){
+				vector<float> vect;
 				
-					vect = r.at(i).getCoordinates();
+				vect = r.at(i).getCoordinates();
 				
-					boostbox b(boostpoint(vect.at(0), vect.at(1)), boostpoint(vect.at(2),vect.at(3)));
+				boostbox b(boostpoint(vect.at(0), vect.at(1)), boostpoint(vect.at(2),vect.at(3)));
 
-        			rtreeinst.insert(std::make_pair(b, i));	
+        		rtreeinst.insert(std::make_pair(b, i));	
 				
-				}
-
 			}
-
-				
-			cout<<"##################################"<<endl<<endl;
 			cout<<"Inserted "<<rtreeinst.size()<<" rectangles in R tree"<<endl;
 			rtreeObj = rtreeinst;
 			
@@ -164,11 +145,9 @@ class RectangleDataIndex{
 			vector<float> vect = r.getCoordinates();
 			
 			std::vector<boostvalue> result_s;
-    		rtreeObj.query(bgi::covered_by(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(result_s));
+    		rtreeObj.query(bgi::intersects(boostbox(boostpoint(vect.at(0),vect.at(1)),boostpoint(vect.at(2),vect.at(3)))), std::back_inserter(result_s));
 
     		std::vector<Rectangle> rects;
-
-    		RectangleCollection *result=new RectangleCollection();
 			
     		BOOST_FOREACH(boostvalue const& v, result_s){
 				float x1 = bg::get<bg::min_corner,0>(v.first); 
@@ -179,15 +158,15 @@ class RectangleDataIndex{
     			Rectangle temp(x1,y1,x2,y2);
 				rects.push_back(temp);
 
-				result->insert(temp);
-
+			//	points.insert(temp);
+				//temp.printpoints();
 
 
 			}
-
-			cout<<"Size of result "<<result->getSize()<<endl;
-
-			return *result;
+			RectangleCollection rc(rects);
+			rc.printcollection();
+	
+			return rc;
 		}
 		
 		

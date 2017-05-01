@@ -1,0 +1,52 @@
+Test Case 1:
+
+//Points
+
+	Point *p;
+	p=new Point(1,1);
+
+	PointCollection *pointcollection=new PointCollection();
+
+	pointcollection->insert(*p);
+
+	p = new Point(2,2);
+
+	pointcollection->insert(*p);
+
+
+	p = new Point(3,3);
+	
+	pointcollection->insert(*p);
+
+	p = new Point(4,4);
+	
+	pointcollection->insert(*p);
+
+	p=new Point(-1,-1);
+
+	pointcollection->insert(*p);
+
+	p = new Point(-2,-2);
+
+	pointcollection->insert(*p);
+
+
+	p = new Point(-3,-3);
+	
+	pointcollection->insert(*p);
+
+	p = new Point(-4,-4);
+	
+	pointcollection->insert(*p);
+
+	//   Boundary boxes
+
+	Rectangle *r1=new Rectangle(0,0,2.5,2.5);
+
+	Rectangle *r2=new Rectangle(-5,-5,5,5);
+
+
+
+
+
+
