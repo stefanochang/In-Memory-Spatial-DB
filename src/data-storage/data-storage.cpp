@@ -23,7 +23,6 @@ using namespace std;
 \* ************************************************************************************* */
 
 bool recoveryMode = false;
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +115,6 @@ bool evaluate(string collection,string op,  vector<string> param){
  if(collection == "point"){
    PointCollection *pc;
    if(param[0]=="NA" && param[1] == "NA"){
-      cout << "pass";
       return 1;
    }
    else{
@@ -138,7 +136,6 @@ bool evaluate(string collection,string op,  vector<string> param){
 
    if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
      pc->insert(*p);
-     cout<< "Inserting in Recovery Mode: " <<p->getCoordinates()[0]<<" , "<<p->getCoordinates()[1] <<"\n";
      return 1;
    }
    
@@ -146,7 +143,6 @@ bool evaluate(string collection,string op,  vector<string> param){
  else if(collection == "rectangle"){
    RectangleCollection *rc;
    if(param[0]=="NA" && param[1] == "NA"){
-      cout << "pass";
    }
    else{
       cout << param[2]<<"\n";
@@ -162,7 +158,6 @@ bool evaluate(string collection,string op,  vector<string> param){
 
    if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
      rc->insert(*r);
-     cout<< "Inserting in Recovery Mode:R " <<r->getCoordinates()[0]<<" , "<<r->getCoordinates()[1] <<r->getCoordinates()[2]<<" , "<<r->getCoordinates()[3] <<"\n";
    }
  }
 }
@@ -333,7 +328,6 @@ int PointCollection::insertSortedY(ds_point point) {
   std::string log_entry = "point.insertSortedY(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(point.id) + "," + std::to_string(point.x) + "," + std::to_string(point.y) + ")";
   write_log(log_entry);
   return 1;
-
 }
 
 int PointCollection::insertBulk(PointCollection collection) {

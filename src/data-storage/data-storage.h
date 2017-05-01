@@ -256,6 +256,8 @@ class RectangleRectangleCollection {
 // COMMON FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+bool write_log(string command);
+
 /* Create a collection and load data into it from the given file */
 int loadData(string dbName, string tableName, int geomtype, string filepath, char collectionStruct);
 
@@ -267,29 +269,4 @@ bool evaluate(string collection,string op,  vector<string>);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*
-// Insert a single point
-bool insertData(GeometryCollection *pointsRepo, Point pointToInsert);
-
-//insert a single rectangle
-bool insertData(GeometryCollection *rectanglesRepo, Rectangle rectangleToInsert);
-
-
-//insert a single pointpoint
-bool insertData(GeometryCollection *pointpointrepo, PointPoint pntpntToInsert);
-
-
-//insert a single PointRectangle
-bool insertData(GeometryCollection *recpointrepo, PointRectangle pntrectangleToInsert);
-
-//insert a single RectangleRectangle
-bool insertData(GeometryCollection *recrectanglesRepo, RectangleRectangle recrectangleToInsert);
-
-//insert a GeometryCollection of items
-bool insertDataBulk(GeometryCollection *repo, GeometryCollection geometryToInsert);
-
-
-//delete item with id equals geomid
-bool deleteData(GeometryCollection repo, int geomId);
-*/
 #endif

@@ -191,7 +191,7 @@ bool testGetPointByUUID() {
     return false;
   }
 
-  point = pntcollection->getById(1);
+  point = pntcollection->getById(2);
   resultPointCoordinates = point.getCoordinates();
 
   bool testResultPointCoordinates2 = resultPointCoordinates[0] == 12.35f && resultPointCoordinates[1] == 10.34f;
