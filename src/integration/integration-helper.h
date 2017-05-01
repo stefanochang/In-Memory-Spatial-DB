@@ -82,7 +82,7 @@ vector<Filter> get_predicates_from_string(string predicates) {
         Filter* f = new Filter(getFilterType(params[0]), filterParams);
         predicateVector.push_back(*f);   
     }    
-    return predicate_vector;
+    return predicateVector;
 }
 
 
@@ -268,7 +268,7 @@ void processSelectQuery(vector<string> query_tokens, string query) {
         } else if(left_collection_details[3].compare("DATA-INDEX") == 0) {
             qTree->setLIndexType(DATA_INDEX);
         } else {
-            cout << "WARNING: Unknown index type. Index not applied."
+            cout << "WARNING: Unknown index type. Index not applied.";
             qTree->setLIndexType(NO_INDEX);    
         }
     } else {
@@ -310,7 +310,7 @@ void processSelectQuery(vector<string> query_tokens, string query) {
     print_query_result(qProcess->processQuery(*qTree));
 }
 
-void parseQuery(query) {
+void parseQuery(string query) {
     vector<string> query_tokens = split(query, " "); 
     if(query_tokens[0].compare("LOAD") == 0) {            
         processLoadQuery(query_tokens);

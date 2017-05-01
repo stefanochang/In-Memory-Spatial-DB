@@ -1,6 +1,6 @@
 LOAD POINT adb pts pointsfile.txt unsorted
 LOAD RECTANGLE adb rects rectfile.txt unsorted
-LOAD RECTANGLE adb rects zcta510.csv unsorted
+LOAD RECTANGLE adb rects2 zcta510.csv unsorted
 INSERT POINT adb pts -88 32
 INSERT RECTANGLE adb rects -82.2 40.8 -82.1 40.9
 SELECT [POINT adb pts|filterDistanceGE:5:0:0] [] [|]
@@ -11,18 +11,18 @@ SELECT [POINT adb pts|filterDistanceGE:5:0:0] [knnJoin:1] [POINT adb pts|filterD
 CREATE DATA-INDEX POINT adb pts 
 CREATE DATA-INDEX RECTANGLE adb rects 
 CREATE DATA-INDEX RECTANGLE adb rects2 
-SELECT [POINT adb pts DATA|filterDistanceGE:5:0:0] [distanceJoin:500] [POINT adb pts DATA|filterDistanceGT:5:0:0]
-SELECT [POINT adb pts DATA|filterDistanceGE:5:0:0] [rangeJoin] [POINT adb pts SPATIAL|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts DATA-INDEX|filterDistanceGE:5:0:0] [distanceJoin:500] [POINT adb pts DATA-INDEX|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts DATA-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [POINT adb pts DATA-INDEX|filterDistanceGT:5:0:0]
 CREATE SPATIAL-INDEX POINT adb pts
 CREATE SPATIAL-INDEX RECTANGLE adb rects
 CREATE SPATIAL-INDEX RECTANGLE adb rects2
-SELECT [POINT adb pts SPATIAL|filterDistanceGE:5:0:0] [rangeJoin] [POINT adb pts SPATIAL|filterDistanceGT:5:0:0]
-SELECT [POINT adb pts DATA|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 DATA|filterDistanceGT:5:0:0]
-SELECT [POINT adb pts DATA|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects DATA|filterDistanceGT:5:0:0]
-SELECT [POINT adb pts SPATIAL|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects SPATIAL|filterDistanceGT:5:0:0]
-SELECT [POINT adb pts SPATIAL|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 SPATIAL|filterDistanceGT:5:0:0]
-SELECT [POINT adb pts SPATIAL|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 DATA|filterDistanceGT:5:0:0]
-SELECT [POINT adb pts DATA|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 SPATIAL|filterDistanceGT:5:0:0]
-SELECT [POINT adb pts SPATIAL|filterDistanceGE:5:0:0] [knnJoin:10] [RECTANGLE adb rects2 DATA|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts SPATIAL-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [POINT adb pts SPATIAL-INDEX|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts DATA-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 DATA-INDEX|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts DATA-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects DATA-INDEX|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts SPATIAL-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects SPATIAL-INDEX|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts SPATIAL-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 SPATIAL-INDEX|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts SPATIAL-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 DATA-INDEX|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts DATA-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 SPATIAL-INDEX|filterDistanceGT:5:0:0]
+SELECT [POINT adb pts SPATIAL-INDEX|filterDistanceGE:5:0:0] [knnJoin:10] [RECTANGLE adb rects2 DATA-INDEX|filterDistanceGT:5:0:0]
 SELECT [POINT adb pts|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2|filterDistanceGT:5:0:0]
-SELECT [RECTANGLE adb rects DATA|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 DATA|filterDistanceGT:5:0:0]
+SELECT [RECTANGLE adb rects DATA-INDEX|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects2 DATA-INDEX|filterDistanceGT:5:0:0]

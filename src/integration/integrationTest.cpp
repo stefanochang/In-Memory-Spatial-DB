@@ -23,7 +23,7 @@ int main(int argc,char *argv[]) {
     if (testFileReader.is_open()) {
         while (!testFileReader.eof()) {
             getline(testFileReader, query);
-            cout << "EXECUTING: " << query << endl;
+            cout << "\n\nEXECUTING: " << query << endl;
             if(pauseAfterQueryExec) {
                 cin.get();
             }
