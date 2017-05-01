@@ -205,10 +205,10 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 			else if (rightDataPoint.isEmpty() && !rightDataRect.isEmpty()) {
 				if (qTree.getRIndexType() != NO_INDEX) {
 					if (qTree.getRIndexType() == DATA_INDEX) {
-						rIndexptr = Catalog::Instance()->getDataIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+						rIndexptr = Catalog::Instance()->getDataIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
 					}
 					else {
-						rIndexptr = Catalog::Instance()->getSpatialIndexedCollection(rightDataPoint.getDBName(), rightDataPoint.getTableName());
+						rIndexptr = Catalog::Instance()->getSpatialIndexedCollection(rightDataRect.getDBName(), rightDataRect.getTableName());
 					}
 					if (rIndexptr == NULL) {
 						cout<< "\nQuery requires index but catalog has returned null 6" <<endl;
