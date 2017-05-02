@@ -35,7 +35,7 @@ class PointDataIndex{
 			
 			vector<Point> p;
 			int sizeOfColl = points.getSize();
-			vector<Point> packedPoints;
+			vector<boostpoint> packedPoints;
 			
 			for(int k=0;k<sizeOfColl;k++){
 				p = points.getNext();
@@ -117,7 +117,7 @@ class RectangleDataIndex{
 			
 			vector<Rectangle> r;
 			//if(rects!=NULL)
-			vector<Rectangle> packedRectangles;
+			vector<boostvalue> packedRectangles;
 			
 			int sizeOfColl = rects.getSize();
 			int id=0;
