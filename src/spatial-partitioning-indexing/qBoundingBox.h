@@ -162,6 +162,10 @@ public:
         return ((boundingBox.minX >= minX && boundingBox.maxX <= maxX) && ( boundingBox.minY >= minY && boundingBox.maxY <= maxY));
     }
 
+    bool canContain(qBoundingBox box) {
+        return ((box.minX >= this->minX && box.maxX <= this->maxX) && ( box.minY >= this->minY && box.maxY <= this->maxY));
+    }
+
     bool intersectsBox(qBoundingBox boundingBox) {
 
         if (insideThis(boundingBox) || boundingBox.insideThis(*this)) return true;
@@ -270,6 +274,9 @@ public:
 
         finalX += finalX/2;
         finalY += finalY/2;
+
+//        finalX += finalX;
+//        finalY += finalY;
 
 
         float finalWidth = finalX*2;

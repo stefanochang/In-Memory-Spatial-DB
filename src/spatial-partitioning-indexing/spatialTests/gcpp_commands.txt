@@ -1,0 +1,3 @@
+g++ -std=c++0x src/spatial-partitioning-indexing/spatialIndexingPointTest.cpp src/integration/catalog.cpp src/data-storage/data-storage.cpp src/integration/geometry.cpp
+
+g++ -std=c++0x src/spatial-partitioning-indexing/spatialIndexingRectTest.cpp src/integration/catalog.cpp src/data-storage/data-storage.cpp src/integration/geometry.cpp

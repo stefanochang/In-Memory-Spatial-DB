@@ -12,7 +12,7 @@
 using namespace std;
 
 
-void testmxcifQuadNode()
+void testmxcifQuadNode(int leafCapacity = 4)
 {
     cout<<"\n\n mxcifQuadNode Testing - Started"<<endl;
 
@@ -22,7 +22,7 @@ void testmxcifQuadNode()
 
     cout<<"\n\n mxcifQuadNode spatialTests Case 2"<<endl;
     qBoundingBox *tqbb1 = new qBoundingBox(0,0,100,100);
-    mxcifQuadNode *mxcifQuadNode2= new mxcifQuadNode(*tqbb1);
+    mxcifQuadNode *mxcifQuadNode2= new mxcifQuadNode(*tqbb1, leafCapacity);
     mxcifQuadNode2->print();
 
     cout<<"\n\n mxcifQuadNode Testing - Ended"<<endl;
@@ -31,6 +31,7 @@ void testmxcifQuadNode()
 
 void printmxcifQuadTreeRange(mxcifQuadTree *mxcifQT,float x, float y, float width, float height)
 {
+    cout << "\n\n\tQuery Range For ( "<<x<<" , "<<y<<" ) , ( "<<width<<" , "<<height<<" ) "<<endl;
     vector<qBoundingBox> vQBoundingBox = mxcifQT->queryRange(x,y,width,height);
     printQBoundingBoxVectors(vQBoundingBox);
 
@@ -41,7 +42,7 @@ vector<qBoundingBox*> rectanglesTestCase1(){
 
     vector<qBoundingBox*> vQBoundingBox;
 
-    vQBoundingBox.push_back(qBoundingBox::createRectangle(3,6,8,36,1));
+    vQBoundingBox.push_back(qBoundingBox::createRectangle(3,6,8,26,1));
     vQBoundingBox.push_back(qBoundingBox::createRectangle(25,34,34,38,2));
     vQBoundingBox.push_back(qBoundingBox::createRectangle(33,21,37,36,3));
     vQBoundingBox.push_back(qBoundingBox::createRectangle(21,23,38,27,4));
@@ -56,13 +57,13 @@ vector<qBoundingBox*> rectanglesTestCase1(){
 
 }
 
-void mxcifQuadTreeTestCase1()
+void mxcifQuadTreeTestCase1(int leafCapacity = 4)
 {
     cout<<"\n\nmxcifQuadTree spatialTests Case 1"<<endl;
 
     vector<qBoundingBox*> testQBoundingBoxes = rectanglesTestCase1();
     qBoundingBox *QBB = qBoundingBox::getQBoundingBoxCooridinates(testQBoundingBoxes);
-    mxcifQuadTree *mxcifQT = new mxcifQuadTree(QBB);
+    mxcifQuadTree *mxcifQT = new mxcifQuadTree(QBB,leafCapacity);
 
     for(int i=0;i<testQBoundingBoxes.size();i++) {
         mxcifQT->insert(testQBoundingBoxes[i]);
@@ -72,17 +73,55 @@ void mxcifQuadTreeTestCase1()
     cout<<"\n\nmxcifQuadTree 1 - Query Range 1"<<endl;
     printmxcifQuadTreeRange(mxcifQT,0,0,10,10);
 
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 2"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,23,23,33,33);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 3"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,3,6,4,8);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 4"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,3,6,3,3);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 5"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,4,4,4,8);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 6"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,4,4,4,4);
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 7"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,3,6,8,26);
+
+
+    mxcifQT->print();
+
+    cout<<"\n\n\n\n\n Deleting Tree - Started"<<endl;
+    mxcifQT->deleteRoot();
+    cout<<"\n\n Deleting Tree - Ended"<<endl;
+
+    mxcifQT->print();
+
+    cout<<"\n\n\n\n\n"<<endl;
+    cout<<"\n\nmxcifQuadTree 1 - Query Range 8"<<endl;
+    printmxcifQuadTreeRange(mxcifQT,3,6,8,26);
+
+
     /**
      * CONCLUSION: Works fine
      */
 }
 
 
-void testmxcifQuadTree()
+void testmxcifQuadTree(int leafCapacity = 4)
 {
     cout<<"\n\n mxcifQuadTree Testing - Started"<<endl;
 
-    mxcifQuadTreeTestCase1();
+    mxcifQuadTreeTestCase1(leafCapacity);
 
     cout<<"\n\n mxcifQuadTree Testing - Ended"<<endl;
 
