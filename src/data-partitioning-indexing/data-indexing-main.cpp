@@ -90,20 +90,6 @@ int main(){
 	
 	pointcollection->insert(*p);
 
-	// std::vector<Point> v;
-	// int s = pointcollection->getSize();
-
-
-	// for(int i=0;i<s;i++)
-	// {
-	// 	v = pointcollection->getNext();
-	// 	vector<float> points = v.at(0).getCoordinates();
-	// 	cout<<points.at(0)<<"  "<<points.at(1)<<endl;
-
-		
-
-	// }
-
 	SpatialIndexInterface *sp;
 	sp = new DataIndexingWrapper();
 
