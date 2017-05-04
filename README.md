@@ -1,7 +1,7 @@
 # In-Memory-Spatial-DB
 
 ## Introduction
-The following application is designed by 5 separate teams as part of the group project for CSE 591, Advances in Database class. Each team is responsible for four different modules and integration. The 5 modules of the designed database are:
+This is a fully functional prototype of a database system that resides entirely in-memory, optimized specifically for efficient storage, management and processing of geo-spatial data. The application was designed and implemented by five separate teams as part of the group project for CSE 591: Advanced Database Systems class. Each team is responsible for four different modules and integration. The five modules of the designed database system are:
 ```bashp
 Data Storage
 Query Processing
@@ -9,7 +9,7 @@ Spatial Index
 Data Index
 Modules Integration
 ```
-Application is designed to work independent of each other modules if required. The code is written in C++ with a common interface that brings all different modules together. In future, more modules can be implemented if the standard integration norms are followed. These standards are briefly described below in Integration modules section and more details can be found in integration document.
+The code is written in C++ with a common interface that brings all different modules together. In future, more modules can be implemented if the standard integration norms are followed. These standards are briefly described below in Integration modules section and more details can be found in the integration document.
 The data used for the application is obtained from http://spatialhadoop.cs.umn.edu/datasets.html
 
 ### How It Works
