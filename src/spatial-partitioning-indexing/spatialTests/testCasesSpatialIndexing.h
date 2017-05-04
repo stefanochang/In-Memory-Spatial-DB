@@ -10,11 +10,11 @@
 #include "testCasesprQuadTree.h"
 #include "testCasesprQuadTreeBulkLoad.h"
 #include "testCasesmxcifQuadTree.h"
-
+#include "testCasesmxcifQuadTreeBulkLoad.h"
 
 using namespace std;
 
-void executeSpatialIndexingTestCases(int leafCapacity = 8)
+void executeSpatialIndexingTestCases(int leafCapacity = 8, char quadTree = 'e', int loop_exit = 0)
 {
 
     milliseconds start_ms = duration_cast< milliseconds >(
@@ -22,13 +22,26 @@ void executeSpatialIndexingTestCases(int leafCapacity = 8)
     );
 
     cout<<"\n\n\nSpatial Indexing Testing - Started"<<endl;
-//    testQPoints();
-//    testQBoundingBox();
-//    testprQuadNode();
-    testprQuadTree(leafCapacity);
-//    testprQuadTreeBulkLoad(leafCapacity);
-//    testmxcifQuadNode(leafCapacity);
-//    testmxcifQuadTree(leafCapacity);
+
+
+    if(quadTree == 'p')
+    {
+            testprQuadTreeBulkLoad(leafCapacity);
+    }
+    else if(quadTree == 'r')
+    {
+        testmxcifQuadTreeBulkLoad(leafCapacity);
+    } else
+    {
+//        testQPoints();
+//        testQBoundingBox();
+//        testprQuadNode();
+//        testprQuadTree(leafCapacity);
+//        testprQuadTreeBulkLoad(leafCapacity);
+//        testmxcifQuadNode(leafCapacity);
+//        testmxcifQuadTree(leafCapacity);
+        testmxcifQuadTreeBulkLoad(leafCapacity);
+    }
 
     cout<<"\n\n\nSpatial Indexing Testing - Ended"<<endl;
 
@@ -42,7 +55,7 @@ void executeSpatialIndexingTestCases(int leafCapacity = 8)
 
     cout<<"\n\n\n Time Elapsed = "<<std::to_string(diff_ms.count())<<endl;
 
-    int min_exit = 0;
+    int min_exit = loop_exit;
     int milli_sec = 60000;
     long total_time = min_exit*milli_sec;
 

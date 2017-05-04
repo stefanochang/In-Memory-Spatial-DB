@@ -138,7 +138,7 @@ public:
         float h = qbb.getHeight()/2;
         float w = qbb.getWidth()/2;
         //min width and min height check
-        if (w < 1 || h < 1) return ;
+//        if (w < 1 || h < 1) return ;
 
         float current_x = qbb.getX() + w;
         float current_y = qbb.getY() + h;

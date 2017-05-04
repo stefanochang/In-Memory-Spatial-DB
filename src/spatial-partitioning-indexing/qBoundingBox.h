@@ -293,8 +293,8 @@ public:
 
         qBoundingBox* qbb = new qBoundingBox(qbbID);
 
-        int curHeight = (int)(maxY - minY);
-        int curWidth = (int)(maxX - minX);
+        float curHeight = (maxY - minY);
+        float curWidth = (maxX - minX);
 
         qbb->setHeight(curHeight);
         qbb->setWidth(curWidth);
@@ -310,8 +310,8 @@ public:
 
         qBoundingBox* qbb = new qBoundingBox(id);
 
-        int curHeight = (int)(maxY - minY);
-        int curWidth = (int)(maxX - minX);
+        float curHeight = (maxY - minY);
+        float curWidth = (maxX - minX);
 
         qbb->setHeight(curHeight);
         qbb->setWidth(curWidth);

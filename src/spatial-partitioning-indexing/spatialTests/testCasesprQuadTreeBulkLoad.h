@@ -154,7 +154,7 @@ void testprQuadTreeBulkLoad(int leafCapacity = 8) {
 
     cout<<"\n\t\t Average Search Time = "<<total_search_time<<endl;
 
-    prQuadTreeBulkDelete(prQT);
+//    prQuadTreeBulkDelete(prQT);
 
     cout << "\n\n prQuadTree Leaf Capacity = "<<leafCapacity<<" Testing - Ended" << endl;
 }
