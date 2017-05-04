@@ -3,8 +3,8 @@
 ## Introduction
 The following application is designed by 5 separate teams as part of the group project for CSE 591, Advances in Database class. Each team is responsible for four different modules and integration. The 5 modules of the designed database are:
 ```bashp
-Query Processing
 Data Storage
+Query Processing
 Spatial Index
 Data Index
 Modules Integration
@@ -99,10 +99,12 @@ Query Processing Interface:
 
 ## Query Structure and Examples
 ### Load queries
-LOAD <database_name> <table_name> <data_type> <file_path> <collection_structure_type>
+LOAD <data_type> <database_name> <table_name> <file_path> <collection_structure_type>
+
+Four types of collection structures are supported - unsorted, sortedx, sortedy, hilbert.
 ```
-LOAD adb pts POINT pointsfile.txt 2
-LOAD adb rects RECTANGLE rectfile.txt 2
+LOAD POINT adb pts pointsfile.txt unsorted
+LOAD RECTANGLE adb rects rectfile.txt sortedx
 ```
 ### Insert queries
 INSERT <data_type> <database_name> <table_name> <param>
@@ -116,6 +118,12 @@ CREATE DATA-INDEX <data_type> <database_name> <table_name>
 ```
 CREATE DATA-INDEX POINT adb pts
 CREATE DATA-INDEX RECTANGLE adb rects
+```
+
+CREATE SPATIAL-INDEX <data_type> <database_name> <table_name>
+```
+CREATE SPATIAL-INDEX POINT adb pts
+CREATE SPATIAL-INDEX RECTANGLE adb rects
 ```
 
 ### Select queries
@@ -140,7 +148,8 @@ SELECT [RECTANGLE adb rects|filterDistanceLE:10:-88:32] [] [|]
 ```
 
 ### Join queries
-Join queries operate on two collections which can either be both points and both rectangles, or one point collection and one rectangle collection. Three types of joins are supported by this system - Range Join, Distance Join and KNN Join.
+Join queries operate on two collections which can either be both points and both rectangles, or one point collection and one rectangle collection. 
+Three types of joins are supported by this system - Range Join, Distance Join and KNN Join. Range Join takes no parameters, while distance join takes requires the distance value as parameter, and KNN join requires the value of K as parameter.
 ```
 SELECT [POINT adb pts1|filterDistanceGE:5:0:0] [distanceJoin:500] [POINT adb pts2|filterDistanceGT:5:0:0]
 SELECT [POINT adb pts|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects|filterDistanceGT:5:0:0]
