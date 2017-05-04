@@ -12,9 +12,9 @@ Modules Integration
 The code is written in C++ with a common interface that brings all different modules together. In future, more modules can be implemented if the standard integration norms are followed. These standards are briefly described below in Integration modules section and more details can be found in the integration document.
 The data used for the application is obtained from http://spatialhadoop.cs.umn.edu/datasets.html
 
-### How It Works
+## How It Works
 The system is composed of four main modules, namely query processing (src/query-processing/README), data storage (src/data-storage/README), spatial indexing (src/spatial-partitioning-indexing/README) and data partitioning indexing (src/data-partitioning-indexing/README). The approach to the project was to define the interface to each module prior to its development, and modify as necessary as the project begins to come together. 
-All modules are communicating with each other as necessary, and is not controlled by a master module who takes the input and output of each module and passes it along until the query is completely executed. For example, the query processing team 
+All modules are communicating with each other as necessary, and is not controlled by a master module who takes the input and output of each module and passes it along until the query is completely executed.
 
 ## Installation
 The code is written in C++. To run the code version 6.3.0 or up is required. 
@@ -106,6 +106,7 @@ Four types of collection structures are supported - unsorted, sortedx, sortedy, 
 LOAD POINT adb pts pointsfile.txt unsorted
 LOAD RECTANGLE adb rects rectfile.txt sortedx
 ```
+
 ### Insert queries
 INSERT <data_type> <database_name> <table_name> <param>
 ```
@@ -127,7 +128,7 @@ CREATE SPATIAL-INDEX RECTANGLE adb rects
 ```
 
 ### Select queries
-SELECT [left_branch][root][right_branch]
+SELECT [left_branch] [root] [right_branch]
 
 In the above mentioned SELECT query, left_branch will be:  
 <data_type> <database_name> <table_name> | <operation_name_1>:<operation_params_1>
@@ -156,14 +157,14 @@ SELECT [POINT adb pts|filterDistanceGE:5:0:0] [rangeJoin] [RECTANGLE adb rects|f
 SELECT [RECTANGLE adb rects1|filterDistanceGE:5:0:0] [knnJoin:1] [RECTANGLE adb rects2|filterDistanceGT:5:0:0]
 ```
 
-### Select queries with Index
+### Select queries with index
 The system also allows users to specify what kind of index has to be used for range and join queries. For join queries, there is support for the following formats:
 1. Both branches with the same type of index (data/spatial).
 2. One branch with index (data/spatial) and the other branch without index.
 3. One branch with data index and the other branch with spatial index.
 
 The structure of select queries with index is as follows:
-SELECT [left_branch_with_index][root][right_branch_with_index]
+SELECT [left_branch] [root] [right_branch]
 
 In the above mentioned SELECT query, left_branch will be:  
 <data_type> <database_name> <table_name> <index_type>| <operation_name_1>:<operation_params_1>
