@@ -10,24 +10,166 @@ using namespace std;
 #include <fstream>
 #include <sys/time.h>
 
+
+/* ************************************************************************************* *\
+    CSE 591 - Advances in Databases - Spring 2017 - Project - Data Storage Module
+    -------------------------------------------------------------------------------
+
+    File: data-storage.cpp
+
+    This file contains function definitions which are declared in the data-storage.h file
+
+    -- Ajay Kulkarni, Anuran Duttaroy, Dhanashree Adhikari, Nilam Bari, Omkar Kaptan --
+
+\* ************************************************************************************* */
+
+bool recoveryMode = false;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool write_log(string command) {
-  timeval tv;
-  gettimeofday(&tv, 0);
+  if(!recoveryMode){
+	  timeval tv;
+	  gettimeofday(&tv, 0);
 
-  fstream log_file;
-  log_file.open("command_log.txt",fstream::app);
-  if(log_file << &tv << " : " << command << std::endl) {
-    log_file.close();
-    return true;
-  }
-  else {
-    log_file.close();
-    return false;
-  }
+	  fstream log_file;
+	  log_file.open("command_log.txt",fstream::app);
+	  if(log_file << &tv << ":" << command <<"NR:"<< std::endl) {
+	    log_file.close();
+	    return true;
+	  }
+	  else {
+	    log_file.close();
+	    return false;
+	  }
+   }
+   else{
+   	  timeval tv;
+	  gettimeofday(&tv, 0);
+
+	  fstream log_file;
+	  log_file.open("command_log.txt",fstream::app);
+	  if(log_file << &tv << ":" << command <<"YR:"<< std::endl) {
+	    log_file.close();
+	    return true;
+	  }
+	  else {
+	    log_file.close();
+	    return false;
+	  }
+   }
 }
+
+bool recoverData(){
+  recoveryMode = true;
+  ifstream log_file;
+  string line;
+  bool count=false;
+  log_file.open("command_log.txt",fstream::app);
+  while ( getline (log_file,line, ':') ){
+      if(count && line != "" && line.length()>3 && line.substr(line.length()-2,2) =="NR"){
+        string collection = line.substr(0,line.find_first_of(".",0));
+        string op = line.substr(line.find_first_of(".",0)+1,line.find_first_of("(",0)-line.find_first_of(".",0)-1);
+        string param = line.substr(line.find_first_of("(",0)+1, line.find_first_of(")",0)-line.find_first_of("(",0)-1);
+        string next;
+        vector<string> result;
+        for (string::const_iterator it = param.begin(); it != param.end(); it++) {
+        // If we've hit the terminal character
+          if (*it == ',') {
+            // If we have some characters accumulated
+            if (!next.empty()) {
+                // Add them to the result vector
+                result.push_back(next);
+                next.clear();
+            }
+            else{
+                result.push_back("NA");
+            }
+          }
+          else{
+            // Accumulate the next character into the sequence
+            next += *it;
+          }
+        }
+        if (!next.empty()){
+          result.push_back(next);
+        }
+        evaluate(collection, op, result);
+        count = false;
+      }
+      else{
+        count = true;
+      }
+    }
+    log_file.close();
+    recoveryMode = false;
+}
+
+bool evaluate(string collection,string op,  vector<string> param){
+ if(collection == "point"){
+   PointCollection *pc;
+   if(param[0]=="NA" && param[1] == "NA"){
+      return 1;
+   }
+   else{
+      pc = Catalog::Instance()->getPointCollectionByName(param[0], param[1]);
+      if(pc == NULL){
+         pc = new PointCollection(param[0], param[1], stoi(param[2]), vector<Point>());
+         CatalogItem *catItem = new CatalogItem(param[0], param[1], stoi(param[2]), pc);
+	 Catalog::Instance()->insert(catItem);
+      }
+   }
+   if(op == "switchStorageStructure"){
+     pc->switchStorageStructure(stoi(param[3]));
+     cout<< "Switching point storage structure in Recovery Mode: "<<param[2]<<" to "<<param[3]<<"\n";
+     return 1;
+   }
+
+   Point *p = new Point(stof(param[4]),stof(param[5]));
+   p->setId(stoi(param[3]));
+
+   if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
+     pc->insert(*p);
+     return 1;
+   }
+   if(op == "removeById"){
+     pc->removeById(stoi(param[3]));
+     return 1;
+   }
+ }
+ else if(collection == "rectangle"){
+   RectangleCollection *rc;
+   if(param[0]=="NA" && param[1] == "NA"){
+      return 1;
+   }
+   else{
+      rc = Catalog::Instance()->getRectangleCollectionByName(param[0], param[1]);
+      if(rc == NULL){
+         rc = new RectangleCollection(param[0], param[1], stoi(param[2]), vector<Rectangle>());
+         CatalogItem *catItem = new CatalogItem(param[0], param[1], stoi(param[2]), rc);
+	 Catalog::Instance()->insert(catItem);
+      }
+   }
+
+   if(op == "switchStorageStructure"){
+     rc->switchStorageStructure(stoi(param[3]));
+     cout<< "Switching point storage structure in Recovery Mode: "<<param[2]<<" to "<<param[3]<<"\n";
+     return 1;
+   }
+   Rectangle *r = new Rectangle(stof(param[4]),stof(param[5]),stof(param[6]),stof(param[7]));
+   r->setId(stoi(param[3]));
+
+   if(op == "insertSortedY" || op =="insertSortedX" || op =="insert"){
+     rc->insert(*r);
+     return 1;
+   }
+   if(op == "removeById"){
+     rc->removeById(stoi(param[3]));
+     return 1;
+   }
+ }
+}
+
 
 // Function to return time in Microseconds precesion
 
@@ -39,52 +181,53 @@ bool write_log(string command) {
 //     return ((tv.tv_sec + ((double) tv.tv_usec / 1000000.0)));
 // }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// POINT COLLECTION
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class XCompare
 {
 public:
-    bool operator()(const ds_point &first, const ds_point &second) const
-    {
-        return first.x < second.x;
-    }
+  bool operator()(const ds_point &first, const ds_point &second) const
+  {
+    return first.x < second.x;
+  }
 };
 
 class YCompare
 {
 public:
-    bool operator()(const ds_point &first, const ds_point &second) const
-    {
-        return first.y < second.y;
-    }
+  bool operator()(const ds_point &first, const ds_point &second) const
+  {
+    return first.y < second.y;
+  }
 };
 
 class XRectCompare
 {
 public:
-    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
-    {
-        return (first.top_x + first.bottom_x) < (second.top_x + second.bottom_x);
-    }
+  bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+  {
+    return (first.top_x + first.bottom_x) < (second.top_x + second.bottom_x);
+  }
 };
 
 class YRectCompare
 {
 public:
-    bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
-    {
-        return (first.top_y + first.bottom_y) < (second.top_y + second.bottom_y);
-    }
+  bool operator()(const ds_rectangle &first, const ds_rectangle &second) const
+  {
+    return (first.top_y + first.bottom_y) < (second.top_y + second.bottom_y);
+  }
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// POINT COLLECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 PointCollection::PointCollection(){
-  recordId = 0;
+  recordId = 1;
   getNextAt = 0;
-  getNextAt = 0;
-  this->name = "";
-  this->databaseName = "";
-  this->collectionStructure = COLLECTION_STRUCT_UNSORTED;
+
+  name = "";
+  databaseName = "";
+  collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
 PointCollection::PointCollection(string name, string databaseName, char collectionStructure, vector<Point> pointsToInsert)
@@ -92,7 +235,6 @@ PointCollection::PointCollection(string name, string databaseName, char collecti
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
-  recordId = 0;
   vector<Point>::iterator it;
   for(it=pointsToInsert.begin() ; it < pointsToInsert.end(); it++ ) {
     insert(*it);
@@ -153,16 +295,16 @@ char PointCollection::getCollectionStructure() {
 }
 
 int PointCollection::insert(Point pnt) {
+  int id;
+  //cout << pnt.getId();
+  if(pnt.getId() == 0)
+    id = recordId++;
+  else
+    id = pnt.getId();
   ds_point *newPoint = convertObjToStruct(pnt);
-  newPoint->id = recordId++;
-  if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
-    points.push_back(*newPoint);
-    free(newPoint);
-    std::string log_entry = "PointCollection::insert(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(newPoint->id) + ", " + std::to_string(newPoint->x) + ", " + std::to_string(newPoint->y) + ")";
-    write_log(log_entry);
-    return 1;
-  }
-  else if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
+
+  newPoint->id = id;
+  if(collectionStructure == COLLECTION_STRUCT_SORTEDX){
     insertSortedX(*newPoint);
     free(newPoint);
     return 1;
@@ -172,13 +314,22 @@ int PointCollection::insert(Point pnt) {
     free(newPoint);
     return 1;
   }
+  else{
+    points.push_back(*newPoint);
+    std::string log_entry = "point.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newPoint->id) + "," + std::to_string(newPoint->x) + "," + std::to_string(newPoint->y) + ")";
+    write_log(log_entry);
+    free(newPoint);
+    return 1;
+  }
 }
 
 
 int PointCollection::insertSortedX(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, XCompare());
   points.insert( it, point);
-  std::string log_entry = "PointCollection::insertSortedX(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
+
+  std::string log_entry = "point.insertSortedX(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(point.id) + "," + std::to_string(point.x) + "," + std::to_string(point.y) + ")";
+
   write_log(log_entry);
   return 1;
 }
@@ -186,14 +337,12 @@ int PointCollection::insertSortedX(ds_point point) {
 int PointCollection::insertSortedY(ds_point point) {
   auto it = std::lower_bound( points.begin(), points.end(), point, YCompare());
   points.insert( it, point);
-  std::string log_entry = "PointCollection::insertSortedY(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(point.id) + ", " + std::to_string(point.x) + ", " + std::to_string(point.y) + ")";
+
+  std::string log_entry = "point.insertSortedY(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(point.id) + "," + std::to_string(point.x) + "," + std::to_string(point.y) + ")";
   write_log(log_entry);
-return 1;
+  return 1;
 
 }
-
-
-
 
 int PointCollection::insertBulk(PointCollection collection) {
   vector<Point> pointsToInsert = collection.getNext(collection.getSize());
@@ -218,7 +367,9 @@ int PointCollection::removeById(int deleteId) {
   for(it=points.begin() ; it < points.end(); it++ ) {
     if(it->id == deleteId)
     {
-      std::string log_entry = "PointCollection::removeById(" + this->name + ", " + this->databaseName + ", " + std::to_string(this->collectionStructure) + ", " + std::to_string(it->id) + ", " + std::to_string(it->x) + ", " + std::to_string(it->y) + ")";
+
+      std::string log_entry = "point.removeById(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(it->id) + "," + std::to_string(it->x) + "," + std::to_string(it->y) + ")";
+
       points.erase(it);
       write_log(log_entry);
       return 1;
@@ -245,6 +396,8 @@ int PointCollection::getSize() {
 
 int PointCollection::switchStorageStructure(char newStructure)
 {
+  std::string log_entry = "point.switchStorageStructure(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) +","+std::to_string(newStructure) +")";
+  write_log(log_entry);
   collectionStructure = newStructure;
   if(newStructure == COLLECTION_STRUCT_UNSORTED)
   {
@@ -263,8 +416,8 @@ int PointCollection::switchStorageStructure(char newStructure)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RectangleCollection::RectangleCollection(){
-  recordId = 0;
-  getNextAt = 0; 
+  recordId = 1;
+  getNextAt = 0;
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
@@ -273,7 +426,7 @@ RectangleCollection::RectangleCollection(string name, string databaseName, char 
   this->name = name;
   this->databaseName = databaseName;
   this->collectionStructure = collectionStructure;
-  recordId = 0;
+  recordId = 1;
   insertBulk(recsToInsert);
 }
 
@@ -335,9 +488,17 @@ char RectangleCollection::getCollectionStructure() {
 
 int RectangleCollection::insert(Rectangle rec) {
   ds_rectangle *newRec = convertObjToStruct(rec);
-  newRec->id = recordId++;
+  //newRec->id = recordId++;
+  int id;
+  if(rec.getId() == 0)
+    id = recordId++;
+  else
+    id = rec.getId();
+  newRec->id = id;
   if(collectionStructure == COLLECTION_STRUCT_UNSORTED){
     rectangles.push_back(*newRec);
+    std::string log_entry = "rectangle.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newRec->id) + "," + std::to_string(newRec->top_x) + "," + std::to_string(newRec->top_y) + "," + std::to_string(newRec->bottom_x) + "," + std::to_string(newRec->bottom_y) + ")";
+    write_log(log_entry);
     free(newRec);
     return 1;
   }
@@ -355,12 +516,16 @@ int RectangleCollection::insert(Rectangle rec) {
 int RectangleCollection::insertSortedX(ds_rectangle rectangle) {
   auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, XRectCompare());
   rectangles.insert( it, rectangle);
+  std::string log_entry = "rectangle.insertSortedX(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(rectangle.id) + "," + std::to_string(rectangle.top_x) + "," + std::to_string(rectangle.top_y) + "," + std::to_string(rectangle.bottom_x) + "," + std::to_string(rectangle.bottom_y) + ")";
+  write_log(log_entry);
   return 1;
 }
 
 int RectangleCollection::insertSortedY(ds_rectangle rectangle) {
   auto it = std::lower_bound( rectangles.begin(), rectangles.end(), rectangle, YRectCompare());
   rectangles.insert( it, rectangle);
+  std::string log_entry = "rectangle.insertSortedY(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(rectangle.id) + "," + std::to_string(rectangle.top_x) + "," + std::to_string(rectangle.top_y) + "," + std::to_string(rectangle.bottom_x) + "," + std::to_string(rectangle.bottom_y) + ")";
+  write_log(log_entry);
   return 1;
 
 }
@@ -388,7 +553,9 @@ int RectangleCollection::removeById(int deleteId) {
   for(it=rectangles.begin() ; it < rectangles.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "rectangle.removeById(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(it->id) + "," + std::to_string(it->top_x) + "," + std::to_string(it->top_y) + "," + std::to_string(it->bottom_x) + "," + std::to_string(it->bottom_y) + ")";
       rectangles.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
@@ -413,6 +580,9 @@ int RectangleCollection::getSize() {
 
 int RectangleCollection::switchStorageStructure(char newStructure)
 {
+
+  std::string log_entry = "rectangle.switchStorageStructure(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) +","+std::to_string(newStructure) +")";
+  write_log(log_entry);
   collectionStructure = newStructure;
   if(newStructure == COLLECTION_STRUCT_UNSORTED)
   {
@@ -431,7 +601,7 @@ int RectangleCollection::switchStorageStructure(char newStructure)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 PointPointCollection::PointPointCollection(){
-  recordId = 0;
+  recordId = 1;
   getNextAt = 0;
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
@@ -440,7 +610,8 @@ PointPointCollection::PointPointCollection(string name, string databaseName, cha
 :PointPointCollection() {
   this->name = name;
   this->databaseName = databaseName;
-  recordId = 0;
+  this->collectionStructure = collectionStructure;
+  recordId = 1;
   insertBulk(recsToInsert);
 }
 
@@ -503,6 +674,8 @@ int PointPointCollection::insert(PointPoint rec) {
   ds_pointpoint *newPointPoint = convertObjToStruct(rec);
   newPointPoint->id = recordId++;
   pointPoints.push_back(*newPointPoint);
+  std::string log_entry = "pointpoint.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newPointPoint->id) + "," + std::to_string(newPointPoint->point1.x) + "," + std::to_string(newPointPoint->point1.y) + "," + std::to_string(newPointPoint->point2.x) + "," + std::to_string(newPointPoint->point2.y) + ")";
+  write_log(log_entry);
   free(newPointPoint);
   return 1;
 }
@@ -530,7 +703,9 @@ int PointPointCollection::removeById(int deleteId) {
   for(it=pointPoints.begin() ; it < pointPoints.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "pointpoint.removeById(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(it->id) + "," + std::to_string(it->point1.x) + "," + std::to_string(it->point1.y) + "," + std::to_string(it->point2.x) + "," + std::to_string(it->point2.y) + ")";
       pointPoints.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
@@ -559,15 +734,17 @@ int PointPointCollection::getSize() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RectangleRectangleCollection::RectangleRectangleCollection(){
-  recordId = 0;
+  recordId = 1;
   getNextAt = 0;
+  collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
 
 RectangleRectangleCollection::RectangleRectangleCollection(string name, string databaseName, char collectionStructure, vector<RectangleRectangle> recsToInsert)
 :RectangleRectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
-  recordId = 0;
+  this->collectionStructure = collectionStructure;
+  recordId = 1;
   insertBulk(recsToInsert);
 }
 
@@ -641,6 +818,8 @@ int RectangleRectangleCollection::insert(RectangleRectangle rec) {
   ds_rectanglerectangle *newRecRec = convertObjToStruct(rec);
   newRecRec->id = recordId++;
   rectangleRectangles.push_back(*newRecRec);
+  std::string log_entry = "rectanglerectangle.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newRecRec->id) + "," + std::to_string(newRecRec->rec1.top_x) + "," + std::to_string(newRecRec->rec1.top_y) + "," + std::to_string(newRecRec->rec1.bottom_x) + "," + std::to_string(newRecRec->rec1.bottom_y) + "," + std::to_string(newRecRec->rec2.top_x) + "," + std::to_string(newRecRec->rec2.top_y) + "," + std::to_string(newRecRec->rec2.bottom_x) + "," + std::to_string(newRecRec->rec2.bottom_y) + ")";
+  write_log(log_entry);
   free(newRecRec);
   return 1;
 }
@@ -668,7 +847,9 @@ int RectangleRectangleCollection::removeById(int deleteId) {
   for(it=rectangleRectangles.begin() ; it < rectangleRectangles.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "rectanglerectangle.removeById(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(it->id) + "," + std::to_string(it->rec1.top_x) + "," + std::to_string(it->rec1.top_y) + "," + std::to_string(it->rec1.bottom_x) + "," + std::to_string(it->rec1.bottom_y) + "," + std::to_string(it->rec2.top_x) + "," + std::to_string(it->rec2.top_y) + "," + std::to_string(it->rec2.bottom_x) + "," + std::to_string(it->rec2.bottom_y) + ")";
       rectangleRectangles.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
@@ -695,7 +876,7 @@ int RectangleRectangleCollection::getSize() {
 // POINTRECTANGLE COLLECTION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PointRectangleCollection::PointRectangleCollection(){
-  recordId = 0;
+  recordId = 1;
   getNextAt = 0;
   collectionStructure = COLLECTION_STRUCT_UNSORTED;
 }
@@ -704,7 +885,8 @@ PointRectangleCollection::PointRectangleCollection(string name, string databaseN
 :PointRectangleCollection() {
   this->name = name;
   this->databaseName = databaseName;
-  recordId = 0;
+  this->collectionStructure = collectionStructure;
+  recordId = 1;
   insertBulk(recsToInsert);
 }
 
@@ -771,6 +953,8 @@ int PointRectangleCollection::insert(PointRectangle rec) {
   ds_pointrectangle *newPointRec = convertObjToStruct(rec);
   newPointRec->id = recordId++;
   pointRectangles.push_back(*newPointRec);
+  std::string log_entry = "pointrectangle.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(newPointRec->id) + "," + std::to_string(newPointRec->point.x) + "," + std::to_string(newPointRec->point.y) + "," + std::to_string(newPointRec->rec.top_x) + "," + std::to_string(newPointRec->rec.top_y) + "," + std::to_string(newPointRec->rec.bottom_x) + "," + std::to_string(newPointRec->rec.bottom_y) + ")";
+  write_log(log_entry);
   free(newPointRec);
   return 1;
 }
@@ -798,7 +982,9 @@ int PointRectangleCollection::removeById(int deleteId) {
   for(it=pointRectangles.begin() ; it < pointRectangles.end(); it++ ) {
     if(it->id == deleteId)
     {
+      std::string log_entry = "pointrectangle.insert(" + this->name + "," + this->databaseName + "," + std::to_string(this->collectionStructure) + "," + std::to_string(it->id) + "," + std::to_string(it->point.x) + "," + std::to_string(it->point.y) + "," + std::to_string(it->rec.top_x) + "," + std::to_string(it->rec.top_y) + "," + std::to_string(it->rec.bottom_x) + "," + std::to_string(it->rec.bottom_y) + ")";
       pointRectangles.erase(it);
+      write_log(log_entry);
       return 1;
     }
   }
@@ -835,7 +1021,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
   }
   if(geomtype == TYPE_POINT) {
     float x, y;
-    PointCollection * collection = new PointCollection(dbName, tableName, collectionStruct, vector<Point>());
+    PointCollection * collection = new PointCollection(tableName, dbName, collectionStruct, vector<Point>());
     while(fscanf(fp, "%f,%f\n", &x, &y) == 2)
     {
       Point newPoint = Point(x, y);
@@ -844,7 +1030,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_RECTANGLE) {
     float x1, y1, x2, y2;
-    RectangleCollection * collection = new RectangleCollection(dbName, tableName, collectionStruct, vector<Rectangle>());
+    RectangleCollection * collection = new RectangleCollection(tableName, dbName, collectionStruct, vector<Rectangle>());
     while(fscanf(fp, "%f,%f,%f,%f\n", &x1, &y1, &x2, &y2) == 4)
     {
       Rectangle rectangle = Rectangle(x1, y1, x2, y2);
@@ -853,7 +1039,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_POINTPOINT) {
     float x1, y1, x2, y2;
-    PointPointCollection * collection = new PointPointCollection(dbName, tableName, collectionStruct, vector<PointPoint>());
+    PointPointCollection * collection = new PointPointCollection(tableName, dbName, collectionStruct, vector<PointPoint>());
     while(fscanf(fp, "%f,%f,%f,%f\n", &x1, &y1, &x2, &y2) == 4)
     {
       PointPoint pointPoint = PointPoint(x1, y1, x2, y2);
@@ -862,7 +1048,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_POINTRECTANGLE) {
     float x1, y1, x2, y2, x3, y3;
-    PointRectangleCollection  * collection = new PointRectangleCollection(dbName, tableName, collectionStruct, vector<PointRectangle>());
+    PointRectangleCollection  * collection = new PointRectangleCollection(tableName, dbName, collectionStruct, vector<PointRectangle>());
     while(fscanf(fp, "%f,%f,%f,%f,%f,%f\n", &x1, &y1, &x2, &y2, &x3, &y3) == 6)
     {
       PointRectangle pointRectangle = PointRectangle(x1, y1, x2, y2, x3, y3);
@@ -871,7 +1057,7 @@ int loadData(string dbName, string tableName, int geomtype, string filepath, cha
     catItem = new CatalogItem(dbName, tableName, collectionStruct, collection);
   } else if(geomtype == TYPE_RECTANGLERECTANGLE) {
     float x1, y1, x2, y2, x3, y3, x4, y4;
-    RectangleRectangleCollection * collection = new RectangleRectangleCollection(dbName, tableName, collectionStruct, vector<RectangleRectangle>());
+    RectangleRectangleCollection * collection = new RectangleRectangleCollection(tableName, dbName, collectionStruct, vector<RectangleRectangle>());
     while(fscanf(fp, "%f,%f,%f,%f,%f,%f,%f,%f\n", &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4) == 8)
     {
       RectangleRectangle rectangleRectangle = RectangleRectangle(x1, y1, x2, y2, x3, y3, x4, y4);
