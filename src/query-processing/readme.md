@@ -23,7 +23,7 @@ class QueryTree {
     PointCollection rightDataPoint;
     RectangleCollection rightDataRect;
     char lIndexType;
-    char rIndexType
+    char rIndexType;
 }
 ```
 
