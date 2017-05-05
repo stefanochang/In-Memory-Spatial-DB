@@ -260,11 +260,11 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 					RectangleRectangleCollection joinResult;
 					if (qTree.getRIndexType()!=NO_INDEX && rightFilter.empty()) {
 						RectangleCollection rightResult = materializeBranch(qTree, rightFilter, rightDataRect, 'r');
-						joinResult = rangeJoinWithIndex(rightResult, rightFilter, leftResult, rIndexptr);
+						joinResult = rangeJoinWithIndex(leftResult, rightFilter, rightResult, rIndexptr);
 					}
 					else if (qTree.getLIndexType()!=NO_INDEX && leftFilter.empty()) {
 						RectangleCollection rightResult = materializeBranch(qTree, rightFilter, rightDataRect, 'r');
-						joinResult = rangeJoinWithIndex(leftResult, rightFilter, rightResult, lIndexptr);
+						joinResult = rangeJoinWithIndex(rightResult, rightFilter, leftResult, lIndexptr);
 					}
 					else {
 						RectangleCollection rightResult = materializeKnn(rightFilter, rightDataRect);
