@@ -61,9 +61,11 @@ public:
             status = pointIndex->deleteIndex();
             delete pointIndex;
             isPointIndex = false;
+            pointIndex = NULL;
         }else if(rectangleIndex != NULL) {
             status = rectangleIndex->deleteIndex();
             delete rectangleIndex;
+            rectangleIndex = NULL;
         }
         return status;
     }

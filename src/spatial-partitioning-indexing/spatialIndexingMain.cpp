@@ -3,9 +3,19 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-    executeSpatialIndexingTestCases();
+    int leafCapacity = 8;
+
+    if(argc >= 2)
+    {
+        leafCapacity = atoi(argv[1]);
+    }
+
+//    cout<<"\n\nEntering Main | Leaf Capacity = "<<leafCapacity<<endl;
+
+    executeSpatialIndexingTestCases(leafCapacity);
     return 0;
 }
+
 

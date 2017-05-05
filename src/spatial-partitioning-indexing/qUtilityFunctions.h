@@ -11,6 +11,7 @@
 
 using namespace std;
 
+
 void printQPointVectors(vector<qPoint> qPoints)
 {
     for(int i=0;i< qPoints.size();i++) {
@@ -24,8 +25,6 @@ void printQBoundingBoxVectors(vector<qBoundingBox> qbbs)
         qbbs[i].print();
     }
 }
-
-
 
 
 #endif //IN_MEMORY_SPATIAL_DB_QUTILITYFUNCTIONS_H

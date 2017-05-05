@@ -70,7 +70,7 @@ public:
             qRectangles.push_back(convertRectangle(*rectangle));
         }
         qBoundingBox *box = qBoundingBox::getQBoundingBoxCooridinates(qRectangles);
-        mxCifTree = new mxcifQuadTree(box);
+        mxCifTree = new mxcifQuadTree(box,8);
         vector<Rectangle> rectangleVector = rectangles.getNext(rectangles.getSize());
         for (std::vector<Rectangle>::iterator rect = rectangleVector.begin() ; rect != rectangleVector.end(); ++rect){
             vector<float> bounds = computeBounds(*rect);
