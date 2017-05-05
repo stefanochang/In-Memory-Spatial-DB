@@ -2,14 +2,14 @@
 // Created by Prince Chawla on 4/5/17.
 //
 
-#ifndef IN_MEMORY_SPATIAL_DB_TESTCASESMXCIFQUADTREEBULKLOAD_H
-#define IN_MEMORY_SPATIAL_DB_TESTCASESMXCIFQUADTREEBULKLOAD_H
+#ifndef IN_MEMORY_SPATIAL_DB_TESTCASESMXCIFQUADTREEV1BULKLOAD_H
+#define IN_MEMORY_SPATIAL_DB_TESTCASESMXCIFQUADTREEV1BULKLOAD_H
 
 #include "../quadTreeLib.h"
 #include "../qPoint.h"
 #include "../qBoundingBox.h"
-#include "../mxcifQuadNode.h"
-#include "../mxcifQuadTree.h"
+#include "../mxcifQuadNodeV1.h"
+#include "../mxcifQuadTreeV1.h"
 
 #include <sstream>
 #include <fstream>
@@ -21,7 +21,7 @@ using namespace std;
 using namespace std::chrono;
 
 
-mxcifQuadTree* bulkLoadmxcifQuadTree(std::string inputFilePath, vector<qBoundingBox*> &rectsToLoad, int leafCapacity = 8){
+mxcifQuadTreeV1* bulkLoadmxcifQuadTreeV1(std::string inputFilePath, vector<qBoundingBox*> &rectsToLoad, int leafCapacity = 8){
 
     qBoundingBox* qBb;
     float height, width;
@@ -54,7 +54,7 @@ mxcifQuadTree* bulkLoadmxcifQuadTree(std::string inputFilePath, vector<qBounding
 
     }
 
-    mxcifQuadTree* mxcifQt = new mxcifQuadTree(qBb, leafCapacity);
+    mxcifQuadTreeV1* mxcifQt = new mxcifQuadTreeV1(qBb, leafCapacity);
 
     cout<<"\n\t\t Number of Rectangles Inserted = "<<i<<endl;
     for(int i=0;i<rectsToLoad.size();i++) {
@@ -69,7 +69,7 @@ mxcifQuadTree* bulkLoadmxcifQuadTree(std::string inputFilePath, vector<qBounding
 }
 
 
-double testmxcifQuadTreeIndividualAverageSearchTime(mxcifQuadTree* mxcifQT, qBoundingBox* rectToSearch)
+double testmxcifQuadTreeV1IndividualAverageSearchTime(mxcifQuadTreeV1* mxcifQT, qBoundingBox* rectToSearch)
 {
     double total_time = 0.0;
 
@@ -100,21 +100,21 @@ double testmxcifQuadTreeIndividualAverageSearchTime(mxcifQuadTree* mxcifQT, qBou
 
 }
 
-double testmxCifQuadTreeBulkSearchTime(mxcifQuadTree* mxcifQT,vector<qBoundingBox*> rectsToSearch)
+double testmxCifQuadTreeV1BulkSearchTime(mxcifQuadTreeV1* mxcifQT,vector<qBoundingBox*> rectsToSearch)
 {
     double total_search_time = 0;
 
     for(int i=0; i<rectsToSearch.size(); i++)
     {
 
-        total_search_time += testmxcifQuadTreeIndividualAverageSearchTime(mxcifQT,rectsToSearch[i]);
+        total_search_time += testmxcifQuadTreeV1IndividualAverageSearchTime(mxcifQT,rectsToSearch[i]);
 
     }
 
     return total_search_time;
 }
 
-void mxcifQuadTreeBulkDelete(mxcifQuadTree* mxcifQT)
+void mxcifQuadTreeV1BulkDelete(mxcifQuadTreeV1* mxcifQT)
 {
 
     cout<<"\n\t\t mxcifQuad Tree Deletion - Started"<<endl;
@@ -125,20 +125,20 @@ void mxcifQuadTreeBulkDelete(mxcifQuadTree* mxcifQT)
 
 
 
-void testmxcifQuadTreeBulkLoad(int leafCapacity = 8) {
+void testmxcifQuadTreeV1BulkLoad(int leafCapacity = 8) {
 
     milliseconds start_ms = duration_cast< milliseconds >(
             system_clock::now().time_since_epoch()
     );
 
-    cout << "\n\n mxcifQuadTree Leaf Capacity = "<<leafCapacity<<" Testing - Started" << endl;
+    cout << "\n\n mxcifQuadTreeV1 Leaf Capacity = "<<leafCapacity<<" Testing - Started" << endl;
     std:: string fileToLoadPath;
     fileToLoadPath = "/Users/ravichandran/Documents/Misc/Docs/ASU_Subjects/Spring_17/ADVDB/Project/Code/In-Memory-Spatial-DB/src/spatial-partitioning-indexing/spatialTests/data/rectangle.csv";
 //    fileToLoadPath = "../spatialTests/data/point.csv";
 
     vector<qBoundingBox*> rectsToSearch;
 
-    mxcifQuadTree* mxcifQT = bulkLoadmxcifQuadTree(fileToLoadPath,rectsToSearch,leafCapacity);
+    mxcifQuadTreeV1* mxcifQT = bulkLoadmxcifQuadTreeV1(fileToLoadPath,rectsToSearch,leafCapacity);
 
 //    cout<<"\n\n\n";
 //    mxcifQT->print();
@@ -152,14 +152,14 @@ void testmxcifQuadTreeBulkLoad(int leafCapacity = 8) {
 
     cout<<"\n\t\t Insertion Time = "<<std::to_string(diff.count())<<endl;
 
-    double total_search_time = testmxCifQuadTreeBulkSearchTime(mxcifQT,rectsToSearch);
+    double total_search_time = testmxCifQuadTreeV1BulkSearchTime(mxcifQT,rectsToSearch);
 
     cout<<"\n\t\t Average Search Time = "<<total_search_time<<endl;
 
-//    mxcifQuadTreeBulkDelete(mxcifQT);
+//    mxcifQuadTreeV1BulkDelete(mxcifQT);
 
-    cout << "\n\n mxcifQuadTree Leaf Capacity = "<<leafCapacity<<" Testing - Ended" << endl;
+    cout << "\n\n mxcifQuadTreeV1 Leaf Capacity = "<<leafCapacity<<" Testing - Ended" << endl;
 }
 
 
-#endif //IN_MEMORY_SPATIAL_DB_TESTCASESMXCIFQUADTREEBULKLOAD_H
+#endif //IN_MEMORY_SPATIAL_DB_TESTCASESMXCIFQUADTREEV1BULKLOAD_H

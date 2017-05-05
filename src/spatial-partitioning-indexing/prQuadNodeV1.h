@@ -2,13 +2,13 @@
 // Created by ravichandran on 18/03/17.
 //
 
-#ifndef IN_MEMORY_SPATIAL_DB_PRQUADNODE_H
-#define IN_MEMORY_SPATIAL_DB_PRQUADNODE_H
+#ifndef IN_MEMORY_SPATIAL_DB_PRQUADNODEV1_H
+#define IN_MEMORY_SPATIAL_DB_PRQUADNODEV1_H
 
 #include "quadTreeLib.h"
 #include "qBoundingBox.h"
 
-class prQuadNode
+class prQuadNodeV1
 {
 protected:
     int leafCapacity;
@@ -20,14 +20,14 @@ public:
     int height;
     qBoundingBox qbb;
     vector<qPoint> points;
-    prQuadNode *prqnNW;
-    prQuadNode *prqnNE;
-    prQuadNode *prqnSW;
-    prQuadNode *prqnSE;
+    prQuadNodeV1 *prqnNW;
+    prQuadNodeV1 *prqnNE;
+    prQuadNodeV1 *prqnSW;
+    prQuadNodeV1 *prqnSE;
 
 
-    prQuadNode() {}
-    prQuadNode(qBoundingBox QBB, int leafCapacity)
+    prQuadNodeV1() {}
+    prQuadNodeV1(qBoundingBox QBB, int leafCapacity)
     {
         height = 0;
         this->leafCapacity = leafCapacity;
@@ -39,7 +39,7 @@ public:
         (*this).prqnSE = NULL;
 
     }
-    prQuadNode(int originX, int originY, float width, float height)
+    prQuadNodeV1(int originX, int originY, float width, float height)
     {
         height = 0;
         leafCapacity = 4;
@@ -62,8 +62,9 @@ public:
     bool insert(qPoint *point)
     {
 
-        if ( !qbb.containsPoint(point) || ( isLeaf() && point->isIn(points) ) )
-            return false;
+        if ( !qbb.containsPoint(point) ) return false;
+
+//        if (isLeaf() && point->isIn(points) ) return false;
 
         if (( isLeaf() && points.size() < leafCapacity )  || ( height == maxHeight ) )
         {
@@ -102,22 +103,22 @@ public:
 
         qPoint *pNW = new qPoint(current_x-w,current_y);
         qBoundingBox *qbbNW = new qBoundingBox( pNW, w, h);
-        this->prqnNW = new prQuadNode(*qbbNW,leafCapacity);
+        this->prqnNW = new prQuadNodeV1(*qbbNW,leafCapacity);
         this->prqnNW->height = this->height + 1;
 
         qPoint *pNE = new qPoint(current_x,current_y);
         qBoundingBox *qbbNE = new qBoundingBox( pNE, w, h);
-        this->prqnNE = new prQuadNode(*qbbNE,leafCapacity);
+        this->prqnNE = new prQuadNodeV1(*qbbNE,leafCapacity);
         this->prqnNE->height = this->height + 1;
 
         qPoint *pSW = new qPoint(current_x-w,current_y-h);
         qBoundingBox *qbbSW =new qBoundingBox( pSW, w, h);
-        this->prqnSW = new prQuadNode(*qbbSW,leafCapacity);
+        this->prqnSW = new prQuadNodeV1(*qbbSW,leafCapacity);
         this->prqnSW->height = this->height + 1;
 
         qPoint *pSE = new qPoint(current_x,current_y-h);
         qBoundingBox *qbbSE =new qBoundingBox( pSE, w, h);
-        this->prqnSE = new prQuadNode(*qbbSE,leafCapacity);
+        this->prqnSE = new prQuadNodeV1(*qbbSE,leafCapacity);
         this->prqnSE->height = this->height + 1;
 
 
@@ -177,11 +178,11 @@ public:
     void print(string prefix = "", bool emptyLine = false)
     {
         if(emptyLine) cout<<endl;
-//        cout<<prefix<< "prQuadNode | leafCapacity : "<<this->leafCapacity<<" | maxHeight : "<<this->maxHeight<<endl;
-        cout<<prefix<< "prQuadNode | height : "<<this->height<<endl;
-        cout<<prefix<< "prQuadNode | ";
+//        cout<<prefix<< "prQuadNodeV1 | leafCapacity : "<<this->leafCapacity<<" | maxHeight : "<<this->maxHeight<<endl;
+        cout<<prefix<< "prQuadNodeV1 | height : "<<this->height<<endl;
+        cout<<prefix<< "prQuadNodeV1 | ";
         this->qbb.print("\t\t",true);
-        cout<<prefix<< "prQuadNode | points -> "<<this->points.size();
+        cout<<prefix<< "prQuadNodeV1 | points -> "<<this->points.size();
         if(points.size()>0)pointsPrint();
 
     }
@@ -190,4 +191,4 @@ public:
 
 
 
-#endif //IN_MEMORY_SPATIAL_DB_PRQUADNODE_H
+#endif //IN_MEMORY_SPATIAL_DB_PRQUADNODEOLD_H
