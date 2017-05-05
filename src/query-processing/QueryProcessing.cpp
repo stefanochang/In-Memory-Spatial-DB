@@ -225,10 +225,10 @@ QueryResult QueryProcessing::processQuery (QueryTree qTree) {
 				else if (rootType == RANGE_JOIN || rootType == RANGE_JOIN_DI || rootType == RANGE_JOIN_SI) {
 					RectangleRectangleCollection joinResult;
 					if (qTree.getRIndexType()!=NO_INDEX && rightFilter.empty()) {
-						joinResult = rangeJoinWithIndex(rightResult, rightFilter, leftResult, rIndexptr);
+						joinResult = rangeJoinWithIndex(leftResult, rightFilter, rightResult, rIndexptr);
 					}
 					else if (qTree.getLIndexType()!=NO_INDEX && leftFilter.empty()) {
-						joinResult = rangeJoinWithIndex(leftResult, rightFilter, rightResult, lIndexptr);
+						joinResult = rangeJoinWithIndex(rightResult, rightFilter, leftResult, lIndexptr);
 					}
 					else {
 						joinResult = rangeJoin(leftResult, rightFilter, rightResult);
