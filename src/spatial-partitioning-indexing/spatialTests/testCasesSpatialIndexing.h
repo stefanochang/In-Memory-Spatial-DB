@@ -9,12 +9,14 @@
 #include "testCasesqBoundingBox.h"
 #include "testCasesprQuadTree.h"
 #include "testCasesprQuadTreeBulkLoad.h"
+#include "testCasesprQuadTreeV1BulkLoad.h"
 #include "testCasesmxcifQuadTree.h"
 #include "testCasesmxcifQuadTreeBulkLoad.h"
+#include "testCasesmxcifQuadTreeV1BulkLoad.h"
 
 using namespace std;
 
-void executeSpatialIndexingTestCases(int leafCapacity = 8, char quadTree = 'e', int loop_exit = 0)
+void executeSpatialIndexingTestCases(int leafCapacity = 8, char quadTree = 'e', int loop_exit = 0,int version_num = 0)
 {
 
     milliseconds start_ms = duration_cast< milliseconds >(
@@ -26,11 +28,28 @@ void executeSpatialIndexingTestCases(int leafCapacity = 8, char quadTree = 'e', 
 
     if(quadTree == 'p')
     {
+        if(version_num == 0)
+        {
             testprQuadTreeBulkLoad(leafCapacity);
+        }
+        else
+        {
+            testprQuadTreeV1BulkLoad(leafCapacity);
+        }
+
     }
     else if(quadTree == 'r')
     {
-        testmxcifQuadTreeBulkLoad(leafCapacity);
+        if(version_num == 0)
+        {
+            testmxcifQuadTreeBulkLoad(leafCapacity);
+        }
+        else
+        {
+            testmxcifQuadTreeV1BulkLoad(leafCapacity);
+        }
+
+
     } else
     {
 //        testQPoints();
