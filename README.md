@@ -21,8 +21,9 @@ The code is written in C++. To run the code version 6.3.0 or up is required.
 
 To compile the code, execute the following command from src/integration:
 ```bashp
-sh run.sh
+g++ -std=c++0x main.cpp catalog.cpp ../data-storage/data-storage.cpp ../query-processing/QueryTree.cpp ../query-processing/QueryResult.cpp geometry.cpp ../query-processing/QueryProcessing.cpp ../query-processing/OperatorDictionary.cpp ../query-processing/PointOperations.cpp ../query-processing/RectangleOperations.cpp -I"<Boost Installation Folder Path>/boost_1_63_0/" -fmessage-length=0 -L"<Boost Installation Folder Path>/boost_1_63_0/libs"
 ```
+
 To run the system, first compile it as mentioned above, and then execute the following command from src/integration:
 ```bashp
 ./a.out
