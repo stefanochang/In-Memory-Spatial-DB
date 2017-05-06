@@ -1,4 +1,17 @@
 
+/* ************************************************************************************* *\
+    CSE 591 - Advances in Databases - Spring 2017 - Project - Data Storage Module
+    -------------------------------------------------------------------------------
+
+	File: ds_constants.h
+
+    All constants which are used in the data-storage module and all related modules are 
+    defined here
+
+    -- Ajay Kulkarni, Anuran Duttaroy, Dhanashree Adhikari, Nilam Bari, Omkar Kaptan --
+
+\* ************************************************************************************* */
+
 #define METADATA_DATATYPE "datatype"
 #define METADATA_NUMBER_OF_ROWS "number_of_rows"
 

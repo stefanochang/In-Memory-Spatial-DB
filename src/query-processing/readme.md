@@ -22,6 +22,8 @@ class QueryTree {
     vector<Filter> rightBranch;
     PointCollection rightDataPoint;
     RectangleCollection rightDataRect;
+    char lIndexType;
+    char rIndexType;
 }
 ```
 

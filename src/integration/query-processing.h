@@ -165,6 +165,8 @@ private:
 	SpatialIndexInterface* lIndexptr;
 	SpatialIndexInterface* rIndexptr;
 	Catalog* catalogptr;
+	int pointChunkSize;
+	int rectChunkSize;
 
 public:
 
@@ -175,6 +177,14 @@ public:
 	PointCollection materializeBranch (QueryTree qTree, vector<Filter> filter, PointCollection data, char side);
 
 	RectangleCollection materializeBranch (QueryTree qTree, vector<Filter> filter, RectangleCollection data, char side);
+
+	PointCollection materializeKnn (vector<Filter> filter, PointCollection data);
+
+	RectangleCollection materializeKnn (vector<Filter> filter, RectangleCollection data);
+
+	vector<Point> materializeChunk (vector<Filter> filter, PointCollection* dataptr);
+
+	vector<Rectangle> materializeChunk (vector<Filter> filter, RectangleCollection* dataptr);
 
 	PointPointCollection rangeJoin (PointCollection leftData, vector<Filter> filter, PointCollection rightData);
 
