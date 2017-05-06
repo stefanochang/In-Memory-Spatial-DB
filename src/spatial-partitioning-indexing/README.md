@@ -38,6 +38,16 @@ Figure 3: Points Visualization in Quadtree
 Figure 4: Rectangles Visualization in Quadtree
 ![Rectangles Visualization in Quadtree](https://github.com/nakulchawla09/advances-quadtree/blob/master/new/advdbSpatialTest/Test/Images/TestCaseRectangulesVisualization.png)
 
+## Instructions to run
+This code was designed to be run as a module inside an object-oriented Spatial database that handled Points and Rectangles, required search to be done in compliance with SpatialIndexInterface.
+
+However, this code can also be run as an individual module, which we have done for our testing purposes as well. 
+The following command builds our module with the dependent interfaces. It should be executed in the In-Memory-Spatial-DB folder. We have tested this on a Windows 7 machine using g++ compiler version 6.1.0.
+
+`g++ -std=c++0x src/spatial-partitioning-indexing/spatialIndexingRectTest.cpp src/integration/catalog.cpp src/data-storage/data-storage.cpp src/integration/geometry.cpp`
+
+This will generate the execute `a.out` containing our test cases for RectangleSpatialIndex. By including `src/spatial-partitioning-indexing/spatialIndexingPointTest.cpp` instead of `src/spatial-partitioning-indexing/spatialIndexingRectTest.cpp`, the executable would contain tests for PointSpatialIndex. Please refer to these test files to understand how our indexing module can be integrated into your implementation.
+
 ## Function Definition
 
 ### SpatialIndexImpl contains the following functions:
