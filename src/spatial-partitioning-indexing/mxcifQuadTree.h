@@ -118,13 +118,13 @@ public:
 //            }
             node->print(prefix,true);
 
-            if(node->mxqnNE != NULL && node->mxqnNW != NULL && node->mxqnSE != NULL && node->mxqnSW != NULL)
+            if(node->nodeNE() != NULL && node->nodeNW() != NULL && node->nodeSE() != NULL && node->nodeSW() != NULL)
             {
                 prefix += "\t";
-                print(node->mxqnNW,prefix + " | NW |",true);
-                print(node->mxqnNE,prefix + " | NE |",true);
-                print(node->mxqnSW,prefix + " | SW |",true);
-                print(node->mxqnSE,prefix + " | SE |",true);
+                print(node->nodeNW(),prefix + " | NW |",true);
+                print(node->nodeNE(),prefix + " | NE |",true);
+                print(node->nodeSW(),prefix + " | SW |",true);
+                print(node->nodeSE(),prefix + " | SE |",true);
 
             }
         }

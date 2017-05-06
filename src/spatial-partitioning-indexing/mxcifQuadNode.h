@@ -20,17 +20,11 @@ protected:
     qBoundingBox qbb;
     vector<qBoundingBox> rectangles;
     vector<qBoundingBox> overFlowRectangles;
+    vector<mxcifQuadNode*> nodes;
 
 
 
 public:
-
-    mxcifQuadNode *mxqnNW;
-    mxcifQuadNode *mxqnNE;
-    mxcifQuadNode *mxqnSW;
-    mxcifQuadNode *mxqnSE;
-
-
 
 
     mxcifQuadNode() {}
@@ -39,10 +33,6 @@ public:
         this->height = 0;
         this->leafCapacity = 4;
         (*this).qbb = QBB;
-        (*this).mxqnNW = NULL;
-        (*this).mxqnNE = NULL;
-        (*this).mxqnSW = NULL;
-        (*this).mxqnSE = NULL;
 
     }
 
@@ -51,10 +41,6 @@ public:
         this->height = 0;
         this->leafCapacity = leafCapacity;
         (*this).qbb = QBB;
-        (*this).mxqnNW = NULL;
-        (*this).mxqnNE = NULL;
-        (*this).mxqnSW = NULL;
-        (*this).mxqnSE = NULL;
 
     }
     mxcifQuadNode(qBoundingBox QBB, int leafCapacity,int height)
@@ -62,10 +48,6 @@ public:
         this->height = height;
         this->leafCapacity = leafCapacity;
         (*this).qbb = QBB;
-        (*this).mxqnNW = NULL;
-        (*this).mxqnNE = NULL;
-        (*this).mxqnSW = NULL;
-        (*this).mxqnSE = NULL;
 
     }
     mxcifQuadNode(int originX, int originY, float width, float height)
@@ -74,16 +56,40 @@ public:
         this->leafCapacity = 4;
         qBoundingBox *QBB = new qBoundingBox(originX, originY, width, height);
         (*this).qbb = *QBB;
-        (*this).mxqnNW = NULL;
-        (*this).mxqnNE = NULL;
-        (*this).mxqnSW = NULL;
-        (*this).mxqnSE = NULL;
 
     }
 
-    bool isLeaf() {
-        return (mxqnNW == NULL && mxqnNE == NULL && mxqnSW == NULL && mxqnSE == NULL);
+        mxcifQuadNode* returnNodeAtIndex(int index)
+    {
+        if ( nodes.size() == 0) return NULL;
+        return nodes.at(index);
     }
+
+    mxcifQuadNode* nodeNW()
+    {
+        return returnNodeAtIndex(0);
+    }
+
+    mxcifQuadNode* nodeNE()
+    {
+        return returnNodeAtIndex(1);
+    }
+
+    mxcifQuadNode* nodeSW()
+    {
+        return returnNodeAtIndex(2);
+    }
+
+    mxcifQuadNode* nodeSE()
+    {
+        return returnNodeAtIndex(3);
+    }
+
+      bool isLeaf()
+    {
+        return ( nodeNW() == NULL && nodeNE() == NULL && nodeSW() == NULL && nodeSE() == NULL);
+    }
+
 
     bool insert(qBoundingBox * box)
     {
@@ -122,13 +128,13 @@ public:
 
     bool insertIntoChildren(qBoundingBox *box)
     {
-        if (this->mxqnNW->qbb.canContain(*box) && this->mxqnNW->insert(box)) return true;
+        if (this->nodeNW()->qbb.canContain(*box) && this->nodeNW()->insert(box)) return true;
 
-        if (this->mxqnNE->qbb.canContain(*box) && this->mxqnNE->insert(box)) return true;
+        if (this->nodeNE()->qbb.canContain(*box) && this->nodeNE()->insert(box)) return true;
 
-        if (this->mxqnSW->qbb.canContain(*box) && this->mxqnSW->insert(box)) return true;
+        if (this->nodeSW()->qbb.canContain(*box) && this->nodeSW()->insert(box)) return true;
 
-        if (this->mxqnSE->qbb.canContain(*box) && this->mxqnSE->insert(box)) return true;
+        if (this->nodeSE()->qbb.canContain(*box) && this->nodeSE()->insert(box)) return true;
 
         return false;
     }
@@ -148,22 +154,22 @@ public:
 
         qPoint *pNW = new qPoint(current_x-w,current_y);
         qBoundingBox *qbbNW = new qBoundingBox( pNW, w, h);
-        this->mxqnNW = new mxcifQuadNode(*qbbNW,this->leafCapacity,cur_height);
+        nodes.push_back(new mxcifQuadNode(*qbbNW,this->leafCapacity,cur_height));
 
 
         qPoint *pNE = new qPoint(current_x,current_y);
         qBoundingBox *qbbNE = new qBoundingBox( pNE, w, h);
-        this->mxqnNE = new mxcifQuadNode(*qbbNE,this->leafCapacity,cur_height);
+        nodes.push_back(new mxcifQuadNode(*qbbNE,this->leafCapacity,cur_height));
 
 
         qPoint *pSW = new qPoint(current_x-w,current_y-h);
         qBoundingBox *qbbSW =new qBoundingBox( pSW, w, h);
-        this->mxqnSW = new mxcifQuadNode(*qbbSW,this->leafCapacity,cur_height);
+        nodes.push_back(new mxcifQuadNode(*qbbSW,this->leafCapacity,cur_height));
 
 
         qPoint *pSE = new qPoint(current_x,current_y-h);
         qBoundingBox *qbbSE =new qBoundingBox( pSE, w, h);
-        this->mxqnSE = new mxcifQuadNode(*qbbSE,this->leafCapacity,cur_height);
+        nodes.push_back(new mxcifQuadNode(*qbbSE,this->leafCapacity,cur_height));
 
         for (int i=0; i<rectangles.size(); i++)
         {
@@ -175,40 +181,6 @@ public:
 
         rectangles.clear();
 
-    }
-
-    bool subdivide(qBoundingBox *box)
-    {
-        float h = qbb.getHeight()/2;
-        float w = qbb.getWidth()/2;
-        //min width and min height check
-        if (w < 1 || h < 1) return false;
-
-        float current_x = qbb.getX() + w;
-        float current_y = qbb.getY() + h;
-
-
-        qPoint *pNW = new qPoint(current_x-w,current_y);
-        qBoundingBox *qbbNW = new qBoundingBox( pNW, w, h);
-        this->mxqnNW = new mxcifQuadNode(*qbbNW);
-
-
-        qPoint *pNE = new qPoint(current_x,current_y);
-        qBoundingBox *qbbNE = new qBoundingBox( pNE, w, h);
-        this->mxqnNE = new mxcifQuadNode(*qbbNE);
-
-
-        qPoint *pSW = new qPoint(current_x-w,current_y-h);
-        qBoundingBox *qbbSW =new qBoundingBox( pSW, w, h);
-        this->mxqnSW = new mxcifQuadNode(*qbbSW);
-
-
-        qPoint *pSE = new qPoint(current_x,current_y-h);
-        qBoundingBox *qbbSE =new qBoundingBox( pSE, w, h);
-        this->mxqnSE = new mxcifQuadNode(*qbbSE);
-
-
-        return insertIntoChildren(box);
     }
 
     void queryRange(qBoundingBox range, vector<qBoundingBox> &rectsInRange) {
@@ -231,20 +203,20 @@ public:
 
 
         if (!isLeaf()) {
-            this->mxqnNW->queryRange(range,rectsInRange);
-            this->mxqnNE->queryRange(range,rectsInRange);
-            this->mxqnSW->queryRange(range,rectsInRange);
-            this->mxqnSE->queryRange(range,rectsInRange);
+            this->nodeNW()->queryRange(range,rectsInRange);
+            this->nodeNE()->queryRange(range,rectsInRange);
+            this->nodeSW()->queryRange(range,rectsInRange);
+            this->nodeSE()->queryRange(range,rectsInRange);
         }
     }
 
     void deleteNode()
     {
 
-        if(this->mxqnNW != NULL){this->mxqnNW->deleteNode();}
-        if(this->mxqnNE != NULL){this->mxqnNE->deleteNode();}
-        if(this->mxqnSW != NULL){this->mxqnSW->deleteNode();}
-        if(this->mxqnSE != NULL){this->mxqnSE->deleteNode();}
+        if(this->nodeNW() != NULL){this->nodeNW()->deleteNode();}
+        if(this->nodeNE() != NULL){this->nodeNE()->deleteNode();}
+        if(this->nodeSW() != NULL){this->nodeSW()->deleteNode();}
+        if(this->nodeSE() != NULL){this->nodeSE()->deleteNode();}
 
 //        if(!rectangles.empty()){rectangles.clear();}
 //        if(!overFlowRectangles.empty()){overFlowRectangles.clear();}
