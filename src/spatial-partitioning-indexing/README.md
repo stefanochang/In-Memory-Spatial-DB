@@ -32,11 +32,31 @@ Figure 1: Bounding Box Structure
 Figure 2: Structure of Quadtree Node
 ![Structure of Quadtree Node](https://github.com/nakulchawla09/advances-quadtree/blob/master/new/advdbSpatialTest/Test/Images/StructureOfQuadtreeNode.png)
 
-Figure 3: Points Visualization in Quadtree
+Figure 3: Points Visualization in PR Quadtree
 ![Points Visualization in Quadtree](https://github.com/nakulchawla09/advances-quadtree/blob/master/new/advdbSpatialTest/Test/Images/TestCase1PointsVisualization.png)
 
-Figure 4: Rectangles Visualization in Quadtree
+Figure 4: Insertion of Points Visualization in PR Quadtree for Classical Algorithm
+![Insertion of Points Visualization in PR Quadtree for Classical Algorithm](https://github.com/magic679/In-Memory-Spatial-DB/blob/spatial-indexing-dev/src/spatial-partitioning-indexing/spatialTests/Images/report-pr-1-samat.png)
+
+Figure 5: Insertion of Points Visualization in PR Quadtree for Modified Algorithm
+![Insertion of Points Visualization in PR Quadtree for Modified Algorithm](https://github.com/magic679/In-Memory-Spatial-DB/blob/spatial-indexing-dev/src/spatial-partitioning-indexing/spatialTests/Images/report-pr-1.png)
+
+Figure 6: Rectangles Visualization in MXCIF Quadtree
 ![Rectangles Visualization in Quadtree](https://github.com/nakulchawla09/advances-quadtree/blob/master/new/advdbSpatialTest/Test/Images/TestCaseRectangulesVisualization.png)
+
+Figure 7: Insertion of Rectangles Visualization in MXCIF Quadtree for Classical Algorithm
+![Insertion of Rectangles Visualization in MXCIF Quadtree for Classical Algorithm](https://github.com/magic679/In-Memory-Spatial-DB/blob/spatial-indexing-dev/src/spatial-partitioning-indexing/spatialTests/Images/report-mxcif-1-samat.png)
+
+Figure 8: Insertion of Rectangles Visualization in MXCIF Quadtree for Modified Algorithm
+![Insertion of Rectangles Visualization in MXCIF Quadtree for Modified Algorithm](https://github.com/magic679/In-Memory-Spatial-DB/blob/spatial-indexing-dev/src/spatial-partitioning-indexing/spatialTests/Images/report-mxcif-1.png)
+
+Figure 9: Results for Cache Conscious PR Quad Tree
+![Results for Cache Conscious PR Quad Tree](https://github.com/magic679/In-Memory-Spatial-DB/blob/spatial-indexing-dev/src/spatial-partitioning-indexing/spatialTests/Images/report-pr-memory.png)
+
+Figure 10: Results for Cache Conscious MXCIF Quad Tree
+![Results for Cache Conscious MXCIF Quad Tree](https://github.com/magic679/In-Memory-Spatial-DB/blob/spatial-indexing-dev/src/spatial-partitioning-indexing/spatialTests/Images/report-mxcif-memory.png)
+
+
 
 ## Instructions to run
 This code was designed to be run as a module inside an object-oriented Spatial database that handled Points and Rectangles, required search to be done in compliance with SpatialIndexInterface.
